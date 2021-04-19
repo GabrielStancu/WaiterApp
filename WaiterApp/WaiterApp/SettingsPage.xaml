@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WaiterApp.SettingsPage"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Resources>
+        <Style TargetType="Label" x:Key="LabelStyle">
+            <Setter Property="VerticalTextAlignment" Value="Center"/>
+            <Setter Property="HorizontalTextAlignment" Value="Start"/>
+            <Setter Property="FontSize" Value="Medium"/>
+            <Setter Property="TextColor" Value="White"/>
+        </Style>
+        <Style TargetType="Frame" x:Key="FrameStyle">
+            <Setter Property="BackgroundColor" Value="WhiteSmoke"/>
+            <Setter Property="CornerRadius" Value="2"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="HasShadow" Value="True"/>
+            <Setter Property="Margin" Value="0, 5"/>
+        </Style>
+
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="#8D99AE">
+            <Frame BackgroundColor="#2B2D42" CornerRadius="5" Margin="10">
+                <Grid  Padding="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="User:"/>
+                    <Frame Grid.Row="0" Grid.Column="1" Style="{StaticResource FrameStyle}">
+                        <Entry Text="{Binding Nickname}"/>
+                    </Frame>
+                    <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Department:"/>
+                    <Frame Grid.Row="1" Grid.Column="1" Style="{StaticResource FrameStyle}">
+                        <Picker Title="Pick department" ItemsSource="{Binding Departments}" ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding CrtDepartment}"/>
+                    </Frame>
+                    <Label Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Server name:"/>
+                    <Frame Grid.Row="2" Grid.Column="1" Style="{StaticResource FrameStyle}">
+                        <Entry Text="{Binding ServerName}"/>
+                    </Frame>
+                    <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Database name:"/>
+                    <Frame Grid.Row="3" Grid.Column="1" Style="{StaticResource FrameStyle}">
+                        <Entry Text="{Binding DatabaseName}"/>
+                    </Frame>
+                    <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Database user:"/>
+                    <Frame Grid.Row="4" Grid.Column="1" Style="{StaticResource FrameStyle}">
+                        <Entry Text="{Binding DbUser}"/>
+                    </Frame>
+                    <Label Grid.Row="5" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Database password:"/>
+                    <Frame Grid.Row="5" Grid.Column="1" Style="{StaticResource FrameStyle}">
+                        <Entry Text="{Binding DbPassword}" IsPassword="True"/>
+                    </Frame>
+                    <Label Grid.Row="6" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Load db at startup:"/>
+                    <CheckBox Grid.Row="6" Grid.Column="1" VerticalOptions="Center" IsChecked="{Binding LoadAtStartup}" Color="#EF233C"/>
+                </Grid>
+            </Frame>
+            <Button Margin="40, 20" Text="Save" Command="{Binding OnSaveParameters}" Clicked="OnSaveParameters"
+                    BackgroundColor="#ef233c" TextColor="White"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
