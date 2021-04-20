@@ -46,7 +46,7 @@ namespace Infrastructure.Helpers
                 { "username", string.Empty },
                 { "password", string.Empty },
                 { "nickname", string.Empty },
-                { "department", string.Empty },
+                { "department", "Main Restaurant" },
                 { "remember", "false" },
                 { "server", string.Empty },
                 { "database", string.Empty },

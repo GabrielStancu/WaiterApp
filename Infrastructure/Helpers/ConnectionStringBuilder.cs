@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Text;
 
 namespace Infrastructure.Helpers
 {
@@ -19,15 +19,13 @@ namespace Infrastructure.Helpers
 
         public string Build()
         {
-            var connStrBuilder = new SqlConnectionStringBuilder()
-            {
-                DataSource = _server ?? string.Empty,
-                InitialCatalog = _database ?? string.Empty,
-                UserID = _user ?? string.Empty,
-                Password = _password ?? string.Empty
-            };
+            var builder = new StringBuilder();
+            builder.Append($"Data Source={_server}; ");
+            builder.Append($"Initial Catalog={_database}; ");
+            builder.Append($"User Id={_user}; ");
+            builder.Append($"Password={_password};");
 
-            return connStrBuilder.ConnectionString;
+            return builder.ToString();
         }
     }
 }

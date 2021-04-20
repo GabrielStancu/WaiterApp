@@ -2,10 +2,8 @@
 {
     public class WifiConnectionResponseParser
     {
-        public static string GenerateResponse()
+        public string GenerateResponse(WifiConnectionResponse response)
         {
-            var response = WifiConnectionChecker.CheckConnection();
-
             switch (response)
             {
                 case WifiConnectionResponse.NO_INTERNET:

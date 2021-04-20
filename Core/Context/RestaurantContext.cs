@@ -16,13 +16,9 @@ namespace Core.Context
         public DbSet<OrderProduct> OrderProduct { get; private set; }
         public DbSet<Order> Order { get; private set; }
 
-        private static string _connectionString = "Data Source=192.168.100.2;Initial Catalog=RestaurantDb;persist security info=True; Integrated Security = SSPI;";
+        public static string ConnectionString = string.Empty;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlServer(_connectionString);
-
-        public RestaurantContext(string connectionString)
-            => _connectionString = connectionString;
-
+            => optionsBuilder.UseSqlServer(ConnectionString);
     }
 }

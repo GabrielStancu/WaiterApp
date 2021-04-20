@@ -51,11 +51,11 @@
 
                     <Label x:Name="UserLabel" Text="User: " Grid.Row="0" Grid.Column="0" 
                            Style="{StaticResource UpperLabelStyle}"/>
-                    <Label x:Name="UserValueLabel"  Text="{Binding Username}" 
+                    <Label x:Name="UserValueLabel"  Text="{Binding Nickname}" 
                            Grid.Row="0" Grid.Column="1" Style="{StaticResource UpperLabelStyle}"/>
                     <Label x:Name="DepartmentLabel" Text="Department: " Grid.Row="1" Grid.Column="0" 
                            Style="{StaticResource UpperLabelStyle}"/>
-                    <Label x:Name="DepartmentValueLabel" Text="{Binding UserDepartment}" 
+                    <Label x:Name="DepartmentValueLabel" Text="{Binding Department}" 
                            Grid.Row="1" Grid.Column="1" Style="{StaticResource UpperLabelStyle}"/>
                 </Grid>
 
@@ -65,7 +65,7 @@
                         <RowDefinition Height="3*"/>
                     </Grid.RowDefinitions>
 
-                    <Label x:Name="DateLabel" Grid.Row="0" Text="{Binding CurrentDate}" HorizontalTextAlignment="End" 
+                    <Label x:Name="DateLabel" Grid.Row="0" Text="{Binding CurrentDate, StringFormat=\{0:dd.MM.yyyy\}}" HorizontalTextAlignment="End" 
                            Style="{StaticResource UpperLabelStyle}" HorizontalOptions="End" VerticalOptions="Start"/>
                     <ImageButton x:Name="SettingsButton" Grid.Row="1" HorizontalOptions="End" BackgroundColor="#2B2D42" Margin="5,0" 
                                  Clicked="OnSettingsButtonClick" CornerRadius="30" Source="settings_icon.png"/>
@@ -89,7 +89,7 @@
 
                     <Label Text="Username: " Grid.Row="0" Grid.Column="0" Style="{StaticResource MiddleLabelStyle}"/>
                     <Frame Style="{StaticResource EntryFrameStyle}"  Grid.Row="0" Grid.Column="1">
-                        <Entry x:Name="UsernameEntry" Placeholder="username" FontSize="24"/>
+                        <Entry x:Name="UsernameEntry" Placeholder="username" FontSize="24" Text="{Binding Username}"/>
                     </Frame>
                     <Label Text="Password: " Grid.Row="1" Grid.Column="0" Style="{StaticResource MiddleLabelStyle}"/>
                     <Frame Style="{StaticResource EntryFrameStyle}"  Grid.Row="1" Grid.Column="1">
@@ -119,7 +119,7 @@
 
                     <Label Text="Remember user?" Grid.Row="0" TextColor="White" HorizontalOptions="Center" VerticalOptions="End" VerticalTextAlignment="End" Margin="5,0"/>
                     <CheckBox Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Start" Margin="5,0"
-                              CheckedChanged="OnRememberUserCheckboxCheck" Color="#EF233C"/>
+                              CheckedChanged="OnRememberUserCheckboxCheck" Color="#EF233C" IsChecked="{Binding RememberUser}"/>
                 </Grid>
             </Grid>
         </StackLayout>

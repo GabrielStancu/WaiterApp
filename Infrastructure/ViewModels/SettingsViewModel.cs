@@ -8,7 +8,7 @@ namespace Infrastructure.ViewModels
 {
     public class SettingsViewModel: BaseViewModel
     {
-        public SettingsViewModel(ParametersLoader loader)
+        public SettingsViewModel(ParametersLoader loader, bool loadDepartments)
         {
             _loader = loader;
             Nickname = _loader.Parameters["nickname"];
