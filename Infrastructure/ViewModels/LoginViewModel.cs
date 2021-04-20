@@ -1,5 +1,8 @@
-﻿using Infrastructure.Helpers;
+﻿using Core.Models;
+using Infrastructure.Helpers;
+using Infrastructure.Repositories;
 using System;
+using System.Threading.Tasks;
 
 namespace Infrastructure.ViewModels
 {
@@ -82,6 +85,14 @@ namespace Infrastructure.ViewModels
                 _currentDate = value;
                 SetProperty<DateTime>(ref _currentDate, value);
             }
+        }
+
+        public async Task<Waiter> LoginAsync(string password)
+        {
+            var waiterRepository = new WaiterRepository();
+            var user = await waiterRepository.SelectWaiterWithCredentialsAsync(Username, password);
+
+            return user;
         }
     }
 }

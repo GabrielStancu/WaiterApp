@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Xamarin.Essentials;
 
 namespace Infrastructure.Helpers
@@ -46,7 +44,7 @@ namespace Infrastructure.Helpers
                 { "username", string.Empty },
                 { "password", string.Empty },
                 { "nickname", string.Empty },
-                { "department", "Main Restaurant" },
+                { "department", string.Empty },
                 { "remember", "false" },
                 { "server", string.Empty },
                 { "database", string.Empty },

@@ -19,6 +19,10 @@ namespace Infrastructure.ViewModels
             LoadAtStartup = bool.Parse(_loader.Parameters["loadDb"]);
             //LoadDepartments();
             //CrtDepartment = SelectDepartment(_loader.Parameters["department"]);
+            if(loadDepartments)
+            {
+                LoadDepartments();
+            }
         }
 
         private string _nickname;
@@ -32,7 +36,7 @@ namespace Infrastructure.ViewModels
             }
         }
 
-        public ObservableCollection<Department> Departments { get; } = new ObservableCollection<Department>();
+        public ObservableCollection<Department> Departments { get; set; } = new ObservableCollection<Department>();
         private Department _crtDepartment;
         public Department CrtDepartment
         {
@@ -99,6 +103,14 @@ namespace Infrastructure.ViewModels
         public ICommand OnSaveParameters 
         {
             get { return new RelayCommand(SaveParameters); }
+        }
+
+        private async void LoadDepartments()
+        {
+            var departmentLoader = new DepartmentLoader();
+            var departments = await departmentLoader.LoadAllDepartments();
+            departments.ForEach(dep => Departments.Add(dep));
+            CrtDepartment = departmentLoader.LoadCurrentDepartment(departments, _loader.Parameters["department"]);
         }
 
         private void SaveParameters()

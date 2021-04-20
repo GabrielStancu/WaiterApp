@@ -103,23 +103,18 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="1.25*"/>
-                </Grid.ColumnDefinitions>
-
                 <Button Text="Login" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="10, 15" Style="{StaticResource ButtonStyle}" 
                         Clicked="OnLoginButtonClick"/>
 
-                <Grid Grid.Row="1" Grid.Column="1" HorizontalOptions="StartAndExpand" Margin="0, 0, 0, 5">
+                <Grid Grid.Row="1" HorizontalOptions="StartAndExpand" Margin="0, 0, 0, 5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Text="Remember user?" Grid.Row="0" TextColor="White" HorizontalOptions="Center" VerticalOptions="End" VerticalTextAlignment="End" Margin="5,0"/>
-                    <CheckBox Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Start" Margin="5,0"
-                              CheckedChanged="OnRememberUserCheckboxCheck" Color="#EF233C" IsChecked="{Binding RememberUser}"/>
+                    <Label Text="Remember user?" Grid.Row="0" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" VerticalTextAlignment="Center"/>
+                    <CheckBox Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"
+                              Color="#EF233C" IsChecked="{Binding RememberUser}"/>
                 </Grid>
             </Grid>
         </StackLayout>

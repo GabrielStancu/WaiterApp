@@ -9,14 +9,20 @@ namespace WaiterApp
     public partial class LoginPage : ContentPage
     {
         private readonly ParametersLoader _parametersLoader;
-
+        private readonly LoginViewModel _model;
         public LoginPage(ParametersLoader parametersLoader)
         {
             InitializeComponent();
             _parametersLoader = parametersLoader;
             TestConnection();
+            _model = new LoginViewModel(parametersLoader);
+            BindingContext = _model;
 
-            this.BindingContext = new LoginViewModel(parametersLoader);
+            if(bool.Parse(_parametersLoader.Parameters["remember"]))
+            {
+                _model.Username = _parametersLoader.Parameters["username"];
+                Login(_parametersLoader.Parameters["password"]);
+            }
         }
 
         private async void TestConnection()
@@ -42,12 +48,42 @@ namespace WaiterApp
 
         private void OnLoginButtonClick(object sender, EventArgs e)
         {
-
+            if (_model.RememberUser)
+            {
+                _parametersLoader.SetParameter("remember", "true");
+                _parametersLoader.SetParameter("username", _model.Username);
+                _parametersLoader.SetParameter("password", PasswordEntry.Text);
+            }
+            else
+            {
+                _parametersLoader.SetParameter("remember", "false");
+                _parametersLoader.SetParameter("username", string.Empty);
+                _parametersLoader.SetParameter("password", string.Empty);
+            }
+            Login(PasswordEntry.Text);
         }
 
-        private void OnRememberUserCheckboxCheck(object sender, CheckedChangedEventArgs e)
+        private async void Login(string password)
         {
+            var waiter = await _model.LoginAsync(password);
+            if (waiter != null)
+            {
+                _parametersLoader.SaveParameters();
+                await Navigation.PushAsync(new MainPage(waiter));
+            }
+            else
+            {
+                await DisplayAlert("Login error", "Wrong credentials, please retry", "OK");
+            }
+        }
 
+        protected override void OnDisappearing()
+        {
+            if (!_model.RememberUser)
+            {
+                _parametersLoader.SetParameter("remember", _model.RememberUser.ToString());
+                _parametersLoader.SaveParameters();
+            } 
         }
     }
 }
