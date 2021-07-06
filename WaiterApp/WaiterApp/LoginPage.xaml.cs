@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Exceptions;
 using Infrastructure.Helpers;
+using Infrastructure.Repositories;
 using Infrastructure.ViewModels;
 using System;
 using Xamarin.Forms;
@@ -68,8 +69,11 @@ namespace WaiterApp
             var waiter = await _model.LoginAsync(password);
             if (waiter != null)
             {
+                _parametersLoader.SetParameter("waiterId", waiter.Id.ToString());
                 _parametersLoader.SaveParameters();
-                await Navigation.PushAsync(new MainPage(waiter));
+                var page = new MainPage(new MainPageViewModel(
+                    new OrderProductRepository(), new GroupRepository(), new SubgroupRepository(), new ProductRepository()));
+                await Navigation.PushAsync(page);
             }
             else
             {

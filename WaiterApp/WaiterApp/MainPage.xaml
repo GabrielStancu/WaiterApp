@@ -4,7 +4,152 @@
             x:Class="WaiterApp.MainPage"
             NavigationPage.HasNavigationBar="False">
   <!--Pages can be added as references or inline-->
-  <ContentPage Title="Orders" />
-  <ContentPage Title="Tables" />
-  <ContentPage Title="Products" />
+    <ContentPage Title="Orders"
+                 BackgroundColor="LightGray">
+        <StackLayout Margin="10">
+            <Frame BackgroundColor="CadetBlue" CornerRadius="20">
+                <Grid HeightRequest="50">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0"
+                       Text="Table No."
+                       TextColor="Black"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"/>
+                    <Label Grid.Column="1"
+                       Text="Order Name"
+                       TextColor="Black"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"/>
+                    <Label Grid.Column="2"
+                       Text="Placement Time"
+                       TextColor="Black"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"/>
+                    <Label Grid.Column="3"
+                       Text="Serving Time"
+                       TextColor="Black"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"/>
+                </Grid>
+            </Frame>
+            
+            <ListView ItemsSource="{Binding OrderProducts}"
+                  HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Frame BackgroundColor="White" 
+                                       CornerRadius="30" 
+                                       Margin="10, 3">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.5*"/>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Order.TableId}"
+                                               TextColor="Black"
+                                               VerticalTextAlignment="Center"
+                                               HorizontalTextAlignment="Center"/>
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Product.Name}" 
+                                               VerticalTextAlignment="Center"
+                                               HorizontalTextAlignment="Center"
+                                               TextColor="Black"   />
+                                        <Label Grid.Column="2"
+                                               Text="{Binding Order.PlacementTime, StringFormat='{0:HH:mm}'}" 
+                                               VerticalTextAlignment="Center"
+                                               HorizontalTextAlignment="Center"
+                                               TextColor="Black"/>
+                                        <Label Grid.Column="3"
+                                               Text="{Binding Order.ServingTime, TargetNullValue='NotReady', StringFormat='{0:HH:mm}'}" 
+                                               VerticalTextAlignment="Center"
+                                               HorizontalTextAlignment="Center"
+                                               TextColor="Black"/>
+                                    </Grid>
+                                </Frame>
+
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+        
+    </ContentPage>
+    <ContentPage Title="Tables" BackgroundColor="White">
+        <StackLayout>
+            <Label Text="Tables Page" TextColor="Black"/>
+        </StackLayout>
+        
+    </ContentPage>
+    <ContentPage Title="Products"
+                 BackgroundColor="LightGray">
+        <StackLayout>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Picker Grid.Column="0"
+                        Title="Group"
+                        TitleColor="Black"
+                        TextColor="Black"
+                        ItemsSource="{Binding Groups}"
+                        ItemDisplayBinding="{Binding Name}"/>
+                <Picker Grid.Column="1"
+                        Title="Subgroup"
+                        TitleColor="Black"
+                        TextColor="Black"
+                        ItemsSource="{Binding Subgroups}"
+                        ItemDisplayBinding="{Binding Name}"/>
+            </Grid>
+
+            <ListView ItemsSource="{Binding Products}"
+                  HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Frame BackgroundColor="White" 
+                                       CornerRadius="30" 
+                                       Margin="10, 3">
+                                    <StackLayout>
+                                        <Label Text="{Binding Name}"
+                                               TextColor="Black"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"/>
+                                        <Label Text="{Binding Price}"
+                                               TextColor="Black"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"/>
+                                    </StackLayout>
+                                </Frame>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+        
+    </ContentPage>
 </TabbedPage>

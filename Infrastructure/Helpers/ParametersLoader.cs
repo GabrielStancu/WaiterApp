@@ -50,7 +50,8 @@ namespace Infrastructure.Helpers
                 { "database", string.Empty },
                 { "dbUser", string.Empty },
                 { "dbPassword", string.Empty },
-                { "loadDb", "false" }
+                { "loadDb", "false" },
+                { "waiterId", "0" }
             };
 
             StoreParameters();
