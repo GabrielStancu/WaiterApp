@@ -54,13 +54,58 @@ namespace WaiterApp
 
         public async void LoadTables()
         {
+            var tables = await _mainPageViewModel.LoadTables(1);
+            TablesLayout.Children.Clear();
 
+            foreach (var table in tables)
+            {
+                var tableMessage = (table.Total == 0) ? string.Empty : table.Total.ToString();
+                var tableButton = new Button()
+                {
+                    BackgroundColor = table.Color,
+                    Text = $"{table.WaiterName ?? string.Empty}\n{tableMessage}",
+                    CornerRadius = 6,
+                    HeightRequest = table.LengthY,
+                    WidthRequest = table.LengthX,
+                    BorderWidth = 2,
+                    BorderColor = Color.Black
+                };
+                tableButton.Clicked += OnTableButtonClicked;
+
+                TablesLayout.Children.Add(tableButton, new Point(table.StartX, table.StartY));
+            }
+        }
+
+        private void OnTableButtonClicked(object sender, EventArgs e)
+        {
+            var button = (Button)sender;
         }
 
         public async void LoadProducts()
         {
             var departmentId = 1;// Int32.Parse(Preferences.Get("departmentId", "0"));
             await _mainPageViewModel.LoadProductsAsync(departmentId);
+        }
+
+        private void OnGroupSelectedItemChanged(object sender, EventArgs e)
+        {
+            _mainPageViewModel.FilterSubgroups();
+            _mainPageViewModel.FilterProducts();
+        }
+
+        private void OnSubgroupSelectedIndexChanged(object sender, EventArgs e)
+        {
+            _mainPageViewModel.FilterProducts();
+        }
+
+        private void OnProductNameTextChanged(object sender, TextChangedEventArgs e)
+        {
+            _mainPageViewModel.FilterProducts();
+        }
+
+        private void OnProductSequenceTextChanged(object sender, TextChangedEventArgs e)
+        {
+            _mainPageViewModel.FilterProducts();
         }
     }
 }

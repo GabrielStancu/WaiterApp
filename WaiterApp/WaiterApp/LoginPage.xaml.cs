@@ -72,7 +72,8 @@ namespace WaiterApp
                 _parametersLoader.SetParameter("waiterId", waiter.Id.ToString());
                 _parametersLoader.SaveParameters();
                 var page = new MainPage(new MainPageViewModel(
-                    new OrderProductRepository(), new GroupRepository(), new SubgroupRepository(), new ProductRepository()));
+                    new OrderProductRepository(), new GroupRepository(), new SubgroupRepository(), new ProductRepository(),
+                    new TableRepository()));
                 await Navigation.PushAsync(page);
             }
             else

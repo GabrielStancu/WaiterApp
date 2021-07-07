@@ -96,32 +96,54 @@
         
     </ContentPage>
     <ContentPage Title="Tables" BackgroundColor="White">
-        <StackLayout>
-            <Label Text="Tables Page" TextColor="Black"/>
-        </StackLayout>
-        
+        <AbsoluteLayout BackgroundColor="LightGray"
+                        x:Name="TablesLayout"/>
     </ContentPage>
     <ContentPage Title="Products"
                  BackgroundColor="LightGray">
         <StackLayout>
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Picker Grid.Column="0"
+                <Picker Grid.Row="0"
+                        Grid.Column="0"
                         Title="Group"
                         TitleColor="Black"
                         TextColor="Black"
                         ItemsSource="{Binding Groups}"
-                        ItemDisplayBinding="{Binding Name}"/>
-                <Picker Grid.Column="1"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding SelectedGroup}"
+                        SelectedIndexChanged="OnGroupSelectedItemChanged"/>
+                <Picker Grid.Row="0"
+                        Grid.Column="1"
                         Title="Subgroup"
                         TitleColor="Black"
                         TextColor="Black"
                         ItemsSource="{Binding Subgroups}"
-                        ItemDisplayBinding="{Binding Name}"/>
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding SelectedSubgroup}"
+                        SelectedIndexChanged="OnSubgroupSelectedIndexChanged"/>
+                <Entry Grid.Row="1"
+                       Grid.Column="0"
+                       Text="{Binding ProductName}"
+                       TextChanged="OnProductNameTextChanged"
+                       TextColor="Black"
+                       Placeholder="Product Name"
+                       PlaceholderColor="DarkGray"/>
+                <Entry Grid.Row="1"
+                       Grid.Column="1"
+                       Text="{Binding ProductSequence}"
+                       TextChanged="OnProductSequenceTextChanged"
+                       TextColor="Black"
+                       Placeholder="Product Sequence"
+                       PlaceholderColor="DarkGray"/>
             </Grid>
 
             <ListView ItemsSource="{Binding Products}"

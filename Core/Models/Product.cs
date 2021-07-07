@@ -7,6 +7,7 @@ namespace Core.Models
 {
     public class Product : BaseModel
     {
+        public string Sequence { get; set; }
         public string Name { get; set; }
         public Group Group { get; set; }
         [ForeignKey("Group")]

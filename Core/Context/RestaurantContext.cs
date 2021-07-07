@@ -1,8 +1,5 @@
 ﻿using Core.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Core.Context
 {
@@ -15,6 +12,7 @@ namespace Core.Context
         public DbSet<Waiter> Waiter { get; private set; }
         public DbSet<OrderProduct> OrderProduct { get; private set; }
         public DbSet<Order> Order { get; private set; }
+        public DbSet<Table> Table { get; private set; }
 
         public static string ConnectionString = string.Empty;
 
