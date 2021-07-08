@@ -37,6 +37,11 @@ namespace Infrastructure.Helpers
             Parameters[paramKey] = paramValue;
         }
 
+        public string GetParameter(string paramKey)
+        {
+            return Preferences.Get(paramKey, string.Empty);
+        }
+
         private void InitParameters()
         {
             Parameters = new Dictionary<string, string>
@@ -44,7 +49,7 @@ namespace Infrastructure.Helpers
                 { "username", string.Empty },
                 { "password", string.Empty },
                 { "nickname", string.Empty },
-                { "department", string.Empty },
+                { "departmentId", "0" },
                 { "remember", "false" },
                 { "server", string.Empty },
                 { "database", string.Empty },
@@ -66,6 +71,7 @@ namespace Infrastructure.Helpers
             }
 
             Parameters = new Dictionary<string, string>(parameters);
+            Parameters["departmentId"] = "1";
         }
     }
 }

@@ -2,9 +2,11 @@
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             x:Class="WaiterApp.MainPage"
-            NavigationPage.HasNavigationBar="False">
+            NavigationPage.HasNavigationBar="False"
+            x:Name="WaiterMainPage">
   <!--Pages can be added as references or inline-->
-    <ContentPage Title="Orders"
+    <ContentPage x:Name="OrdersPage"
+                 Title="Orders"
                  BackgroundColor="LightGray">
         <StackLayout Margin="10">
             <Frame BackgroundColor="CadetBlue" CornerRadius="20">
@@ -46,8 +48,8 @@
                        VerticalTextAlignment="Center"/>
                 </Grid>
             </Frame>
-            
-            <ListView ItemsSource="{Binding OrderProducts}"
+
+            <ListView ItemsSource="{Binding WaiterOrderedProducts}"
                   HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -75,12 +77,12 @@
                                                HorizontalTextAlignment="Center"
                                                TextColor="Black"   />
                                         <Label Grid.Column="2"
-                                               Text="{Binding Order.PlacementTime, StringFormat='{0:HH:mm}'}" 
+                                               Text="{Binding PlacementTime, StringFormat='{0:HH:mm}'}" 
                                                VerticalTextAlignment="Center"
                                                HorizontalTextAlignment="Center"
                                                TextColor="Black"/>
                                         <Label Grid.Column="3"
-                                               Text="{Binding Order.ServingTime, TargetNullValue='NotReady', StringFormat='{0:HH:mm}'}" 
+                                               Text="{Binding ServingTime, TargetNullValue='NotReady', StringFormat='{0:HH:mm}'}" 
                                                VerticalTextAlignment="Center"
                                                HorizontalTextAlignment="Center"
                                                TextColor="Black"/>
@@ -95,11 +97,14 @@
         </StackLayout>
         
     </ContentPage>
-    <ContentPage Title="Tables" BackgroundColor="White">
+    <ContentPage x:Name="TablesPage"
+                 Title="Tables" 
+                 BackgroundColor="White">
         <AbsoluteLayout BackgroundColor="LightGray"
                         x:Name="TablesLayout"/>
     </ContentPage>
-    <ContentPage Title="Products"
+    <ContentPage x:Name="ProductsPage"
+                 Title="Products"
                  BackgroundColor="LightGray">
         <StackLayout>
             <Grid>
@@ -129,7 +134,8 @@
                         ItemsSource="{Binding Subgroups}"
                         ItemDisplayBinding="{Binding Name}"
                         SelectedItem="{Binding SelectedSubgroup}"
-                        SelectedIndexChanged="OnSubgroupSelectedIndexChanged"/>
+                        SelectedIndexChanged="OnSubgroupSelectedIndexChanged"
+                        HeightRequest="140"/>
                 <Entry Grid.Row="1"
                        Grid.Column="0"
                        Text="{Binding ProductName}"
@@ -152,26 +158,50 @@
                     <DataTemplate>
                         <ViewCell>
                             <ViewCell.View>
-                                <Frame BackgroundColor="White" 
-                                       CornerRadius="30" 
-                                       Margin="10, 3">
-                                    <StackLayout>
-                                        <Label Text="{Binding Name}"
-                                               TextColor="Black"
-                                               HorizontalOptions="Center"
-                                               HorizontalTextAlignment="Center"/>
-                                        <Label Text="{Binding Price}"
-                                               TextColor="Black"
-                                               HorizontalOptions="Center"
-                                               HorizontalTextAlignment="Center"/>
-                                    </StackLayout>
-                                </Frame>
+                                <Button Text="{Binding ProductNameWithPrice}"
+                                        TextColor="Black"
+                                        CornerRadius="20"
+                                        HorizontalOptions="Center"
+                                        Command="{Binding Path=BindingContext.AddProductCommand, Source={x:Reference WaiterMainPage}}"
+                                        CommandParameter="{Binding .}"/>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <ListView ItemsSource="{Binding TableOrderedProducts}"
+                      HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Product.Name}"
+                                           TextColor="Black"/>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Product.Price}"
+                                           TextColor="Black"/>
+                                    <Entry Grid.Column="2"
+                                           Text="{Binding Quantity}"/>
+                                    <Button Grid.Column="3"
+                                            Text="Delete Product"
+                                            Command="{Binding Path=BindingContext.DeleteProductCommand, Source={x:Reference WaiterMainPage}}"
+                                            CommandParameter="{Binding .}"/>
+                                </Grid>
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
         </StackLayout>
-        
     </ContentPage>
 </TabbedPage>

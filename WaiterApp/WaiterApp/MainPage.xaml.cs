@@ -1,4 +1,6 @@
-﻿using Core.Models;
+﻿using Core.Helpers;
+using Core.Models;
+using Infrastructure.Helpers;
 using Infrastructure.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ namespace WaiterApp
     public partial class MainPage : TabbedPage
     {
         private readonly MainPageViewModel _mainPageViewModel;
+        private int _departmentId;
 
         public MainPage(MainPageViewModel mainPageViewModel)
         {
@@ -23,6 +26,7 @@ namespace WaiterApp
             BindingContext = _mainPageViewModel;
 
             CurrentPageChanged += OnMainPageCurrentPageChanged;
+            _departmentId = int.Parse(new ParametersLoader().GetParameter("departmentId"));
             LoadOrders();
         }
 
@@ -48,13 +52,13 @@ namespace WaiterApp
 
         private async void LoadOrders()
         {
-            var waiterId = Int32.Parse(Preferences.Get("waiterId", "0"));
+            var waiterId = int.Parse(new ParametersLoader().GetParameter("waiterId"));
             await _mainPageViewModel.LoadOrdersForWaiterAsync(waiterId);
         }
 
         public async void LoadTables()
         {
-            var tables = await _mainPageViewModel.LoadTables(1);
+            var tables = await _mainPageViewModel.LoadTables(_departmentId);
             TablesLayout.Children.Clear();
 
             foreach (var table in tables)
@@ -68,7 +72,8 @@ namespace WaiterApp
                     HeightRequest = table.LengthY,
                     WidthRequest = table.LengthX,
                     BorderWidth = 2,
-                    BorderColor = Color.Black
+                    BorderColor = Color.Black,
+                    ClassId = table.TableNumber.ToString()
                 };
                 tableButton.Clicked += OnTableButtonClicked;
 
@@ -76,15 +81,24 @@ namespace WaiterApp
             }
         }
 
-        private void OnTableButtonClicked(object sender, EventArgs e)
+        private async void OnTableButtonClicked(object sender, EventArgs e)
         {
             var button = (Button)sender;
+            int tableNumber = int.Parse(button.ClassId);
+            bool enabledTable = button.BackgroundColor != Color.Red;
+
+            if(enabledTable)
+            {
+                _mainPageViewModel.SelectedTable =
+                    _mainPageViewModel.Tables.FirstOrDefault(t => t.TableNumber == tableNumber);
+                CurrentPage = ProductsPage;
+                await _mainPageViewModel.LoadTableOrderedProducts();
+            }
         }
 
         public async void LoadProducts()
         {
-            var departmentId = 1;// Int32.Parse(Preferences.Get("departmentId", "0"));
-            await _mainPageViewModel.LoadProductsAsync(departmentId);
+            await _mainPageViewModel.LoadProductsAsync(_departmentId);
         }
 
         private void OnGroupSelectedItemChanged(object sender, EventArgs e)

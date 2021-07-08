@@ -14,9 +14,7 @@ namespace Core.Models
         public Table Table { get; set; }
         public List<OrderProduct> OrderProducts { get; set; }
         public double Total { get; set; }
-        public bool Served { get; set; }
-        public DateTime PlacementTime { get; set; }
-        public DateTime? ServingTime { get; set; }
+        public bool Paid { get; set; }
         public override bool Equals(BaseModel other)
         {
             throw new NotImplementedException();

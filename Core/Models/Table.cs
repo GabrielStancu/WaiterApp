@@ -10,7 +10,6 @@ namespace Core.Models
         [ForeignKey("Waiter")]
         public int WaiterId { get; set; }
         public Waiter Waiter { get; set; }
-        public double Total { get; set; }
         public int StartX { get; set; }
         public int StartY { get; set; }
         public int LengthX { get; set; }

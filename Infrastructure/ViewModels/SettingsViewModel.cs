@@ -110,13 +110,13 @@ namespace Infrastructure.ViewModels
             var departmentLoader = new DepartmentLoader();
             var departments = await departmentLoader.LoadAllDepartments();
             departments.ForEach(dep => Departments.Add(dep));
-            CrtDepartment = departmentLoader.LoadCurrentDepartment(departments, _loader.Parameters["department"]);
+            CrtDepartment = departmentLoader.LoadCurrentDepartment(departments, int.Parse(_loader.Parameters["departmentId"]));
         }
 
         private void SaveParameters()
         {
             _loader.SetParameter("nickname", Nickname);
-            _loader.SetParameter("department", CrtDepartment?.Name);
+            _loader.SetParameter("departmentId", CrtDepartment?.Id.ToString());
             _loader.SetParameter("server", ServerName);
             _loader.SetParameter("database", DatabaseName);
             _loader.SetParameter("dbUser", DbUser);

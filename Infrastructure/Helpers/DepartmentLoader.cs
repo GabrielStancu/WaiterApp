@@ -13,11 +13,11 @@ namespace Infrastructure.Helpers
             return await departmentRepository.SelectAllAsync();
         }
 
-        public Department LoadCurrentDepartment(List<Department> departments, string departmentName)
+        public Department LoadCurrentDepartment(List<Department> departments, int departmentId)
         {
             foreach (var department in departments)
             {
-                if(department.Name.Equals(departmentName))
+                if(department.Id == departmentId)
                 {
                     return department;
                 }

@@ -4,6 +4,7 @@ namespace Infrastructure.Helpers
 {
     public class DrawnTable
     {
+        public int TableNumber { get; set; }
         public int StartX { get; set; }
         public int StartY { get; set; }
         public int LengthX { get; set; }

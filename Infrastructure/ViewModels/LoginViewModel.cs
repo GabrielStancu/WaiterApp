@@ -14,7 +14,7 @@ namespace Infrastructure.ViewModels
         {
             _parametersLoader = parametersLoader;
             Nickname = _parametersLoader.Parameters["nickname"];
-            Department = _parametersLoader.Parameters["department"];
+            DepartmentId = int.Parse(_parametersLoader.Parameters["departmentId"]);
             Username = _parametersLoader.Parameters["username"];
             Password = _parametersLoader.Parameters["password"];
             RememberUser = bool.Parse(_parametersLoader.Parameters["remember"]);
@@ -32,14 +32,14 @@ namespace Infrastructure.ViewModels
             }
         }
 
-        private string _department;
-        public string Department 
+        private int _departmentId;
+        public int DepartmentId 
         { 
-            get { return _department; } 
+            get { return _departmentId; } 
             set
             {
-                _department = value;
-                SetProperty<string>(ref _department, value);
+                _departmentId = value;
+                SetProperty<int>(ref _departmentId, value);
             }
         }
 

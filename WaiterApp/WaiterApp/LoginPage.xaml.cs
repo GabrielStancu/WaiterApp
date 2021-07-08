@@ -73,7 +73,7 @@ namespace WaiterApp
                 _parametersLoader.SaveParameters();
                 var page = new MainPage(new MainPageViewModel(
                     new OrderProductRepository(), new GroupRepository(), new SubgroupRepository(), new ProductRepository(),
-                    new TableRepository()));
+                    new TableRepository(), new OrderRepository()));
                 await Navigation.PushAsync(page);
             }
             else

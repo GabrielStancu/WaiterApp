@@ -4,33 +4,42 @@ using Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace Infrastructure.ViewModels
 {
     public class MainPageViewModel: BaseViewModel
     {
-        public ObservableCollection<OrderProduct> OrderProducts { get; set; }
-            = new ObservableCollection<OrderProduct>();
         public ObservableCollection<Group> Groups { get; set; }
             = new ObservableCollection<Group>();
         public ObservableCollection<Subgroup> Subgroups { get; set; }
             = new ObservableCollection<Subgroup>();
         public ObservableCollection<Product> Products { get; set; }
             = new ObservableCollection<Product>();
+        public ObservableCollection<OrderProduct> WaiterOrderedProducts { get; set; }
+            = new ObservableCollection<OrderProduct>();
+        public ObservableCollection<OrderProduct> TableOrderedProducts { get; set; }
+            = new ObservableCollection<OrderProduct>();
         public Group SelectedGroup { get; set; }
         public Subgroup SelectedSubgroup { get; set; }
+        public Table SelectedTable { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public string ProductSequence { get; set; } = string.Empty;
-
-        //SelectedTable ???
+        public IEnumerable<Table> Tables { get; set; } = new List<Table>();
+        public IEnumerable<Order> Orders { get; set; } = new List<Order>();
+        public ICommand DeleteProductCommand { get; set; }
+        public ICommand AddProductCommand { get; set; }
 
         private readonly OrderProductRepository _orderProductRepository;
         private readonly GroupRepository _groupRepository;
         private readonly SubgroupRepository _subgroupRepository;
         private readonly ProductRepository _productRepository;
         private readonly TableRepository _tableRepository;
+        private readonly OrderRepository _orderRepository;
 
         private List<Product> _unfilteredProducts = new List<Product>();
         private List<Group> _unfilteredGroups = new List<Group>();
@@ -41,32 +50,38 @@ namespace Infrastructure.ViewModels
             GroupRepository groupRepository,
             SubgroupRepository subgroupRepository,
             ProductRepository productRepository,
-            TableRepository tableRepository)
+            TableRepository tableRepository,
+            OrderRepository orderRepository)
         {
             _orderProductRepository = orderProductRepository;
             _groupRepository = groupRepository;
             _subgroupRepository = subgroupRepository;
             _productRepository = productRepository;
             _tableRepository = tableRepository;
+            _orderRepository = orderRepository;
+            DeleteProductCommand = new Command<Product>(async p => await DeleteProduct(p));
+            AddProductCommand = new Command<Product>(async p => await AddProduct(p));
         }
 
         public async Task LoadOrdersForWaiterAsync(int waiterId)
         {
-            var orders = await _orderProductRepository.LoadOrdersForWaiterAsync(waiterId);
+            var orderProducts = await _orderProductRepository.LoadOrdersForWaiterAsync(waiterId);
 
-            OrderProducts.Clear();
-            foreach (var order in orders)
+            WaiterOrderedProducts.Clear();
+            foreach (var orderProduct in orderProducts)
             {
-                OrderProducts.Add(order);
+                WaiterOrderedProducts.Add(orderProduct);
             }
-        }
+        } 
 
         public async Task<IEnumerable<DrawnTable>> LoadTables(int departmentId)
         {
-            var tables = await _tableRepository.GetTablesForDepartmentAsync(departmentId);
+            Tables = await _tableRepository.GetTablesForDepartmentAsync(departmentId);
+            Orders = await _orderRepository.LoadOrdersForDepartmentAsync(departmentId);
+            int waiterId = int.Parse(new ParametersLoader().GetParameter("waiterId"));
             var tableDrawer = new TableDrawer();
 
-            return tableDrawer.DrawTables(tables, 461, 744);
+            return tableDrawer.DrawTables(Tables, Orders, waiterId, 461, 744);
         }
 
         public async Task LoadProductsAsync(int departmentId)
@@ -91,6 +106,17 @@ namespace Infrastructure.ViewModels
             foreach (var product in _unfilteredProducts)
             {
                 Products.Add(product);
+            }
+        }
+
+        public async Task LoadTableOrderedProducts()
+        {
+            var orderedProducts = await _orderProductRepository.LoadOrdersForTableAsync(SelectedTable.Id);
+
+            TableOrderedProducts.Clear();
+            foreach (var orderedProduct in orderedProducts)
+            {
+                TableOrderedProducts.Add(orderedProduct);
             }
         }
 
@@ -172,6 +198,30 @@ namespace Infrastructure.ViewModels
                     }
                 }
             }
+        }
+
+        private async Task AddProduct(Product p)
+        {
+            var order = Orders.FirstOrDefault(o => o.TableId == SelectedTable.Id);
+            var orderedProduct = new OrderProduct()
+            {
+                Product = p,
+                ProductId = p.Id,
+                Quantity = 1,
+                PlacementTime = DateTime.Now,
+                Order = order,
+                OrderId = order.Id
+            };
+            TableOrderedProducts.Add(orderedProduct);
+
+            //add it to db
+            await _orderProductRepository.RegisterNewOrderProductAsync(orderedProduct);
+        }
+
+        private async Task DeleteProduct(Product p)
+        {
+            string productName = p.Name;
+            await Task.Delay(100);
         }
     }
 }

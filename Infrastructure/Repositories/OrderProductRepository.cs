@@ -10,14 +10,35 @@ namespace Infrastructure.Repositories
     {
         public async Task<IEnumerable<OrderProduct>> LoadOrdersForWaiterAsync(int waiterId)
         {
-            var orders = await CreateContext()
+            return await CreateContext()
                 .OrderProduct
                 .Where(op => op.Order.WaiterId == waiterId && op.Product.IsRecipe)
                 .Include(op => op.Product)
                 .Include(op => op.Order)
                 .ToListAsync();
+        }
 
-            return orders;
+        public async Task<IEnumerable<OrderProduct>> LoadOrdersForTableAsync(int tableId)
+        {
+            return await CreateContext()
+                .OrderProduct
+                .Include(op => op.Product)
+                .Include(op => op.Order).ThenInclude(o => o.Table)
+                .Where(op => op.Order.TableId == tableId)
+                .ToListAsync();
+        }
+
+        public async Task RegisterNewOrderProductAsync(OrderProduct orderProduct)
+        {
+            var insertOrderProduct = new OrderProduct()
+            {
+                OrderId = orderProduct.Id,
+                PlacementTime = orderProduct.PlacementTime,
+                ProductId = orderProduct.ProductId,
+                Quantity = orderProduct.Quantity,
+                ServingTime = orderProduct.ServingTime
+            };
+            await InsertAsync(insertOrderProduct);
         }
     }
 }
