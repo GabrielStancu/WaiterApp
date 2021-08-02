@@ -32,7 +32,7 @@ namespace Infrastructure.Repositories
         {
             var insertOrderProduct = new OrderProduct()
             {
-                OrderId = orderProduct.Id,
+                OrderId = orderProduct.OrderId,
                 PlacementTime = orderProduct.PlacementTime,
                 ProductId = orderProduct.ProductId,
                 Quantity = orderProduct.Quantity,

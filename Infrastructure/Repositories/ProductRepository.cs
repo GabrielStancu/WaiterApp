@@ -14,7 +14,7 @@ namespace Infrastructure.Repositories
         {
             var products = await CreateContext()
                 .Product
-                .Where(g => g.DepartmentId == departmentId)
+                .Where(p => p.DepartmentId == departmentId)
                 .ToListAsync();
 
             return products;

@@ -27,7 +27,9 @@ namespace WaiterApp
 
             CurrentPageChanged += OnMainPageCurrentPageChanged;
             _departmentId = int.Parse(new ParametersLoader().GetParameter("departmentId"));
-            LoadOrders();
+            LoadOrdersOnTimer();
+            LoadTables();
+            LoadProducts();
         }
 
         private void OnMainPageCurrentPageChanged(object sender, EventArgs e)
@@ -35,22 +37,37 @@ namespace WaiterApp
             var tabbedPage = (TabbedPage)sender;
             var title = tabbedPage.CurrentPage.Title;
 
-            switch(title)
+            if(title == "Orders")
             {
-                case "Orders":
-                    LoadOrders();
-                    break;
-                case "Tables":
-                    LoadTables();
-                    break;
-                case "Products":
-                    LoadProducts();
-                    break;
-
+                LoadOrdersOnTimer();
+            }
+            else if (title == "Tables")
+            {
+                LoadTables();
             }
         }
 
-        private async void LoadOrders()
+        private async void LoadOrdersOnTimer()
+        {
+            await LoadOrders();
+            Device.StartTimer(TimeSpan.FromSeconds(10), () =>
+            {
+                // Do something
+                
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    var page = (TabbedPage)this;
+
+                    if(page.CurrentPage.Title == "Orders")
+                    {
+                        await LoadOrders();
+                    }
+                });
+                return true; // True = Repeat again, False = Stop the timer
+            });
+        }
+
+        private async Task LoadOrders()
         {
             var waiterId = int.Parse(new ParametersLoader().GetParameter("waiterId"));
             await _mainPageViewModel.LoadOrdersForWaiterAsync(waiterId);
@@ -67,7 +84,7 @@ namespace WaiterApp
                 var tableButton = new Button()
                 {
                     BackgroundColor = table.Color,
-                    Text = $"{table.WaiterName ?? string.Empty}\n{tableMessage}",
+                    Text = $"{table.WaiterName ?? string.Empty}\n[{table.TableNumber}]{tableMessage}",
                     CornerRadius = 6,
                     HeightRequest = table.LengthY,
                     WidthRequest = table.LengthX,
@@ -91,8 +108,17 @@ namespace WaiterApp
             {
                 _mainPageViewModel.SelectedTable =
                     _mainPageViewModel.Tables.FirstOrDefault(t => t.TableNumber == tableNumber);
-                CurrentPage = ProductsPage;
-                await _mainPageViewModel.LoadTableOrderedProducts();
+
+                if(_mainPageViewModel.SelectedTable.Status == TableStatus.Free)
+                {
+                    CurrentPage = ProductsPage;
+                }
+                else if (_mainPageViewModel.SelectedTable.Status == TableStatus.TakenByCurrentWaiter)
+                {
+                    CurrentPage = OrderedProductsPage;
+                    await _mainPageViewModel.LoadTableOrderedProducts();
+                }
+                
             }
         }
 
@@ -120,6 +146,36 @@ namespace WaiterApp
         private void OnProductSequenceTextChanged(object sender, TextChangedEventArgs e)
         {
             _mainPageViewModel.FilterProducts();
+        }
+
+        private async void OnOrderProductQuantityTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var orderProduct = (OrderProduct)((Entry)sender).BindingContext;
+
+            if (orderProduct != null)
+            {
+                bool parsed = double.TryParse(((Entry)sender).Text, out double _);
+
+                if (!parsed && !(((Entry)sender).Text == string.Empty))
+                {
+                    await DisplayAlert("Error", "Not a valid quantity!", "OK");
+                }
+                else if (!(((Entry)sender).Text == string.Empty))
+                {
+                    await _mainPageViewModel.UpdateProductQuantity(orderProduct);
+                }
+                
+            }
+        }
+
+        private async void OnDeleteOrderProductClicked(object sender, EventArgs e)
+        {
+            var orderProduct = (OrderProduct)((Button)sender).BindingContext;
+
+            if (orderProduct != null)
+            {
+                await _mainPageViewModel.DeleteProduct(orderProduct);
+            }
         }
     }
 }

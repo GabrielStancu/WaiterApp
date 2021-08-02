@@ -40,7 +40,7 @@
                        HorizontalTextAlignment="Center"
                        VerticalTextAlignment="Center"/>
                     <Label Grid.Column="3"
-                       Text="Serving Time"
+                       Text="Finish Time"
                        TextColor="Black"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
@@ -50,14 +50,14 @@
             </Frame>
 
             <ListView ItemsSource="{Binding WaiterOrderedProducts}"
-                  HasUnevenRows="True">
+                      HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <ViewCell.View>
-                                <Frame BackgroundColor="White" 
-                                       CornerRadius="30" 
-                                       Margin="10, 3">
+                                <Frame CornerRadius="30" 
+                                       Margin="10, 3"
+                                       BackgroundColor="{Binding Color}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="1.5*"/>
@@ -75,7 +75,7 @@
                                                Text="{Binding Product.Name}" 
                                                VerticalTextAlignment="Center"
                                                HorizontalTextAlignment="Center"
-                                               TextColor="Black"   />
+                                               TextColor="Black"/>
                                         <Label Grid.Column="2"
                                                Text="{Binding PlacementTime, StringFormat='{0:HH:mm}'}" 
                                                VerticalTextAlignment="Center"
@@ -106,8 +106,14 @@
     <ContentPage x:Name="ProductsPage"
                  Title="Products"
                  BackgroundColor="LightGray">
-        <StackLayout>
-            <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -152,26 +158,76 @@
                        PlaceholderColor="DarkGray"/>
             </Grid>
 
-            <ListView ItemsSource="{Binding Products}"
-                  HasUnevenRows="True">
+            <ListView Grid.Row="1"
+                      ItemsSource="{Binding Products}"
+                      HasUnevenRows="True"
+                      VerticalOptions="FillAndExpand">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <ViewCell.View>
                                 <Button Text="{Binding ProductNameWithPrice}"
-                                        TextColor="Black"
+                                        TextColor="White"
                                         CornerRadius="20"
                                         HorizontalOptions="Center"
                                         Command="{Binding Path=BindingContext.AddProductCommand, Source={x:Reference WaiterMainPage}}"
-                                        CommandParameter="{Binding .}"/>
+                                        CommandParameter="{Binding .}"
+                                        IsEnabled="{Binding EnabledSelection}"/>
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+        </Grid>
+    </ContentPage>
+
+    <ContentPage x:Name="OrderedProductsPage"
+                 Title="Ordered Products"
+                 BackgroundColor="LightGray">
+        <StackLayout>
+            <ScrollView Grid.Row="2">
+                <Frame 
+                       VerticalOptions="Fill"
+                       CornerRadius="10"
+                       BackgroundColor="White">
+                    <Frame BackgroundColor="LightGray"
+                           Margin="-10, -10, -10, 0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0"
+                                       Text="Product name"
+                                       TextColor="Black"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            <Label Grid.Column="1"
+                                       Text="Price"
+                                       TextColor="Black"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            <Label Grid.Column="2"
+                                       Text="Qty"
+                                       TextColor="Black"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            <Label Grid.Column="3"
+                                       Text="Delete"
+                                       TextColor="Black"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                        </Grid>
+                    </Frame>
+                </Frame>
+            </ScrollView>
 
             <ListView ItemsSource="{Binding TableOrderedProducts}"
-                      HasUnevenRows="True">
+                  HasUnevenRows="True"
+                  VerticalOptions="Fill">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -181,21 +237,25 @@
                                         <ColumnDefinition Width="3*"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="2*"/>
                                     </Grid.ColumnDefinitions>
 
                                     <Label Grid.Column="0"
-                                           Text="{Binding Product.Name}"
-                                           TextColor="Black"/>
+                                    Text="{Binding Product.Name}"
+                                    TextColor="Black"
+                                    VerticalOptions="Center"/>
                                     <Label Grid.Column="1"
-                                           Text="{Binding Product.Price}"
-                                           TextColor="Black"/>
+                                    Text="{Binding Product.Price}"
+                                    TextColor="Black"
+                                    VerticalOptions="Center"/>
                                     <Entry Grid.Column="2"
-                                           Text="{Binding Quantity}"/>
+                                    Text="{Binding Quantity}"
+                                    TextColor="Black"
+                                    TextChanged="OnOrderProductQuantityTextChanged"/>
                                     <Button Grid.Column="3"
-                                            Text="Delete Product"
-                                            Command="{Binding Path=BindingContext.DeleteProductCommand, Source={x:Reference WaiterMainPage}}"
-                                            CommandParameter="{Binding .}"/>
+                                    Text="Delete Product"
+                                    Clicked="OnDeleteOrderProductClicked"
+                                    HeightRequest="70"/>
                                 </Grid>
                             </ViewCell.View>
                         </ViewCell>

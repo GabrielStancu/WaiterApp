@@ -20,8 +20,18 @@ namespace Core.Models
         [ForeignKey("Department")]
         public int DepartmentId { get; set; }
         public bool IsRecipe { get; set; }
+        private double _stock;
+        public double Stock 
+        {
+            get => _stock;
+            set
+            {
+                _stock = value;
+                SetProperty<double>(ref _stock, value);
+            }
+        }
         [NotMapped]
-        public string ProductNameWithPrice { get => $"{Name}\n{Price}"; }
+        public string ProductNameWithPrice { get => $"{Name}\n{Price} [{Stock}]"; }
 
         public override bool Equals(BaseModel other)
         {

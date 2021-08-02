@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Helpers;
+using Core.Models;
 using Infrastructure.Helpers;
 using Infrastructure.Repositories;
 using System;
@@ -27,11 +28,11 @@ namespace Infrastructure.ViewModels
         public Group SelectedGroup { get; set; }
         public Subgroup SelectedSubgroup { get; set; }
         public Table SelectedTable { get; set; }
+        public Order CurrentOrder { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public string ProductSequence { get; set; } = string.Empty;
-        public IEnumerable<Table> Tables { get; set; } = new List<Table>();
-        public IEnumerable<Order> Orders { get; set; } = new List<Order>();
-        public ICommand DeleteProductCommand { get; set; }
+        public List<Table> Tables { get; set; } = new List<Table>();
+        public List<Order> Orders { get; set; } = new List<Order>();
         public ICommand AddProductCommand { get; set; }
 
         private readonly OrderProductRepository _orderProductRepository;
@@ -59,7 +60,6 @@ namespace Infrastructure.ViewModels
             _productRepository = productRepository;
             _tableRepository = tableRepository;
             _orderRepository = orderRepository;
-            DeleteProductCommand = new Command<Product>(async p => await DeleteProduct(p));
             AddProductCommand = new Command<Product>(async p => await AddProduct(p));
         }
 
@@ -70,14 +70,18 @@ namespace Infrastructure.ViewModels
             WaiterOrderedProducts.Clear();
             foreach (var orderProduct in orderProducts)
             {
+                if(orderProduct.ServingTime.HasValue)
+                {
+                    orderProduct.Color = Color.Green;
+                }
                 WaiterOrderedProducts.Add(orderProduct);
             }
         } 
 
         public async Task<IEnumerable<DrawnTable>> LoadTables(int departmentId)
         {
-            Tables = await _tableRepository.GetTablesForDepartmentAsync(departmentId);
-            Orders = await _orderRepository.LoadOrdersForDepartmentAsync(departmentId);
+            Tables = await _tableRepository.GetTablesForDepartmentAsync(departmentId) as List<Table>;
+            Orders = await _orderRepository.LoadOrdersForDepartmentAsync(departmentId) as List<Order>;
             int waiterId = int.Parse(new ParametersLoader().GetParameter("waiterId"));
             var tableDrawer = new TableDrawer();
 
@@ -91,12 +95,23 @@ namespace Infrastructure.ViewModels
             _unfilteredProducts = (List<Product>)await _productRepository.GetProductsByDepartmentAsync(departmentId);
 
             Groups.Clear();
+            Groups.Add(new Group()
+            {
+                DepartmentId = 0,
+                Name = "-"
+            });
             foreach (var group in _unfilteredGroups)
             {
                 Groups.Add(group);
             }
 
             Subgroups.Clear();
+            Subgroups.Add(new Subgroup()
+            {
+                DepartmentId = 0,
+                GroupId = 0,
+                Name = "-"
+            });
             foreach (var subgroup in _unfilteredSubgroups)
             {
                 Subgroups.Add(subgroup);
@@ -123,10 +138,16 @@ namespace Infrastructure.ViewModels
         public void FilterSubgroups()
         {
             Subgroups.Clear();
+            Subgroups.Add(new Subgroup()
+            {
+                DepartmentId = 0,
+                GroupId = 0,
+                Name = "-"
+            });
 
             foreach (var subgroup in _unfilteredSubgroups)
             {
-                if(subgroup.GroupId == SelectedGroup.Id)
+                if (subgroup.GroupId == SelectedGroup.Id || SelectedGroup.Id == 0)
                 {
                     Subgroups.Add(subgroup);
                 }
@@ -145,7 +166,8 @@ namespace Infrastructure.ViewModels
                     //Group and subgroup selected
                     foreach (var product in _unfilteredProducts)
                     {
-                        if(product.GroupId == SelectedGroup.Id && product.SubgroupId == SelectedSubgroup.Id)
+                        if((product.GroupId == SelectedGroup.Id ||SelectedGroup.Id == 0)
+                            && (product.SubgroupId == SelectedSubgroup.Id || SelectedSubgroup.Id == 0))
                         {
                             if(product.Name.ToUpper().Contains(ProductName.ToUpper()) 
                                 && product.Sequence.ToUpper().Contains(ProductSequence.ToUpper()))
@@ -160,7 +182,7 @@ namespace Infrastructure.ViewModels
                     //just Group selected
                     foreach (var product in _unfilteredProducts)
                     {
-                        if (product.GroupId == SelectedGroup.Id)
+                        if (product.GroupId == SelectedGroup.Id || SelectedGroup.Id == 0)
                         {
                             if (product.Name.ToUpper().Contains(ProductName.ToUpper())
                                 && product.Sequence.ToUpper().Contains(ProductSequence.ToUpper()))
@@ -176,7 +198,7 @@ namespace Infrastructure.ViewModels
                 //just Subgroup selected
                 foreach (var product in _unfilteredProducts)
                 {
-                    if (product.SubgroupId == SelectedSubgroup.Id)
+                    if (product.SubgroupId == SelectedSubgroup.Id || SelectedSubgroup.Id == 0)
                     {
                         if (product.Name.ToUpper().Contains(ProductName.ToUpper())
                                 && product.Sequence.ToUpper().Contains(ProductSequence.ToUpper()))
@@ -188,7 +210,7 @@ namespace Infrastructure.ViewModels
             }
             else
             {
-                //nor Group neither Subgroup
+                //neither Group nor Subgroup
                 foreach (var product in _unfilteredProducts)
                 {
                     if (product.Name.ToUpper().Contains(ProductName.ToUpper())
@@ -202,26 +224,122 @@ namespace Infrastructure.ViewModels
 
         private async Task AddProduct(Product p)
         {
-            var order = Orders.FirstOrDefault(o => o.TableId == SelectedTable.Id);
+            CurrentOrder = Orders.FirstOrDefault(o => o.TableId == SelectedTable.Id);
+
+            if (CurrentOrder is null)
+            {
+                await CreateNewOrder();
+                await SetTableStatusTaken();
+            }
+
+            await AddOrderProduct(p);
+        }
+        
+        public async Task UpdateProductQuantity(OrderProduct orderProduct)
+        {
+            ComputeProductNewStock(); 
+            ComputeOrderTotal();
+            //update db
+            await _productRepository.UpdateAsync(orderProduct.Product); //update the stock
+            await _orderProductRepository.UpdateAsync(orderProduct); //update the order quantity
+            await _orderRepository.UpdateAsync(CurrentOrder); //update the order total
+        }
+        public async Task DeleteProduct(OrderProduct orderProduct)
+        {
+            TableOrderedProducts.Remove(orderProduct);
+            
+            ComputeProductNewStock();
+            ComputeOrderTotal();
+
+            //update db
+            await _orderProductRepository.DeleteAsync(orderProduct);
+            await _orderRepository.UpdateAsync(CurrentOrder);
+
+            if (TableOrderedProducts.Count == 0)
+            {
+                SetTableStatusOnEmpty();
+                await _tableRepository.UpdateAsync(SelectedTable);
+
+                Orders.Remove(CurrentOrder);
+                await _orderRepository.DeleteAsync(CurrentOrder);
+                CurrentOrder = null;
+            }
+        }
+
+        private void ComputeProductNewStock()
+        {
+            //TODO
+        }
+
+        private void ComputeOrderTotal()
+        {
+            CurrentOrder.Total = 0;
+
+            foreach (var orderProduct in TableOrderedProducts)
+            {
+                CurrentOrder.Total += orderProduct.Quantity * double.Parse(orderProduct.Product.Price.ToString());
+            }
+        }
+        private void SetTableStatusOnEmpty()
+        {
+            SelectedTable.WaiterId = 0;
+            SelectedTable.Waiter = null;
+            SelectedTable.Status = TableStatus.Free;
+        }
+
+        private async Task CreateNewOrder()
+        {
+            CurrentOrder = new Order()
+            {
+                WaiterId = int.Parse(new ParametersLoader().GetParameter("waiterId")),
+                TableId = SelectedTable.Id
+            };
+            Orders.Add(CurrentOrder);
+            await _orderRepository.InsertAsync(CurrentOrder);
+        }
+
+        private async Task SetTableStatusTaken()
+        {
+            SelectedTable.WaiterId = int.Parse(new ParametersLoader().GetParameter("waiterId"));
+            SelectedTable.Status = TableStatus.TakenByCurrentWaiter;
+            await _tableRepository.UpdateAsync(SelectedTable);
+        }
+
+        private async Task AddOrderProduct(Product p)
+        {
+            var orderProduct = TableOrderedProducts.FirstOrDefault(op => op.Product.Sequence == p.Sequence);
+            if (orderProduct is null)
+            {
+                await CreateNewOrderProduct(p);
+            }
+            else
+            {
+                orderProduct.Quantity++;
+                ComputeOrderTotal();
+                await UpdateProductQuantity(orderProduct);
+            }
+        }
+
+        private async Task CreateNewOrderProduct(Product p)
+        {
+            //insert new product
             var orderedProduct = new OrderProduct()
             {
                 Product = p,
                 ProductId = p.Id,
                 Quantity = 1,
                 PlacementTime = DateTime.Now,
-                Order = order,
-                OrderId = order.Id
+                Order = CurrentOrder,
+                OrderId = CurrentOrder.Id
             };
             TableOrderedProducts.Add(orderedProduct);
 
             //add it to db
             await _orderProductRepository.RegisterNewOrderProductAsync(orderedProduct);
-        }
 
-        private async Task DeleteProduct(Product p)
-        {
-            string productName = p.Name;
-            await Task.Delay(100);
+            //update order total
+            ComputeOrderTotal();
+            await _orderRepository.UpdateAsync(CurrentOrder);
         }
     }
 }

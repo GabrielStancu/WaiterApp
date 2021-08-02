@@ -48,7 +48,7 @@ namespace Infrastructure.Helpers
 
         private Color GetTableColor(Table table, IEnumerable<Order> orders, int waiterId)
         {
-            var crtTableOrder = orders.FirstOrDefault(o => o.TableId == table.Id);
+            var crtTableOrder = orders.FirstOrDefault(o => o.TableId == table.Id && o.Paid == false);
 
             if(crtTableOrder is null)
             {

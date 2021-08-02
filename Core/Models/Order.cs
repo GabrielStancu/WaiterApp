@@ -13,7 +13,16 @@ namespace Core.Models
         public int TableId { get; set; }
         public Table Table { get; set; }
         public List<OrderProduct> OrderProducts { get; set; }
-        public double Total { get; set; }
+        private double _total;
+        public double Total 
+        {
+            get => _total; 
+            set
+            {
+                _total = value;
+                SetProperty<double>(ref _total, value);
+            }
+        }
         public bool Paid { get; set; }
         public override bool Equals(BaseModel other)
         {
