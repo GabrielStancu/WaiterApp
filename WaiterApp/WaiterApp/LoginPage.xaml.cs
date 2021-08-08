@@ -3,6 +3,7 @@ using Infrastructure.Helpers;
 using Infrastructure.Repositories;
 using Infrastructure.ViewModels;
 using System;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace WaiterApp

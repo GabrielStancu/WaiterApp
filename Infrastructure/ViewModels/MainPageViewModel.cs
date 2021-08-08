@@ -126,6 +126,7 @@ namespace Infrastructure.ViewModels
 
         public async Task LoadTableOrderedProducts()
         {
+            CurrentOrder = Orders.FirstOrDefault(o => o.TableId == SelectedTable.Id && o.Paid == false);
             var orderedProducts = await _orderProductRepository.LoadOrdersForTableAsync(SelectedTable.Id);
 
             TableOrderedProducts.Clear();
@@ -224,7 +225,7 @@ namespace Infrastructure.ViewModels
 
         private async Task AddProduct(Product p)
         {
-            CurrentOrder = Orders.FirstOrDefault(o => o.TableId == SelectedTable.Id);
+            CurrentOrder = Orders.FirstOrDefault(o => o.TableId == SelectedTable.Id && o.Paid == false);
 
             if (CurrentOrder is null)
             {
@@ -241,7 +242,10 @@ namespace Infrastructure.ViewModels
             ComputeOrderTotal();
             //update db
             await _productRepository.UpdateAsync(orderProduct.Product); //update the stock
-            await _orderProductRepository.UpdateAsync(orderProduct); //update the order quantity
+            if(orderProduct.Id != 0)
+            {
+                await _orderProductRepository.UpdateAsync(orderProduct); //update the order quantity
+            }
             await _orderRepository.UpdateAsync(CurrentOrder); //update the order total
         }
         public async Task DeleteProduct(OrderProduct orderProduct)
@@ -311,6 +315,7 @@ namespace Infrastructure.ViewModels
             if (orderProduct is null)
             {
                 await CreateNewOrderProduct(p);
+                await LoadTableOrderedProducts();
             }
             else
             {

@@ -3,11 +3,8 @@ using Core.Models;
 using Infrastructure.Helpers;
 using Infrastructure.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,11 +14,13 @@ namespace WaiterApp
     public partial class MainPage : TabbedPage
     {
         private readonly MainPageViewModel _mainPageViewModel;
-        private int _departmentId;
+        private readonly int _departmentId;
+        private Page _lastPage;
 
         public MainPage(MainPageViewModel mainPageViewModel)
         {
             InitializeComponent();
+            _lastPage = OrdersPage;
             _mainPageViewModel = mainPageViewModel;
             BindingContext = _mainPageViewModel;
 
@@ -34,16 +33,35 @@ namespace WaiterApp
 
         private void OnMainPageCurrentPageChanged(object sender, EventArgs e)
         {
-            var tabbedPage = (TabbedPage)sender;
-            var title = tabbedPage.CurrentPage.Title;
-
-            if(title == "Orders")
+            if (CurrentPage == OrdersPage)
             {
+                _lastPage = OrdersPage;
+                _mainPageViewModel.SelectedTable = null;
                 LoadOrdersOnTimer();
             }
-            else if (title == "Tables")
+            else if (CurrentPage == TablesPage)
             {
+                _lastPage = TablesPage;
+                _mainPageViewModel.SelectedTable = null;
                 LoadTables();
+            }
+            else if (CurrentPage == ProductsPage && _lastPage == OrderedProductsPage)
+            {
+                _lastPage = ProductsPage;
+            }
+            else if (CurrentPage == OrderedProductsPage && _lastPage == ProductsPage)
+            {
+                _lastPage = OrderedProductsPage;
+            }
+            else
+            {
+                if(_mainPageViewModel.SelectedTable == null)
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        CurrentPage = _lastPage;
+                    });
+                }
             }
         }
 
