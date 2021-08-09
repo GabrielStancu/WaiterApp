@@ -143,6 +143,62 @@ namespace WaiterApp
         public async void LoadProducts()
         {
             await _mainPageViewModel.LoadProductsAsync(_departmentId);
+            DrawProducts();
+        }
+
+        private void DrawProducts()
+        {
+            var productsCount = _mainPageViewModel.Products.Count;
+            int productsPerRow = Int32.Parse(new ParametersLoader().GetParameter("buttonsPerLine"));
+            int rows = productsCount / productsPerRow;
+            int crtRow = 0, crtCol = 0;
+            if(productsCount % productsPerRow != 0)
+            {
+                rows++;
+            }
+
+
+            ProductsGrid.RowDefinitions = new RowDefinitionCollection();
+            ProductsGrid.ColumnDefinitions = new ColumnDefinitionCollection();
+
+            for(int i = 0; i<productsPerRow; i++)
+            {
+                ProductsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            }
+
+            for(int i = 0; i<rows; i++)
+            {
+                ProductsGrid.RowDefinitions.Add(new RowDefinition());
+            }
+
+            for(int i = 0; i< productsCount; i++)
+            {
+                var productBtn = new Button
+                {
+                    Text = _mainPageViewModel.Products[i].Name,
+                    BackgroundColor = Color.DarkGray,
+                    TextColor = Color.White,
+                    CornerRadius = 20,
+                    BindingContext = _mainPageViewModel.Products[i],
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.CenterAndExpand,
+                    HeightRequest = 100
+                };
+
+                productBtn.Clicked += OnProductButtonClicked;
+                ProductsGrid.Children.Add(productBtn, crtCol++, crtRow);
+                if(crtCol == productsPerRow)
+                {
+                    crtCol = 0;
+                    crtRow++;
+                }
+            }
+        }
+
+        private async void OnProductButtonClicked(object sender, EventArgs e)
+        {
+            var product = (sender as Button).BindingContext as Product;
+            await _mainPageViewModel.AddProduct(product);
         }
 
         private void OnGroupSelectedItemChanged(object sender, EventArgs e)

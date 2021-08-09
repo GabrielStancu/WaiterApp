@@ -12,11 +12,16 @@ namespace WaiterApp
     {
         private readonly ParametersLoader _parametersLoader;
         private readonly LoginViewModel _model;
+        private bool _connectedToDb = false;
         public LoginPage(ParametersLoader parametersLoader)
         {
             InitializeComponent();
             _parametersLoader = parametersLoader;
-            TestConnection();
+            Task.Run(async () =>
+            {
+                await TestConnection();
+            });
+
             _model = new LoginViewModel(parametersLoader);
             BindingContext = _model;
 
@@ -27,18 +32,29 @@ namespace WaiterApp
             }
         }
 
-        private async void TestConnection()
+        protected async override void OnAppearing()
+        {
+            await TestConnection();
+        }
+
+        private async Task TestConnection()
         {
             var dbConnectionChecker = new DatabaseConnectionChecker();
             try
             {
-                dbConnectionChecker.TestConnection();             
+                dbConnectionChecker.TestConnection();
+                _connectedToDb = true;
             }
-            catch(ConnectionStringException)
+            catch (ConnectionStringException)
             {
-                await DisplayAlert("Db error", "Bad connection string. Configure before proceeding", "OK");
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Db error", "Bad connection string. Configure before proceeding", "OK");
+                });
+
                 var settingsViewModel = new SettingsViewModel(_parametersLoader, false);
                 await Navigation.PushAsync(new SettingsPage(settingsViewModel));
+                _connectedToDb = false;
             }
         }
 
@@ -67,6 +83,11 @@ namespace WaiterApp
 
         private async void Login(string password)
         {
+            if(!_connectedToDb)
+            {
+                return;
+            }
+
             var waiter = await _model.LoginAsync(password);
             if (waiter != null)
             {

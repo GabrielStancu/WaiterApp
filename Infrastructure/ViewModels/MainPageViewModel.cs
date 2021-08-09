@@ -6,9 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Infrastructure.ViewModels
@@ -33,7 +31,6 @@ namespace Infrastructure.ViewModels
         public string ProductSequence { get; set; } = string.Empty;
         public List<Table> Tables { get; set; } = new List<Table>();
         public List<Order> Orders { get; set; } = new List<Order>();
-        public ICommand AddProductCommand { get; set; }
 
         private readonly OrderProductRepository _orderProductRepository;
         private readonly GroupRepository _groupRepository;
@@ -60,7 +57,6 @@ namespace Infrastructure.ViewModels
             _productRepository = productRepository;
             _tableRepository = tableRepository;
             _orderRepository = orderRepository;
-            AddProductCommand = new Command<Product>(async p => await AddProduct(p));
         }
 
         public async Task LoadOrdersForWaiterAsync(int waiterId)
@@ -223,7 +219,7 @@ namespace Infrastructure.ViewModels
             }
         }
 
-        private async Task AddProduct(Product p)
+        public async Task AddProduct(Product p)
         {
             CurrentOrder = Orders.FirstOrDefault(o => o.TableId == SelectedTable.Id && o.Paid == false);
 
@@ -238,7 +234,6 @@ namespace Infrastructure.ViewModels
         
         public async Task UpdateProductQuantity(OrderProduct orderProduct)
         {
-            ComputeProductNewStock(); 
             ComputeOrderTotal();
             //update db
             await _productRepository.UpdateAsync(orderProduct.Product); //update the stock
@@ -251,8 +246,6 @@ namespace Infrastructure.ViewModels
         public async Task DeleteProduct(OrderProduct orderProduct)
         {
             TableOrderedProducts.Remove(orderProduct);
-            
-            ComputeProductNewStock();
             ComputeOrderTotal();
 
             //update db
@@ -268,11 +261,6 @@ namespace Infrastructure.ViewModels
                 await _orderRepository.DeleteAsync(CurrentOrder);
                 CurrentOrder = null;
             }
-        }
-
-        private void ComputeProductNewStock()
-        {
-            //TODO
         }
 
         private void ComputeOrderTotal()

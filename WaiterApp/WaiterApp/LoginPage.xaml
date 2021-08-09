@@ -90,12 +90,12 @@
                     <Label Text="Username: " Grid.Row="0" Grid.Column="0" Style="{StaticResource MiddleLabelStyle}"/>
                     <Frame Style="{StaticResource EntryFrameStyle}"  Grid.Row="0" Grid.Column="1">
                         <Entry x:Name="UsernameEntry" Placeholder="username" FontSize="24" Text="{Binding Username}"
-                               TextColor="Black"/>
+                               TextColor="Black" PlaceholderColor="DarkGray"/>
                     </Frame>
                     <Label Text="Password: " Grid.Row="1" Grid.Column="0" Style="{StaticResource MiddleLabelStyle}"/>
                     <Frame Style="{StaticResource EntryFrameStyle}"  Grid.Row="1" Grid.Column="1">
                         <Entry x:Name="PasswordEntry" IsPassword="True" Placeholder="password" FontSize="24"
-                               TextColor="Black"/>
+                               TextColor="Black" PlaceholderColor="DarkGray"/>
                     </Frame>
                 </Grid>
             </Frame>

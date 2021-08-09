@@ -106,14 +106,13 @@
     <ContentPage x:Name="ProductsPage"
                  Title="Products"
                  BackgroundColor="LightGray">
-        <Grid>
-            <Grid.RowDefinitions>
+        <StackLayout>
+            <!--<Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+            </Grid.RowDefinitions>-->
 
-            <Grid Grid.Row="0">
+            <Grid HeightRequest="100"><!--Grid.Row="0">-->
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -158,27 +157,8 @@
                        PlaceholderColor="DarkGray"/>
             </Grid>
 
-            <ListView Grid.Row="1"
-                      ItemsSource="{Binding Products}"
-                      HasUnevenRows="True"
-                      VerticalOptions="FillAndExpand">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <ViewCell.View>
-                                <Button Text="{Binding ProductNameWithPrice}"
-                                        TextColor="White"
-                                        CornerRadius="20"
-                                        HorizontalOptions="Center"
-                                        Command="{Binding Path=BindingContext.AddProductCommand, Source={x:Reference WaiterMainPage}}"
-                                        CommandParameter="{Binding .}"
-                                        IsEnabled="{Binding EnabledSelection}"/>
-                            </ViewCell.View>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Grid>
+            <Grid x:Name="ProductsGrid"/> <!--Grid.Row="1"/>-->
+        </StackLayout>
     </ContentPage>
 
     <ContentPage x:Name="OrderedProductsPage"

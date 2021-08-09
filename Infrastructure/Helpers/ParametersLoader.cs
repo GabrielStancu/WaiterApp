@@ -56,7 +56,8 @@ namespace Infrastructure.Helpers
                 { "dbUser", string.Empty },
                 { "dbPassword", string.Empty },
                 { "loadDb", "false" },
-                { "waiterId", "0" }
+                { "waiterId", "0" },
+                { "buttonsPerLine", "3" }
             };
 
             StoreParameters();
