@@ -1,52 +1,20 @@
-﻿using Core.Models;
-using GalaSoft.MvvmLight.Command;
-using Infrastructure.Helpers;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using Infrastructure.Helpers;
 
 namespace Infrastructure.ViewModels
 {
     public class SettingsViewModel: BaseViewModel
     {
-        public SettingsViewModel(ParametersLoader loader, bool loadDepartments)
+        public SettingsViewModel(ParametersLoader loader, DatabaseConnectionChecker checker)
         {
             _loader = loader;
-            Nickname = _loader.Parameters["nickname"];
+            _checker = checker;
             ServerName = _loader.Parameters["server"];
             DatabaseName = _loader.Parameters["database"];
             DbUser = _loader.Parameters["dbUser"];
             DbPassword = _loader.Parameters["dbPassword"];
-            LoadAtStartup = bool.Parse(_loader.Parameters["loadDb"]);
-            //LoadDepartments();
-            //CrtDepartment = SelectDepartment(_loader.Parameters["department"]);
-            if(loadDepartments)
-            {
-                LoadDepartments();
-            }
         }
 
-        private string _nickname;
-        public string Nickname
-        {
-            get => _nickname;
-            set
-            {
-                _nickname = value;
-                SetProperty<string>(ref _nickname, value);
-            }
-        }
-
-        public ObservableCollection<Department> Departments { get; set; } = new ObservableCollection<Department>();
-        private Department _crtDepartment;
-        public Department CrtDepartment
-        {
-            get => _crtDepartment;
-            set
-            {
-                _crtDepartment = value;
-                SetProperty<Department>(ref _crtDepartment, value);
-            }
-        }
+        
         private string _serverName;
         public string ServerName
         {
@@ -87,42 +55,22 @@ namespace Infrastructure.ViewModels
                 SetProperty<string>(ref _dbPassword, value);
             }
         }
-        private bool _loadAtStartup;
+        
         private readonly ParametersLoader _loader;
+        private readonly DatabaseConnectionChecker _checker;
 
-        public bool LoadAtStartup
+        public void SaveParameters()
         {
-            get => _loadAtStartup;
-            set
-            {
-                _loadAtStartup = value;
-                SetProperty<bool>(ref _loadAtStartup, value);
-            }
-        }
-
-        public ICommand OnSaveParameters 
-        {
-            get { return new RelayCommand(SaveParameters); }
-        }
-
-        private async void LoadDepartments()
-        {
-            var departmentLoader = new DepartmentLoader();
-            var departments = await departmentLoader.LoadAllDepartments();
-            departments.ForEach(dep => Departments.Add(dep));
-            CrtDepartment = departmentLoader.LoadCurrentDepartment(departments, int.Parse(_loader.Parameters["departmentId"]));
-        }
-
-        private void SaveParameters()
-        {
-            _loader.SetParameter("nickname", Nickname);
-            _loader.SetParameter("departmentId", CrtDepartment?.Id.ToString());
             _loader.SetParameter("server", ServerName);
             _loader.SetParameter("database", DatabaseName);
             _loader.SetParameter("dbUser", DbUser);
             _loader.SetParameter("dbPassword", DbPassword);
-            _loader.SetParameter("loadDb", LoadAtStartup.ToString());
             _loader.SaveParameters();
+        }
+
+        public void TestConnection()
+        {
+            _checker.TestConnection();
         }
     }
 }

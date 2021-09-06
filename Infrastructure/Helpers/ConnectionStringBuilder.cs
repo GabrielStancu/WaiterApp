@@ -11,7 +11,7 @@ namespace Infrastructure.Helpers
 
         public ConnectionStringBuilder(string server, string database, string user, string password)
         {
-            _server = "192.168.1.105";//server;
+            _server = server; 
             _database = database;
             _user = user;
             _password = password;

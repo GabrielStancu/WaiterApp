@@ -51,11 +51,11 @@
 
                     <Label x:Name="UserLabel" Text="User: " Grid.Row="0" Grid.Column="0" 
                            Style="{StaticResource UpperLabelStyle}"/>
-                    <Label x:Name="UserValueLabel"  Text="{Binding Nickname}" 
+                    <Label x:Name="UserValueLabel" Text="{Binding Nickname}" 
                            Grid.Row="0" Grid.Column="1" Style="{StaticResource UpperLabelStyle}"/>
                     <Label x:Name="DepartmentLabel" Text="Department: " Grid.Row="1" Grid.Column="0" 
                            Style="{StaticResource UpperLabelStyle}"/>
-                    <Label x:Name="DepartmentValueLabel" Text="{Binding Department}" 
+                    <Label x:Name="DepartmentValueLabel" Text="{Binding Department.Name}" 
                            Grid.Row="1" Grid.Column="1" Style="{StaticResource UpperLabelStyle}"/>
                 </Grid>
 

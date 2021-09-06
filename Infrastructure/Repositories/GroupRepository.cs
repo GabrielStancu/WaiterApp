@@ -1,21 +1,17 @@
 ﻿using Core.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
     public class GroupRepository: GenericRepository<Group>
     {
-        public async Task<IEnumerable<Group>> GetGroupsByDepartmentAsync(int departmentId)
+        public IEnumerable<Group> GetGroupsByDepartment(int departmentId)
         {
-            var groups = await CreateContext()
+            var groups = CreateContext()
                 .Group
                 .Where(g => g.DepartmentId == departmentId)
-                .ToListAsync();
+                .ToList();
 
             return groups;
         }

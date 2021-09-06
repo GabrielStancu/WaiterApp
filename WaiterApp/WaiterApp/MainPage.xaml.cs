@@ -4,7 +4,6 @@ using Infrastructure.Helpers;
 using Infrastructure.ViewModels;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -65,35 +64,35 @@ namespace WaiterApp
             }
         }
 
-        private async void LoadOrdersOnTimer()
+        private void LoadOrdersOnTimer()
         {
-            await LoadOrders();
+            LoadOrders();
             Device.StartTimer(TimeSpan.FromSeconds(10), () =>
             {
                 // Do something
                 
-                Device.BeginInvokeOnMainThread(async () =>
+                Device.BeginInvokeOnMainThread(() =>
                 {
                     var page = (TabbedPage)this;
 
                     if(page.CurrentPage.Title == "Orders")
                     {
-                        await LoadOrders();
+                        LoadOrders();
                     }
                 });
                 return true; // True = Repeat again, False = Stop the timer
             });
         }
 
-        private async Task LoadOrders()
+        private void LoadOrders()
         {
             var waiterId = int.Parse(new ParametersLoader().GetParameter("waiterId"));
-            await _mainPageViewModel.LoadOrdersForWaiterAsync(waiterId);
+            _mainPageViewModel.LoadOrdersForWaiter(waiterId);
         }
 
-        public async void LoadTables()
+        public void LoadTables()
         {
-            var tables = await _mainPageViewModel.LoadTables(_departmentId);
+            var tables = _mainPageViewModel.LoadTables(_departmentId);
             TablesLayout.Children.Clear();
 
             foreach (var table in tables)
@@ -134,15 +133,15 @@ namespace WaiterApp
                 else if (_mainPageViewModel.SelectedTable.Status == TableStatus.TakenByCurrentWaiter)
                 {
                     CurrentPage = OrderedProductsPage;
-                    await _mainPageViewModel.LoadTableOrderedProducts();
+                    _mainPageViewModel.LoadTableOrderedProducts();
                 }
                 
             }
         }
 
-        public async void LoadProducts()
+        public void LoadProducts()
         {
-            await _mainPageViewModel.LoadProductsAsync(_departmentId);
+            _mainPageViewModel.LoadProducts(_departmentId);
             DrawProducts();
         }
 
@@ -198,7 +197,7 @@ namespace WaiterApp
         private async void OnProductButtonClicked(object sender, EventArgs e)
         {
             var product = (sender as Button).BindingContext as Product;
-            await _mainPageViewModel.AddProduct(product);
+            _mainPageViewModel.AddProduct(product);
         }
 
         private void OnGroupSelectedItemChanged(object sender, EventArgs e)
@@ -236,7 +235,7 @@ namespace WaiterApp
                 }
                 else if (!(((Entry)sender).Text == string.Empty))
                 {
-                    await _mainPageViewModel.UpdateProductQuantity(orderProduct);
+                    _mainPageViewModel.UpdateProductQuantity(orderProduct);
                 }
                 
             }
@@ -248,7 +247,7 @@ namespace WaiterApp
 
             if (orderProduct != null)
             {
-                await _mainPageViewModel.DeleteProduct(orderProduct);
+                _mainPageViewModel.DeleteProduct(orderProduct);
             }
         }
     }

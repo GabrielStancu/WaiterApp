@@ -1,17 +1,16 @@
 ﻿using Core.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace Infrastructure.Repositories
 {
     public class WaiterRepository: GenericRepository<Waiter>
     {
-        public async Task<Waiter> SelectWaiterWithCredentialsAsync(string username, string password)
+        public Waiter SelectWaiterWithCredentials(string username, string password)
         {
             using (var context = CreateContext())
             {
-                var waiter = await context.Waiter
-                    .FirstOrDefaultAsync(w => w.Username == username && w.Password == password);
+                var waiter = context.Waiter
+                    .FirstOrDefault(w => w.Username == username && w.Password == password);
                     
                 if(waiter != null)
                 {

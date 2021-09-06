@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -39,23 +38,23 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<T> SelectByIdAsync(int id)
+        public T SelectById(int id)
         {
             using (var context = CreateContext())
             {
-                return await context.Set<T>().FindAsync(id);
+                return context.Set<T>().Find(id);
             }  
         }
 
-        public async Task<List<T>> SelectAllAsync()
+        public List<T> SelectAll()
         {
             using (var context = CreateContext())
             {
-                return await context.Set<T>().ToListAsync();
+                return context.Set<T>().ToList();
             }   
         }
 
-        public async Task InsertAsync(T entity)
+        public void Insert(T entity)
         {
             using (var context = CreateContext())
             {
@@ -63,27 +62,27 @@ namespace Infrastructure.Repositories
 
                 if (!alreadyStored)
                 {
-                    await context.Set<T>().AddAsync(entity);
-                    await context.SaveChangesAsync();
+                    context.Set<T>().Add(entity);
+                    context.SaveChanges();
                 }
             }
         }
 
-        public async Task UpdateAsync(T entity)
+        public void Update(T entity)
         {
             using (var context = CreateContext())
             {
                 context.Set<T>().Update(entity);
-                await context.SaveChangesAsync();
+                context.SaveChanges();
             }  
         }
 
-        public async Task DeleteAsync(T entity)
+        public void Delete(T entity)
         {
             using (var context = CreateContext())
             {
                 context.Set<T>().Remove(entity);
-                await context.SaveChangesAsync();
+                context.SaveChanges();
             } 
         }
     }

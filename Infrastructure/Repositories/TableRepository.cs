@@ -1,27 +1,25 @@
 ﻿using Core.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
     public class TableRepository: GenericRepository<Table>
     {
-        public async Task<IEnumerable<Table>> GetTablesForDepartmentAsync(int departmentId)
+        public IEnumerable<Table> GetTablesForDepartment(int departmentId)
         {
-            var tables = await CreateContext()
+            var tables = CreateContext()
                 .Table
                 .Where(t => t.DepartmentId == departmentId)
-                .ToListAsync();
+                .ToList();
 
             foreach (var table in tables)
             {
                 if(table.WaiterId != 0)
                 {
                     table.Waiter =
-                        await CreateContext().Waiter
-                                .FirstOrDefaultAsync(w => w.Id == table.WaiterId);
+                        CreateContext().Waiter
+                                .FirstOrDefault(w => w.Id == table.WaiterId);
                 }
             }
 

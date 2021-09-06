@@ -2,7 +2,6 @@
 using Infrastructure.Helpers;
 using Infrastructure.Repositories;
 using System;
-using System.Threading.Tasks;
 
 namespace Infrastructure.ViewModels
 {
@@ -12,13 +11,8 @@ namespace Infrastructure.ViewModels
 
         public LoginViewModel(ParametersLoader parametersLoader)
         {
-            _parametersLoader = parametersLoader;
-            Nickname = _parametersLoader.Parameters["nickname"];
-            DepartmentId = int.Parse(_parametersLoader.Parameters["departmentId"]);
-            Username = _parametersLoader.Parameters["username"];
-            Password = _parametersLoader.Parameters["password"];
-            RememberUser = bool.Parse(_parametersLoader.Parameters["remember"]);
-            CurrentDate = DateTime.Today;
+            _parametersLoader = parametersLoader; 
+            LoadParameters();
         }
 
         private string _nickname;
@@ -40,6 +34,17 @@ namespace Infrastructure.ViewModels
             {
                 _departmentId = value;
                 SetProperty<int>(ref _departmentId, value);
+            }
+        }
+
+        private Department _department;
+        public Department Department
+        {
+            get { return _department; }
+            set
+            {
+                _department = value;
+                SetProperty<Department>(ref _department, value);
             }
         }
 
@@ -87,10 +92,25 @@ namespace Infrastructure.ViewModels
             }
         }
 
-        public async Task<Waiter> LoginAsync(string password)
+        public void LoadParameters()
+        {
+            Nickname = _parametersLoader.Parameters["nickname"];
+            DepartmentId = int.Parse(_parametersLoader.Parameters["departmentId"]);
+            Username = _parametersLoader.Parameters["username"];
+            Password = _parametersLoader.Parameters["password"];
+            RememberUser = bool.Parse(_parametersLoader.Parameters["remember"]);
+            CurrentDate = DateTime.Today;
+
+            if (DepartmentId != 0)
+            {
+                Department = new DepartmentRepository().SelectById(DepartmentId);
+            }
+        }
+
+        public Waiter Login(string password)
         {
             var waiterRepository = new WaiterRepository();
-            var user = await waiterRepository.SelectWaiterWithCredentialsAsync(Username, password);
+            var user = waiterRepository.SelectWaiterWithCredentials(Username, password);
 
             return user;
         }

@@ -11,6 +11,7 @@ namespace Infrastructure.Helpers
         {
             try
             {
+                new ContextConnectionStringSetter().SetConnectionString();
                 new RestaurantContext().Database.OpenConnection();
                 new RestaurantContext().Database.CloseConnection();
             }

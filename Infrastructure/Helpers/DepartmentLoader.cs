@@ -1,16 +1,15 @@
 ﻿using Core.Models;
 using Infrastructure.Repositories;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Helpers
 {
     public class DepartmentLoader
     {
-        public async Task<List<Department>> LoadAllDepartments()
+        public List<Department> LoadAllDepartments()
         {
             var departmentRepository = new DepartmentRepository();
-            return await departmentRepository.SelectAllAsync();
+            return departmentRepository.SelectAll();
         }
 
         public Department LoadCurrentDepartment(List<Department> departments, int departmentId)

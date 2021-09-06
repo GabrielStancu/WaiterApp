@@ -46,17 +46,19 @@ namespace Infrastructure.Helpers
         {
             Parameters = new Dictionary<string, string>
             {
-                { "username", string.Empty },
-                { "password", string.Empty },
-                { "nickname", string.Empty },
-                { "departmentId", "0" },
-                { "remember", "false" },
                 { "server", string.Empty },
                 { "database", string.Empty },
                 { "dbUser", string.Empty },
                 { "dbPassword", string.Empty },
-                { "loadDb", "false" },
+
+                { "username", string.Empty },
+                { "password", string.Empty },
+                { "remember", "false" },
                 { "waiterId", "0" },
+
+                { "nickname", string.Empty },
+                { "departmentId", "0" },
+                { "loadDb", "false" },      
                 { "buttonsPerLine", "3" }
             };
 
@@ -72,7 +74,6 @@ namespace Infrastructure.Helpers
             }
 
             Parameters = new Dictionary<string, string>(parameters);
-            Parameters["departmentId"] = "1";
         }
     }
 }

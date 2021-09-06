@@ -3,7 +3,6 @@ using Infrastructure.Helpers;
 using Infrastructure.Repositories;
 using Infrastructure.ViewModels;
 using System;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace WaiterApp
@@ -11,33 +10,31 @@ namespace WaiterApp
     public partial class LoginPage : ContentPage
     {
         private readonly ParametersLoader _parametersLoader;
+        private readonly DatabaseConnectionChecker _databaseConnectionChecker;
         private readonly LoginViewModel _model;
         private bool _connectedToDb = false;
-        public LoginPage(ParametersLoader parametersLoader)
+        public LoginPage(ParametersLoader parametersLoader, DatabaseConnectionChecker databaseConnectionChecker)
         {
             InitializeComponent();
             _parametersLoader = parametersLoader;
-            Task.Run(async () =>
-            {
-                await TestConnection();
-            });
-
+            _databaseConnectionChecker = databaseConnectionChecker;
             _model = new LoginViewModel(parametersLoader);
-            BindingContext = _model;
+            BindingContext = _model;      
+        }
 
-            if(bool.Parse(_parametersLoader.Parameters["remember"]))
+        protected override void OnAppearing()
+        {
+            TestConnection();
+
+            _model.LoadParameters();
+            if (bool.Parse(_parametersLoader.Parameters["remember"]))
             {
                 _model.Username = _parametersLoader.Parameters["username"];
                 Login(_parametersLoader.Parameters["password"]);
             }
         }
 
-        protected async override void OnAppearing()
-        {
-            await TestConnection();
-        }
-
-        private async Task TestConnection()
+        private async void TestConnection()
         {
             var dbConnectionChecker = new DatabaseConnectionChecker();
             try
@@ -47,12 +44,9 @@ namespace WaiterApp
             }
             catch (ConnectionStringException)
             {
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await DisplayAlert("Db error", "Bad connection string. Configure before proceeding", "OK");
-                });
+                await DisplayAlert("Db error", "Bad connection string. Configure before proceeding", "OK");
 
-                var settingsViewModel = new SettingsViewModel(_parametersLoader, false);
+                var settingsViewModel = new SettingsViewModel(_parametersLoader, _databaseConnectionChecker);
                 await Navigation.PushAsync(new SettingsPage(settingsViewModel));
                 _connectedToDb = false;
             }
@@ -60,7 +54,7 @@ namespace WaiterApp
 
         private void OnSettingsButtonClick(object sender, EventArgs e)
         {
-            var settingsViewModel = new SettingsViewModel(_parametersLoader, true);
+            var settingsViewModel = new SettingsViewModel(_parametersLoader, _databaseConnectionChecker);
             Navigation.PushAsync(new SettingsPage(settingsViewModel));
         }
 
@@ -88,7 +82,7 @@ namespace WaiterApp
                 return;
             }
 
-            var waiter = await _model.LoginAsync(password);
+            var waiter = _model.Login(password);
             if (waiter != null)
             {
                 _parametersLoader.SetParameter("waiterId", waiter.Id.ToString());

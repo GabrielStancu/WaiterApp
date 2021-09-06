@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Infrastructure.ViewModels
@@ -59,9 +58,9 @@ namespace Infrastructure.ViewModels
             _orderRepository = orderRepository;
         }
 
-        public async Task LoadOrdersForWaiterAsync(int waiterId)
+        public void LoadOrdersForWaiter(int waiterId)
         {
-            var orderProducts = await _orderProductRepository.LoadOrdersForWaiterAsync(waiterId);
+            var orderProducts = _orderProductRepository.LoadOrdersForWaiter(waiterId);
 
             WaiterOrderedProducts.Clear();
             foreach (var orderProduct in orderProducts)
@@ -74,21 +73,21 @@ namespace Infrastructure.ViewModels
             }
         } 
 
-        public async Task<IEnumerable<DrawnTable>> LoadTables(int departmentId)
+        public IEnumerable<DrawnTable> LoadTables(int departmentId)
         {
-            Tables = await _tableRepository.GetTablesForDepartmentAsync(departmentId) as List<Table>;
-            Orders = await _orderRepository.LoadOrdersForDepartmentAsync(departmentId) as List<Order>;
+            Tables = _tableRepository.GetTablesForDepartment(departmentId) as List<Table>;
+            Orders = _orderRepository.LoadOrdersForDepartment(departmentId) as List<Order>;
             int waiterId = int.Parse(new ParametersLoader().GetParameter("waiterId"));
             var tableDrawer = new TableDrawer();
 
             return tableDrawer.DrawTables(Tables, Orders, waiterId, 461, 744);
         }
 
-        public async Task LoadProductsAsync(int departmentId)
+        public void LoadProducts(int departmentId)
         {
-            _unfilteredGroups = (List<Group>)await _groupRepository.GetGroupsByDepartmentAsync(departmentId);
-            _unfilteredSubgroups = (List<Subgroup>)await _subgroupRepository.GetSubgroupsByDepartmentAsync(departmentId);
-            _unfilteredProducts = (List<Product>)await _productRepository.GetProductsByDepartmentAsync(departmentId);
+            _unfilteredGroups = (List<Group>) _groupRepository.GetGroupsByDepartment(departmentId);
+            _unfilteredSubgroups = (List<Subgroup>) _subgroupRepository.GetSubgroupsByDepartment(departmentId);
+            _unfilteredProducts = (List<Product>) _productRepository.GetProductsByDepartment(departmentId);
 
             Groups.Clear();
             Groups.Add(new Group()
@@ -120,10 +119,10 @@ namespace Infrastructure.ViewModels
             }
         }
 
-        public async Task LoadTableOrderedProducts()
+        public void LoadTableOrderedProducts()
         {
             CurrentOrder = Orders.FirstOrDefault(o => o.TableId == SelectedTable.Id && o.Paid == false);
-            var orderedProducts = await _orderProductRepository.LoadOrdersForTableAsync(SelectedTable.Id);
+            var orderedProducts = _orderProductRepository.LoadOrdersForTable(SelectedTable.Id);
 
             TableOrderedProducts.Clear();
             foreach (var orderedProduct in orderedProducts)
@@ -219,46 +218,46 @@ namespace Infrastructure.ViewModels
             }
         }
 
-        public async Task AddProduct(Product p)
+        public void AddProduct(Product p)
         {
             CurrentOrder = Orders.FirstOrDefault(o => o.TableId == SelectedTable.Id && o.Paid == false);
 
             if (CurrentOrder is null)
             {
-                await CreateNewOrder();
-                await SetTableStatusTaken();
+                CreateNewOrder();
+                SetTableStatusTaken();
             }
 
-            await AddOrderProduct(p);
+            AddOrderProduct(p);
         }
         
-        public async Task UpdateProductQuantity(OrderProduct orderProduct)
+        public void UpdateProductQuantity(OrderProduct orderProduct)
         {
             ComputeOrderTotal();
             //update db
-            await _productRepository.UpdateAsync(orderProduct.Product); //update the stock
+            _productRepository.Update(orderProduct.Product); //update the stock
             if(orderProduct.Id != 0)
             {
-                await _orderProductRepository.UpdateAsync(orderProduct); //update the order quantity
+                _orderProductRepository.Update(orderProduct); //update the order quantity
             }
-            await _orderRepository.UpdateAsync(CurrentOrder); //update the order total
+            _orderRepository.Update(CurrentOrder); //update the order total
         }
-        public async Task DeleteProduct(OrderProduct orderProduct)
+        public void DeleteProduct(OrderProduct orderProduct)
         {
             TableOrderedProducts.Remove(orderProduct);
             ComputeOrderTotal();
 
             //update db
-            await _orderProductRepository.DeleteAsync(orderProduct);
-            await _orderRepository.UpdateAsync(CurrentOrder);
+            _orderProductRepository.Delete(orderProduct);
+            _orderRepository.Update(CurrentOrder);
 
             if (TableOrderedProducts.Count == 0)
             {
                 SetTableStatusOnEmpty();
-                await _tableRepository.UpdateAsync(SelectedTable);
+                _tableRepository.Update(SelectedTable);
 
                 Orders.Remove(CurrentOrder);
-                await _orderRepository.DeleteAsync(CurrentOrder);
+                _orderRepository.Delete(CurrentOrder);
                 CurrentOrder = null;
             }
         }
@@ -279,7 +278,7 @@ namespace Infrastructure.ViewModels
             SelectedTable.Status = TableStatus.Free;
         }
 
-        private async Task CreateNewOrder()
+        private void CreateNewOrder()
         {
             CurrentOrder = new Order()
             {
@@ -287,33 +286,33 @@ namespace Infrastructure.ViewModels
                 TableId = SelectedTable.Id
             };
             Orders.Add(CurrentOrder);
-            await _orderRepository.InsertAsync(CurrentOrder);
+            _orderRepository.Insert(CurrentOrder);
         }
 
-        private async Task SetTableStatusTaken()
+        private void SetTableStatusTaken()
         {
             SelectedTable.WaiterId = int.Parse(new ParametersLoader().GetParameter("waiterId"));
             SelectedTable.Status = TableStatus.TakenByCurrentWaiter;
-            await _tableRepository.UpdateAsync(SelectedTable);
+            _tableRepository.Update(SelectedTable);
         }
 
-        private async Task AddOrderProduct(Product p)
+        private void AddOrderProduct(Product p)
         {
             var orderProduct = TableOrderedProducts.FirstOrDefault(op => op.Product.Sequence == p.Sequence);
             if (orderProduct is null)
             {
-                await CreateNewOrderProduct(p);
-                await LoadTableOrderedProducts();
+                CreateNewOrderProduct(p);
+                LoadTableOrderedProducts();
             }
             else
             {
                 orderProduct.Quantity++;
                 ComputeOrderTotal();
-                await UpdateProductQuantity(orderProduct);
+                UpdateProductQuantity(orderProduct);
             }
         }
 
-        private async Task CreateNewOrderProduct(Product p)
+        private void CreateNewOrderProduct(Product p)
         {
             //insert new product
             var orderedProduct = new OrderProduct()
@@ -328,11 +327,11 @@ namespace Infrastructure.ViewModels
             TableOrderedProducts.Add(orderedProduct);
 
             //add it to db
-            await _orderProductRepository.RegisterNewOrderProductAsync(orderedProduct);
+            _orderProductRepository.RegisterNewOrderProduct(orderedProduct);
 
             //update order total
             ComputeOrderTotal();
-            await _orderRepository.UpdateAsync(CurrentOrder);
+            _orderRepository.Update(CurrentOrder);
         }
     }
 }

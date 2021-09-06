@@ -2,33 +2,32 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
     public class OrderProductRepository: GenericRepository<OrderProduct>
     {
-        public async Task<IEnumerable<OrderProduct>> LoadOrdersForWaiterAsync(int waiterId)
+        public IEnumerable<OrderProduct> LoadOrdersForWaiter(int waiterId)
         {
-            return await CreateContext()
+            return CreateContext()
                 .OrderProduct
                 .Where(op => op.Order.WaiterId == waiterId && op.Product.IsRecipe)
                 .Include(op => op.Product)
                 .Include(op => op.Order)
-                .ToListAsync();
+                .ToList();
         }
 
-        public async Task<IEnumerable<OrderProduct>> LoadOrdersForTableAsync(int tableId)
+        public IEnumerable<OrderProduct> LoadOrdersForTable(int tableId)
         {
-            return await CreateContext()
+            return CreateContext()
                 .OrderProduct
                 .Include(op => op.Product)
                 .Include(op => op.Order).ThenInclude(o => o.Table)
                 .Where(op => op.Order.TableId == tableId)
-                .ToListAsync();
+                .ToList();
         }
 
-        public async Task RegisterNewOrderProductAsync(OrderProduct orderProduct)
+        public void RegisterNewOrderProduct(OrderProduct orderProduct)
         {
             var insertOrderProduct = new OrderProduct()
             {
@@ -38,7 +37,7 @@ namespace Infrastructure.Repositories
                 Quantity = orderProduct.Quantity,
                 ServingTime = orderProduct.ServingTime
             };
-            await InsertAsync(insertOrderProduct);
+            Insert(insertOrderProduct);
         }
     }
 }
