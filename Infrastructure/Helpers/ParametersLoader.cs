@@ -3,46 +3,10 @@ using Xamarin.Essentials;
 
 namespace Infrastructure.Helpers
 {
-    public class ParametersLoader
+    public static class ParametersLoader
     {
-        public Dictionary<string, string> Parameters { get; private set; }
-
-        public ParametersLoader()
-        {
-            InitParameters();
-            LoadParameters();
-        }
-
-        public void SaveParameters()
-        {
-            foreach (var paramKey in Parameters.Keys)
-            {
-                Preferences.Set(paramKey, Parameters[paramKey]);
-            }
-        }
-
-        public void StoreParameters()
-        {
-            foreach (var paramKey in Parameters.Keys)
-            {
-                if(!Preferences.ContainsKey(paramKey))
-                {
-                    Preferences.Set(paramKey, Parameters[paramKey]);
-                }
-            }
-        }
-
-        public void SetParameter(string paramKey, string paramValue)
-        {
-            Parameters[paramKey] = paramValue;
-        }
-
-        public string GetParameter(string paramKey)
-        {
-            return Preferences.Get(paramKey, string.Empty);
-        }
-
-        private void InitParameters()
+        public static Dictionary<string, string> Parameters { get; private set; }
+        public static void InitParameters()
         {
             Parameters = new Dictionary<string, string>
             {
@@ -58,14 +22,14 @@ namespace Infrastructure.Helpers
 
                 { "nickname", string.Empty },
                 { "departmentId", "0" },
-                { "loadDb", "false" },      
+                { "loadDb", "false" },
                 { "buttonsPerLine", "3" }
             };
 
             StoreParameters();
         }
 
-        private void LoadParameters()
+        public static void LoadParameters()
         {
             var parameters = new Dictionary<string, string>();
             foreach (var paramKey in Parameters.Keys)
@@ -75,5 +39,30 @@ namespace Infrastructure.Helpers
 
             Parameters = new Dictionary<string, string>(parameters);
         }
+        public static void SaveParameters()
+        {
+            foreach (var paramKey in Parameters.Keys)
+            {
+                Preferences.Set(paramKey, Parameters[paramKey]);
+            }
+        }
+
+        public static void StoreParameters()
+        {
+            foreach (var paramKey in Parameters.Keys)
+            {
+                if(!Preferences.ContainsKey(paramKey))
+                {
+                    Preferences.Set(paramKey, Parameters[paramKey]);
+                }
+            }
+        }
+
+        public static void SetParameter(string paramKey, string paramValue)
+        {
+            Parameters[paramKey] = paramValue;
+        }
+
+        
     }
 }

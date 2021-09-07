@@ -4,14 +4,13 @@ namespace Infrastructure.ViewModels
 {
     public class SettingsViewModel: BaseViewModel
     {
-        public SettingsViewModel(ParametersLoader loader, DatabaseConnectionChecker checker)
+        public SettingsViewModel(DatabaseConnectionChecker checker)
         {
-            _loader = loader;
             _checker = checker;
-            ServerName = _loader.Parameters["server"];
-            DatabaseName = _loader.Parameters["database"];
-            DbUser = _loader.Parameters["dbUser"];
-            DbPassword = _loader.Parameters["dbPassword"];
+            ServerName = ParametersLoader.Parameters["server"];
+            DatabaseName = ParametersLoader.Parameters["database"];
+            DbUser = ParametersLoader.Parameters["dbUser"];
+            DbPassword = ParametersLoader.Parameters["dbPassword"];
         }
 
         
@@ -56,16 +55,15 @@ namespace Infrastructure.ViewModels
             }
         }
         
-        private readonly ParametersLoader _loader;
         private readonly DatabaseConnectionChecker _checker;
 
         public void SaveParameters()
         {
-            _loader.SetParameter("server", ServerName);
-            _loader.SetParameter("database", DatabaseName);
-            _loader.SetParameter("dbUser", DbUser);
-            _loader.SetParameter("dbPassword", DbPassword);
-            _loader.SaveParameters();
+            ParametersLoader.SetParameter("server", ServerName);
+            ParametersLoader.SetParameter("database", DatabaseName);
+            ParametersLoader.SetParameter("dbUser", DbUser);
+            ParametersLoader.SetParameter("dbPassword", DbPassword);
+            ParametersLoader.SaveParameters();
         }
 
         public void TestConnection()

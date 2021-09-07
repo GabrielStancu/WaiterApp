@@ -25,7 +25,7 @@ namespace WaiterApp
             try
             {
                 _model.TestConnection();
-                await Navigation.PushAsync(new ParametersPage(new ParametersViewModel(new ParametersLoader())));
+                await Navigation.PushAsync(new ParametersPage(new ParametersViewModel()));
             }
             catch(ConnectionStringException ex)
             {

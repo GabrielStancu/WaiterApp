@@ -24,7 +24,7 @@ namespace WaiterApp
             BindingContext = _mainPageViewModel;
 
             CurrentPageChanged += OnMainPageCurrentPageChanged;
-            _departmentId = int.Parse(new ParametersLoader().GetParameter("departmentId"));
+            _departmentId = int.Parse(ParametersLoader.Parameters["departmentId"]);
             LoadOrdersOnTimer();
             LoadTables();
             LoadProducts();
@@ -86,7 +86,7 @@ namespace WaiterApp
 
         private void LoadOrders()
         {
-            var waiterId = int.Parse(new ParametersLoader().GetParameter("waiterId"));
+            var waiterId = int.Parse(ParametersLoader.Parameters["waiterId"]);
             _mainPageViewModel.LoadOrdersForWaiter(waiterId);
         }
 
@@ -115,7 +115,7 @@ namespace WaiterApp
             }
         }
 
-        private async void OnTableButtonClicked(object sender, EventArgs e)
+        private void OnTableButtonClicked(object sender, EventArgs e)
         {
             var button = (Button)sender;
             int tableNumber = int.Parse(button.ClassId);
@@ -129,6 +129,7 @@ namespace WaiterApp
                 if(_mainPageViewModel.SelectedTable.Status == TableStatus.Free)
                 {
                     CurrentPage = ProductsPage;
+                    _mainPageViewModel.ClearTable();
                 }
                 else if (_mainPageViewModel.SelectedTable.Status == TableStatus.TakenByCurrentWaiter)
                 {
@@ -148,7 +149,7 @@ namespace WaiterApp
         private void DrawProducts()
         {
             var productsCount = _mainPageViewModel.Products.Count;
-            int productsPerRow = Int32.Parse(new ParametersLoader().GetParameter("buttonsPerLine"));
+            int productsPerRow = Int32.Parse(ParametersLoader.Parameters["buttonsPerLine"]);
             int rows = productsCount / productsPerRow;
             int crtRow = 0, crtCol = 0;
             if(productsCount % productsPerRow != 0)

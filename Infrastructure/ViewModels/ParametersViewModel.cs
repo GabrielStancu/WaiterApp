@@ -52,11 +52,8 @@ namespace Infrastructure.ViewModels
             }
         }
 
-        private readonly ParametersLoader _loader;
-
-        public ParametersViewModel(ParametersLoader loader)
+        public ParametersViewModel()
         {  
-            _loader = loader;
             LoadDepartments();
             LoadParameters();
         }
@@ -67,7 +64,7 @@ namespace Infrastructure.ViewModels
             var departments = departmentLoader.LoadAllDepartments();
             departments.ForEach(dep => Departments.Add(dep));
 
-            if(Int32.TryParse(_loader.Parameters["departmentId"], out int departmentId))
+            if(Int32.TryParse(ParametersLoader.Parameters["departmentId"], out int departmentId))
             {
                 CrtDepartment = departmentLoader.LoadCurrentDepartment(departments, departmentId);
             }
@@ -75,17 +72,17 @@ namespace Infrastructure.ViewModels
 
         private void LoadParameters()
         {
-            Nickname = _loader.Parameters["nickname"];
-            ButtonsPerLine = _loader.Parameters["buttonsPerLine"];
+            Nickname = ParametersLoader.Parameters["nickname"];
+            ButtonsPerLine = ParametersLoader.Parameters["buttonsPerLine"];
         }
 
         public void SaveParameters()
         {
-            _loader.SetParameter("nickname", Nickname);
-            _loader.SetParameter("departmentId", CrtDepartment?.Id.ToString());
-            _loader.SetParameter("loadDb", LoadAtStartup.ToString());
-            _loader.SetParameter("buttonsPerLine", ButtonsPerLine.ToString());
-            _loader.SaveParameters();
+            ParametersLoader.SetParameter("nickname", Nickname);
+            ParametersLoader.SetParameter("departmentId", CrtDepartment?.Id.ToString());
+            ParametersLoader.SetParameter("loadDb", LoadAtStartup.ToString());
+            ParametersLoader.SetParameter("buttonsPerLine", ButtonsPerLine.ToString());
+            ParametersLoader.SaveParameters();
         }
     }
 }

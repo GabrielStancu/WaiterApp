@@ -7,11 +7,8 @@ namespace Infrastructure.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
-        private readonly ParametersLoader _parametersLoader;
-
-        public LoginViewModel(ParametersLoader parametersLoader)
+        public LoginViewModel()
         {
-            _parametersLoader = parametersLoader; 
             LoadParameters();
         }
 
@@ -94,11 +91,11 @@ namespace Infrastructure.ViewModels
 
         public void LoadParameters()
         {
-            Nickname = _parametersLoader.Parameters["nickname"];
-            DepartmentId = int.Parse(_parametersLoader.Parameters["departmentId"]);
-            Username = _parametersLoader.Parameters["username"];
-            Password = _parametersLoader.Parameters["password"];
-            RememberUser = bool.Parse(_parametersLoader.Parameters["remember"]);
+            Nickname = ParametersLoader.Parameters["nickname"];
+            DepartmentId = int.Parse(ParametersLoader.Parameters["departmentId"]);
+            Username = ParametersLoader.Parameters["username"];
+            Password = ParametersLoader.Parameters["password"];
+            RememberUser = bool.Parse(ParametersLoader.Parameters["remember"]);
             CurrentDate = DateTime.Today;
 
             if (DepartmentId != 0)

@@ -77,7 +77,7 @@ namespace Infrastructure.ViewModels
         {
             Tables = _tableRepository.GetTablesForDepartment(departmentId) as List<Table>;
             Orders = _orderRepository.LoadOrdersForDepartment(departmentId) as List<Order>;
-            int waiterId = int.Parse(new ParametersLoader().GetParameter("waiterId"));
+            int waiterId = int.Parse(ParametersLoader.Parameters["waiterId"]);
             var tableDrawer = new TableDrawer();
 
             return tableDrawer.DrawTables(Tables, Orders, waiterId, 461, 744);
@@ -129,6 +129,11 @@ namespace Infrastructure.ViewModels
             {
                 TableOrderedProducts.Add(orderedProduct);
             }
+        }
+
+        public void ClearTable()
+        {
+            TableOrderedProducts.Clear();
         }
 
         public void FilterSubgroups()
@@ -282,7 +287,7 @@ namespace Infrastructure.ViewModels
         {
             CurrentOrder = new Order()
             {
-                WaiterId = int.Parse(new ParametersLoader().GetParameter("waiterId")),
+                WaiterId = int.Parse(ParametersLoader.Parameters["waiterId"]),
                 TableId = SelectedTable.Id
             };
             Orders.Add(CurrentOrder);
@@ -291,7 +296,7 @@ namespace Infrastructure.ViewModels
 
         private void SetTableStatusTaken()
         {
-            SelectedTable.WaiterId = int.Parse(new ParametersLoader().GetParameter("waiterId"));
+            SelectedTable.WaiterId = int.Parse(ParametersLoader.Parameters["waiterId"]);
             SelectedTable.Status = TableStatus.TakenByCurrentWaiter;
             _tableRepository.Update(SelectedTable);
         }

@@ -6,12 +6,10 @@ namespace Infrastructure.Helpers
     {
         public void SetConnectionString()
         {
-            var paramLoader = new ParametersLoader();
-
-            var server = paramLoader.Parameters["server"];
-            var database = paramLoader.Parameters["database"];
-            var user = paramLoader.Parameters["dbUser"];
-            var password = paramLoader.Parameters["dbPassword"];
+            var server = ParametersLoader.Parameters["server"];
+            var database = ParametersLoader.Parameters["database"];
+            var user = ParametersLoader.Parameters["dbUser"];
+            var password = ParametersLoader.Parameters["dbPassword"];
 
             var connStrBuilder = new ConnectionStringBuilder(server, database, user, password);
             RestaurantContext.ConnectionString = connStrBuilder.Build();

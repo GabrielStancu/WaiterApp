@@ -10,11 +10,12 @@ namespace WaiterApp
         {
             InitializeComponent();
 
-            var paramLoader = new ParametersLoader();
+            ParametersLoader.InitParameters();
+            ParametersLoader.LoadParameters();
             var connectionChecker = new DatabaseConnectionChecker();
             new ContextConnectionStringSetter().SetConnectionString();
 
-            var loginPage = new LoginPage(paramLoader, connectionChecker);
+            var loginPage = new LoginPage(connectionChecker);
             MainPage = new NavigationPage(loginPage);
         }
 

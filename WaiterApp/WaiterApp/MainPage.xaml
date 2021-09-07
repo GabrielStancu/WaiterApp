@@ -107,12 +107,7 @@
                  Title="Products"
                  BackgroundColor="LightGray">
         <StackLayout>
-            <!--<Grid.RowDefinitions>
-                <RowDefinition Height="100"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>-->
-
-            <Grid HeightRequest="100"><!--Grid.Row="0">-->
+            <Grid HeightRequest="100">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -157,7 +152,7 @@
                        PlaceholderColor="DarkGray"/>
             </Grid>
 
-            <Grid x:Name="ProductsGrid"/> <!--Grid.Row="1"/>-->
+            <Grid x:Name="ProductsGrid"/>
         </StackLayout>
     </ContentPage>
 
