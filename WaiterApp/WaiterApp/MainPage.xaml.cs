@@ -148,7 +148,9 @@ namespace WaiterApp
 
         private void DrawProducts()
         {
-            var productsCount = _mainPageViewModel.Products.Count;
+            ProductsGrid.Children?.Clear();
+
+            int productsCount = _mainPageViewModel.Products.Count;
             int productsPerRow = Int32.Parse(ParametersLoader.Parameters["buttonsPerLine"]);
             int rows = productsCount / productsPerRow;
             int crtRow = 0, crtCol = 0;
@@ -195,7 +197,7 @@ namespace WaiterApp
             }
         }
 
-        private async void OnProductButtonClicked(object sender, EventArgs e)
+        private void OnProductButtonClicked(object sender, EventArgs e)
         {
             var product = (sender as Button).BindingContext as Product;
             _mainPageViewModel.AddProduct(product);
@@ -205,21 +207,25 @@ namespace WaiterApp
         {
             _mainPageViewModel.FilterSubgroups();
             _mainPageViewModel.FilterProducts();
+            DrawProducts();
         }
 
         private void OnSubgroupSelectedIndexChanged(object sender, EventArgs e)
         {
             _mainPageViewModel.FilterProducts();
+            DrawProducts();
         }
 
         private void OnProductNameTextChanged(object sender, TextChangedEventArgs e)
         {
             _mainPageViewModel.FilterProducts();
+            DrawProducts();
         }
 
         private void OnProductSequenceTextChanged(object sender, TextChangedEventArgs e)
         {
             _mainPageViewModel.FilterProducts();
+            DrawProducts();
         }
 
         private async void OnOrderProductQuantityTextChanged(object sender, TextChangedEventArgs e)
@@ -242,7 +248,7 @@ namespace WaiterApp
             }
         }
 
-        private async void OnDeleteOrderProductClicked(object sender, EventArgs e)
+        private void OnDeleteOrderProductClicked(object sender, EventArgs e)
         {
             var orderProduct = (OrderProduct)((Button)sender).BindingContext;
 

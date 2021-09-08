@@ -49,7 +49,8 @@
                     </Frame>
                     <Label Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Buttons per line:"/>
                     <Frame Grid.Row="2" Grid.Column="1" Style="{StaticResource FrameStyle}">
-                        <Entry Text="{Binding ButtonsPerLine}" Style="{StaticResource EntryStyle}"/>
+                        <Entry Text="{Binding ButtonsPerLine}" Style="{StaticResource EntryStyle}"
+                               Unfocused="OnEntryUnfocused"/>
                     </Frame>
                     <!--<Label Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Load db at startup:"/>
                     <CheckBox Grid.Row="2" Grid.Column="1" VerticalOptions="Center" IsChecked="{Binding LoadAtStartup}" Color="#EF233C"/>-->

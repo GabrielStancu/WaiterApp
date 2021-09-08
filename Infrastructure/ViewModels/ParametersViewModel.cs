@@ -76,13 +76,22 @@ namespace Infrastructure.ViewModels
             ButtonsPerLine = ParametersLoader.Parameters["buttonsPerLine"];
         }
 
-        public void SaveParameters()
+        public bool SaveParameters()
         {
+            if (string.IsNullOrEmpty(Nickname) ||
+                CrtDepartment is null ||
+                string.IsNullOrEmpty(ButtonsPerLine))
+            {
+                return false;
+            }
+
             ParametersLoader.SetParameter("nickname", Nickname);
-            ParametersLoader.SetParameter("departmentId", CrtDepartment?.Id.ToString());
+            ParametersLoader.SetParameter("departmentId", CrtDepartment.Id.ToString());
             ParametersLoader.SetParameter("loadDb", LoadAtStartup.ToString());
-            ParametersLoader.SetParameter("buttonsPerLine", ButtonsPerLine.ToString());
+            ParametersLoader.SetParameter("buttonsPerLine", ButtonsPerLine);
             ParametersLoader.SaveParameters();
+
+            return true;
         }
     }
 }

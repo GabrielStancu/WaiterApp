@@ -24,6 +24,7 @@ namespace WaiterApp
             if (bool.Parse(ParametersLoader.Parameters["remember"]))
             {
                 _model.Username = ParametersLoader.Parameters["username"];
+                PasswordEntry.Text = ParametersLoader.Parameters["password"];
                 Login(ParametersLoader.Parameters["password"]);
             }
         }
@@ -90,6 +91,11 @@ namespace WaiterApp
                     new OrderProductRepository(), new GroupRepository(), new SubgroupRepository(), new ProductRepository(),
                     new TableRepository(), new OrderRepository()));
                 await Navigation.PushAsync(page);
+
+                if (!_model.RememberUser)
+                {
+                    PasswordEntry.Text = string.Empty;
+                }
             }
             else
             {
