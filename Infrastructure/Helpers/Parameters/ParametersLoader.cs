@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Xamarin.Essentials;
 
-namespace Infrastructure.Helpers
+namespace Infrastructure.Helpers.Parameters
 {
     public static class ParametersLoader
     {
@@ -10,20 +10,20 @@ namespace Infrastructure.Helpers
         {
             Parameters = new Dictionary<string, string>
             {
-                { "server", string.Empty },
-                { "database", string.Empty },
-                { "dbUser", string.Empty },
-                { "dbPassword", string.Empty },
+                { AppParameters.Server, string.Empty },
+                { AppParameters.Database, string.Empty },
+                { AppParameters.DbUser, string.Empty },
+                { AppParameters.DbPassword, string.Empty },
 
-                { "username", string.Empty },
-                { "password", string.Empty },
-                { "remember", "false" },
-                { "waiterId", "0" },
+                { AppParameters.Username, string.Empty },
+                { AppParameters.Password, string.Empty },
+                { AppParameters.Remember, "false" },
+                { AppParameters.WaiterId, "0" },
 
-                { "nickname", string.Empty },
-                { "departmentId", "0" },
-                { "loadDb", "false" },
-                { "buttonsPerLine", "3" }
+                { AppParameters.Nickname, string.Empty },
+                { AppParameters.DepartmentId, "0" },
+                { AppParameters.LoadDb, "false" },
+                { AppParameters.ButtonsPerLine, "3" }
             };
 
             StoreParameters();
@@ -62,7 +62,5 @@ namespace Infrastructure.Helpers
         {
             Parameters[paramKey] = paramValue;
         }
-
-        
     }
 }

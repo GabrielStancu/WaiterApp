@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Infrastructure.Helpers
+namespace Infrastructure.Helpers.Database
 {
     public class ConnectionStringBuilder
     {

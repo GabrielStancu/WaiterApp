@@ -1,6 +1,7 @@
 ﻿using Core.Helpers;
 using Core.Models;
 using Infrastructure.Helpers;
+using Infrastructure.Helpers.Parameters;
 using Infrastructure.ViewModels;
 using System;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace WaiterApp
             BindingContext = _mainPageViewModel;
 
             CurrentPageChanged += OnMainPageCurrentPageChanged;
-            _departmentId = int.Parse(ParametersLoader.Parameters["departmentId"]);
+            _departmentId = int.Parse(ParametersLoader.Parameters[AppParameters.DepartmentId]);
             LoadOrdersOnTimer();
             LoadTables();
             LoadProducts();
@@ -86,7 +87,7 @@ namespace WaiterApp
 
         private void LoadOrders()
         {
-            var waiterId = int.Parse(ParametersLoader.Parameters["waiterId"]);
+            var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
             _mainPageViewModel.LoadOrdersForWaiter(waiterId);
         }
 
@@ -117,7 +118,7 @@ namespace WaiterApp
 
         private void OnTableButtonClicked(object sender, EventArgs e)
         {
-            var button = (Button)sender;
+            var button = sender as Button;
             int tableNumber = int.Parse(button.ClassId);
             bool enabledTable = button.BackgroundColor != Color.Red;
 
@@ -151,7 +152,7 @@ namespace WaiterApp
             ProductsGrid.Children?.Clear();
 
             int productsCount = _mainPageViewModel.Products.Count;
-            int productsPerRow = Int32.Parse(ParametersLoader.Parameters["buttonsPerLine"]);
+            int productsPerRow = Int32.Parse(ParametersLoader.Parameters[AppParameters.ButtonsPerLine]);
             int rows = productsCount / productsPerRow;
             int crtRow = 0, crtCol = 0;
             if(productsCount % productsPerRow != 0)

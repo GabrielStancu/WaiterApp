@@ -1,11 +1,10 @@
-﻿using Core.Helpers;
-using Core.Models;
-using System;
+﻿using Core.Models;
+using Infrastructure.Helpers.DeviceInfo;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Infrastructure.Helpers
+namespace Infrastructure.Helpers.TablesDrawing
 {
     public class TableDrawer
     {

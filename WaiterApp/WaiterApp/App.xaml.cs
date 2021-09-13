@@ -1,5 +1,5 @@
-﻿using Core.Context;
-using Infrastructure.Helpers;
+﻿using Infrastructure.Helpers.Database;
+using Infrastructure.Helpers.Parameters;
 using Xamarin.Forms;
 
 namespace WaiterApp

@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Helpers
+﻿namespace Infrastructure.Helpers.Wifi
 {
     public class WifiConnectionResponseParser
     {

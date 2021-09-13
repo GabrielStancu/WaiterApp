@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace Infrastructure.Helpers
+namespace Infrastructure.Helpers.TablesDrawing
 {
     public class DrawnTable
     {

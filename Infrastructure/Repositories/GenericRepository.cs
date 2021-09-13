@@ -1,7 +1,7 @@
 ﻿using Core.Context;
 using Core.Models;
 using Infrastructure.Exceptions;
-using Infrastructure.Helpers;
+using Infrastructure.Helpers.Wifi;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

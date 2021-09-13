@@ -1,6 +1,7 @@
 ﻿using Core.Helpers;
 using Core.Models;
-using Infrastructure.Helpers;
+using Infrastructure.Helpers.Parameters;
+using Infrastructure.Helpers.TablesDrawing;
 using Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
@@ -77,7 +78,7 @@ namespace Infrastructure.ViewModels
         {
             Tables = _tableRepository.GetTablesForDepartment(departmentId) as List<Table>;
             Orders = _orderRepository.LoadOrdersForDepartment(departmentId) as List<Order>;
-            int waiterId = int.Parse(ParametersLoader.Parameters["waiterId"]);
+            int waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
             var tableDrawer = new TableDrawer();
 
             return tableDrawer.DrawTables(Tables, Orders, waiterId, 461, 744);
@@ -287,7 +288,7 @@ namespace Infrastructure.ViewModels
         {
             CurrentOrder = new Order()
             {
-                WaiterId = int.Parse(ParametersLoader.Parameters["waiterId"]),
+                WaiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]),
                 TableId = SelectedTable.Id
             };
             Orders.Add(CurrentOrder);
@@ -296,7 +297,7 @@ namespace Infrastructure.ViewModels
 
         private void SetTableStatusTaken()
         {
-            SelectedTable.WaiterId = int.Parse(ParametersLoader.Parameters["waiterId"]);
+            SelectedTable.WaiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
             SelectedTable.Status = TableStatus.TakenByCurrentWaiter;
             _tableRepository.Update(SelectedTable);
         }

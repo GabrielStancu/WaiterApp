@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Exceptions;
-using Infrastructure.Helpers;
+using Infrastructure.Helpers.Database;
+using Infrastructure.Helpers.Parameters;
 using Infrastructure.Repositories;
 using Infrastructure.ViewModels;
 using System;
@@ -21,11 +22,11 @@ namespace WaiterApp
 
             TestConnection();
             _model.LoadParameters();
-            if (bool.Parse(ParametersLoader.Parameters["remember"]))
+            if (bool.Parse(ParametersLoader.Parameters[AppParameters.Remember]))
             {
-                _model.Username = ParametersLoader.Parameters["username"];
-                PasswordEntry.Text = ParametersLoader.Parameters["password"];
-                Login(ParametersLoader.Parameters["password"]);
+                _model.Username = ParametersLoader.Parameters[AppParameters.Username];
+                PasswordEntry.Text = ParametersLoader.Parameters[AppParameters.Password];
+                Login(ParametersLoader.Parameters[AppParameters.Password]);
             }
         }
 
@@ -62,15 +63,15 @@ namespace WaiterApp
         {
             if (_model.RememberUser)
             {
-                ParametersLoader.SetParameter("remember", "true");
-                ParametersLoader.SetParameter("username", _model.Username);
-                ParametersLoader.SetParameter("password", PasswordEntry.Text);
+                ParametersLoader.SetParameter(AppParameters.Remember, "true");
+                ParametersLoader.SetParameter(AppParameters.Username, _model.Username);
+                ParametersLoader.SetParameter(AppParameters.Password, PasswordEntry.Text);
             }
             else
             {
-                ParametersLoader.SetParameter("remember", "false");
-                ParametersLoader.SetParameter("username", string.Empty);
-                ParametersLoader.SetParameter("password", string.Empty);
+                ParametersLoader.SetParameter(AppParameters.Remember, "false");
+                ParametersLoader.SetParameter(AppParameters.Username, string.Empty);
+                ParametersLoader.SetParameter(AppParameters.Password, string.Empty);
             }
             Login(PasswordEntry.Text);
         }
@@ -85,7 +86,7 @@ namespace WaiterApp
             var waiter = _model.Login(password);
             if (waiter != null)
             {
-                ParametersLoader.SetParameter("waiterId", waiter.Id.ToString());
+                ParametersLoader.SetParameter(AppParameters.WaiterId, waiter.Id.ToString());
                 ParametersLoader.SaveParameters();
                 var page = new MainPage(new MainPageViewModel(
                     new OrderProductRepository(), new GroupRepository(), new SubgroupRepository(), new ProductRepository(),
@@ -107,7 +108,7 @@ namespace WaiterApp
         {
             if (!_model.RememberUser)
             {
-                ParametersLoader.SetParameter("remember", _model.RememberUser.ToString());
+                ParametersLoader.SetParameter(AppParameters.Remember, _model.RememberUser.ToString());
                 ParametersLoader.SaveParameters();
             } 
         }

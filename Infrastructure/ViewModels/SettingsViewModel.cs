@@ -1,4 +1,5 @@
-﻿using Infrastructure.Helpers;
+﻿using Infrastructure.Helpers.Database;
+using Infrastructure.Helpers.Parameters;
 
 namespace Infrastructure.ViewModels
 {
@@ -7,10 +8,10 @@ namespace Infrastructure.ViewModels
         public SettingsViewModel(DatabaseConnectionChecker checker)
         {
             _checker = checker;
-            ServerName = ParametersLoader.Parameters["server"];
-            DatabaseName = ParametersLoader.Parameters["database"];
-            DbUser = ParametersLoader.Parameters["dbUser"];
-            DbPassword = ParametersLoader.Parameters["dbPassword"];
+            ServerName = ParametersLoader.Parameters[AppParameters.Server];
+            DatabaseName = ParametersLoader.Parameters[AppParameters.Database];
+            DbUser = ParametersLoader.Parameters[AppParameters.DbUser];
+            DbPassword = ParametersLoader.Parameters[AppParameters.DbPassword];
         }
 
         
@@ -59,10 +60,10 @@ namespace Infrastructure.ViewModels
 
         public void SaveParameters()
         {
-            ParametersLoader.SetParameter("server", ServerName);
-            ParametersLoader.SetParameter("database", DatabaseName);
-            ParametersLoader.SetParameter("dbUser", DbUser);
-            ParametersLoader.SetParameter("dbPassword", DbPassword);
+            ParametersLoader.SetParameter(AppParameters.Server, ServerName);
+            ParametersLoader.SetParameter(AppParameters.Database, DatabaseName);
+            ParametersLoader.SetParameter(AppParameters.DbUser, DbUser);
+            ParametersLoader.SetParameter(AppParameters.DbPassword, DbPassword);
             ParametersLoader.SaveParameters();
         }
 

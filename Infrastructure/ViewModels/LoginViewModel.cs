@@ -1,5 +1,5 @@
 ﻿using Core.Models;
-using Infrastructure.Helpers;
+using Infrastructure.Helpers.Parameters;
 using Infrastructure.Repositories;
 using System;
 
@@ -91,11 +91,11 @@ namespace Infrastructure.ViewModels
 
         public void LoadParameters()
         {
-            Nickname = ParametersLoader.Parameters["nickname"];
-            DepartmentId = int.Parse(ParametersLoader.Parameters["departmentId"]);
-            Username = ParametersLoader.Parameters["username"];
-            Password = ParametersLoader.Parameters["password"];
-            RememberUser = bool.Parse(ParametersLoader.Parameters["remember"]);
+            Nickname = ParametersLoader.Parameters[AppParameters.Nickname];
+            DepartmentId = int.Parse(ParametersLoader.Parameters[AppParameters.DepartmentId]);
+            Username = ParametersLoader.Parameters[AppParameters.Username];
+            Password = ParametersLoader.Parameters[AppParameters.Password];
+            RememberUser = bool.Parse(ParametersLoader.Parameters[AppParameters.Remember]);
             CurrentDate = DateTime.Today;
 
             if (DepartmentId != 0)
