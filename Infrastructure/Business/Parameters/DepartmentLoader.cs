@@ -2,7 +2,7 @@
 using Infrastructure.Repositories;
 using System.Collections.Generic;
 
-namespace Infrastructure.Helpers.Parameters
+namespace Infrastructure.Business.Parameters
 {
     public class DepartmentLoader
     {

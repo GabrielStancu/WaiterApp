@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Xamarin.Essentials;
 
-namespace Infrastructure.Helpers.Wifi
+namespace Infrastructure.Business.Wifi
 {
     public class WifiConnectionChecker
     {

@@ -1,7 +1,8 @@
-﻿using Core.Helpers;
+﻿using Core.Business;
 using Core.Models;
-using Infrastructure.Helpers.Parameters;
-using Infrastructure.Helpers.TablesDrawing;
+using Infrastructure.Business.Filter;
+using Infrastructure.Business.Parameters;
+using Infrastructure.Business.TablesDrawing;
 using Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
@@ -147,81 +148,18 @@ namespace Infrastructure.ViewModels
                 Name = "-"
             });
 
-            foreach (var subgroup in _unfilteredSubgroups)
-            {
-                if (subgroup.GroupId == SelectedGroup.Id || SelectedGroup.Id == 0)
-                {
-                    Subgroups.Add(subgroup);
-                }
-            }
+            var sf = new SubgroupFilter();
+            sf.Filter(_unfilteredSubgroups, SelectedGroup).ToList()
+                .ForEach(s => Subgroups.Add(s));
         }
 
         public void FilterProducts()
         {
-            //to use Specification DP here...
-
             Products.Clear();
-            if(SelectedGroup != null)
-            {
-                if(SelectedSubgroup != null)
-                {
-                    //Group and subgroup selected
-                    foreach (var product in _unfilteredProducts)
-                    {
-                        if((product.GroupId == SelectedGroup.Id ||SelectedGroup.Id == 0)
-                            && (product.SubgroupId == SelectedSubgroup.Id || SelectedSubgroup.Id == 0))
-                        {
-                            if(product.Name.ToUpper().Contains(ProductName.ToUpper()) 
-                                && product.Sequence.ToUpper().Contains(ProductSequence.ToUpper()))
-                            {
-                                Products.Add(product);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    //just Group selected
-                    foreach (var product in _unfilteredProducts)
-                    {
-                        if (product.GroupId == SelectedGroup.Id || SelectedGroup.Id == 0)
-                        {
-                            if (product.Name.ToUpper().Contains(ProductName.ToUpper())
-                                && product.Sequence.ToUpper().Contains(ProductSequence.ToUpper()))
-                            {
-                                Products.Add(product);
-                            }
-                        }
-                    }
-                }
-            }
-            else if(SelectedSubgroup != null)
-            {
-                //just Subgroup selected
-                foreach (var product in _unfilteredProducts)
-                {
-                    if (product.SubgroupId == SelectedSubgroup.Id || SelectedSubgroup.Id == 0)
-                    {
-                        if (product.Name.ToUpper().Contains(ProductName.ToUpper())
-                                && product.Sequence.ToUpper().Contains(ProductSequence.ToUpper()))
-                        {
-                            Products.Add(product);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                //neither Group nor Subgroup
-                foreach (var product in _unfilteredProducts)
-                {
-                    if (product.Name.ToUpper().Contains(ProductName.ToUpper())
-                                && product.Sequence.ToUpper().Contains(ProductSequence.ToUpper()))
-                    {
-                        Products.Add(product);
-                    }
-                }
-            }
+
+            var pf = new ProductsFilter();
+            pf.Filter(_unfilteredProducts, SelectedGroup, SelectedSubgroup, ProductName, ProductSequence).ToList()
+                        .ForEach(p => Products.Add(p));
         }
 
         public void AddProduct(Product p)

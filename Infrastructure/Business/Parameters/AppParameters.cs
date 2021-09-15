@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Helpers.Parameters
+﻿namespace Infrastructure.Business.Parameters
 {
     public class AppParameters
     {

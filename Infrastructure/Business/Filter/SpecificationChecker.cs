@@ -1,12 +1,11 @@
-﻿using Core.Models;
-using Infrastructure.Helpers.Specification;
+﻿using Infrastructure.Business.Specification;
 using System.Collections.Generic;
 
-namespace Infrastructure.Helpers.Filter
+namespace Infrastructure.Business.Filter
 {
-    public class ProductsFilter : IFilter<Product>
+    public  class SpecificationChecker<T> : ISpecificationChecker<T>
     {
-        public IEnumerable<Product> Filter(IEnumerable<Product> items, ISpecification<Product> spec)
+        public IEnumerable<T> Filter(IEnumerable<T> items, ISpecification<T> spec)
         {
             foreach (var item in items)
             {

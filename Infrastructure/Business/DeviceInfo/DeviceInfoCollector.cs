@@ -1,6 +1,6 @@
 ﻿using Xamarin.Essentials;
 
-namespace Infrastructure.Helpers.DeviceInfo
+namespace Infrastructure.Business.DeviceInfo
 {
     public class DeviceInfoCollector
     {

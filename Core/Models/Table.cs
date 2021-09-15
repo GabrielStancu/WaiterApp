@@ -1,4 +1,4 @@
-﻿using Core.Helpers;
+﻿using Core.Business;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Models

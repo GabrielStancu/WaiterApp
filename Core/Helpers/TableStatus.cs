@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Helpers
+namespace Core.Business
 {
     public enum TableStatus
     {

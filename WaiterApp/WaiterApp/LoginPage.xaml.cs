@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Exceptions;
-using Infrastructure.Helpers.Database;
-using Infrastructure.Helpers.Parameters;
+using Infrastructure.Business.Database;
+using Infrastructure.Business.Parameters;
 using Infrastructure.Repositories;
 using Infrastructure.ViewModels;
 using System;

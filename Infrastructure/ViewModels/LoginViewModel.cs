@@ -1,5 +1,5 @@
 ﻿using Core.Models;
-using Infrastructure.Helpers.Parameters;
+using Infrastructure.Business.Parameters;
 using Infrastructure.Repositories;
 using System;
 

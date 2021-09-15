@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Xamarin.Essentials;
 
-namespace Infrastructure.Helpers.Parameters
+namespace Infrastructure.Business.Parameters
 {
     public static class ParametersLoader
     {

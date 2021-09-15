@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Helpers.Specification
+﻿namespace Infrastructure.Business.Specification
 {
     public interface ISpecification<T>
     {

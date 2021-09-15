@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data.SqlClient;
 using Infrastructure.Exceptions;
 
-namespace Infrastructure.Helpers.Database
+namespace Infrastructure.Business.Database
 {
     public class DatabaseConnectionChecker
     {

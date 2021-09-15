@@ -1,17 +1,17 @@
 ﻿using Core.Models;
 using System.Collections.Generic;
 
-namespace Infrastructure.Helpers.Specification
+namespace Infrastructure.Business.Specification
 {
-    public class AndSpecification : ISpecification<Product>
+    public class AndSpecification<T> : ISpecification<T>
     {
-        private readonly IEnumerable<ISpecification<Product>> _specifications;
+        private readonly IEnumerable<ISpecification<T>> _specifications;
 
-        public AndSpecification(IEnumerable<ISpecification<Product>> specifications)
+        public AndSpecification(IEnumerable<ISpecification<T>> specifications)
         {
             _specifications = specifications;
         }
-        public bool IsSatisfied(Product t)
+        public bool IsSatisfied(T t)
         {
             foreach (var specification in _specifications)
             {

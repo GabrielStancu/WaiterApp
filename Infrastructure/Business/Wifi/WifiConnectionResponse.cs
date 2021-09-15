@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Helpers.Wifi
+﻿namespace Infrastructure.Business.Wifi
 {
     public enum WifiConnectionResponse
     {

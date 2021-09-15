@@ -1,5 +1,5 @@
-﻿using Infrastructure.Helpers.Database;
-using Infrastructure.Helpers.Parameters;
+﻿using Infrastructure.Business.Database;
+using Infrastructure.Business.Parameters;
 
 namespace Infrastructure.ViewModels
 {

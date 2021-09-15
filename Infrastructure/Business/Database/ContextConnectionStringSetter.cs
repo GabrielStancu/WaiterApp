@@ -1,7 +1,7 @@
 ﻿using Core.Context;
-using Infrastructure.Helpers.Parameters;
+using Infrastructure.Business.Parameters;
 
-namespace Infrastructure.Helpers.Database
+namespace Infrastructure.Business.Database
 {
     public class ContextConnectionStringSetter
     {

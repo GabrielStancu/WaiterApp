@@ -1,7 +1,7 @@
-﻿using Core.Helpers;
+﻿using Core.Business;
 using Core.Models;
-using Infrastructure.Helpers;
-using Infrastructure.Helpers.Parameters;
+using Infrastructure.Business;
+using Infrastructure.Business.Parameters;
 using Infrastructure.ViewModels;
 using System;
 using System.Linq;
