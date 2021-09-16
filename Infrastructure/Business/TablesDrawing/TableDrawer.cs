@@ -6,19 +6,25 @@ using System.Linq;
 
 namespace Infrastructure.Business.TablesDrawing
 {
-    public class TableDrawer
+    public class TableDrawer : ITableDrawer
     {
+        private readonly IDeviceInfoCollector _deviceInfoCollector;
+
+        public TableDrawer(IDeviceInfoCollector deviceInfoCollector)
+        {
+            _deviceInfoCollector = deviceInfoCollector;
+        }
         public IEnumerable<DrawnTable> DrawTables(IEnumerable<Table> tables, IEnumerable<Order> orders,
             int waiterId, int initialImageHeight, int initialImageWidth)
-        {          
+        {
             var drawnTables = new List<DrawnTable>();
-            (double screenWidth, double screenHeight) = new DeviceInfoCollector().GetScreenDimensions();
+            (double screenWidth, double screenHeight) = _deviceInfoCollector.GetScreenDimensions();
             double heightRatio = screenHeight / initialImageHeight;
             double widthRatio = screenWidth / initialImageWidth;
             int xOffset = (int)(screenWidth / 15);
             int yOffset = (int)(screenHeight / 15);
 
-            foreach (var table  in tables)
+            foreach (var table in tables)
             {
                 var drawnTable = new DrawnTable()
                 {
@@ -49,12 +55,12 @@ namespace Infrastructure.Business.TablesDrawing
         {
             var crtTableOrder = orders.FirstOrDefault(o => o.TableId == table.Id && o.Paid == false);
 
-            if(crtTableOrder is null)
+            if (crtTableOrder is null)
             {
                 return Color.Green;
             }
 
-            if(waiterId == crtTableOrder.WaiterId)
+            if (waiterId == crtTableOrder.WaiterId)
             {
                 return Color.Blue;
             }

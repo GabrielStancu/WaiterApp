@@ -5,15 +5,17 @@ using System;
 
 namespace Infrastructure.ViewModels
 {
-    public class LoginViewModel : BaseViewModel
+    public class LoginViewModel : BaseViewModel, ILoginViewModel
     {
-        public LoginViewModel()
+        public LoginViewModel(IDepartmentRepository departmentRepository, IWaiterRepository waiterRepository)
         {
+            _departmentRepository = departmentRepository;
+            _waiterRepository = waiterRepository;
             LoadParameters();
         }
 
         private string _nickname;
-        public string Nickname 
+        public string Nickname
         {
             get { return _nickname; }
             set
@@ -24,9 +26,9 @@ namespace Infrastructure.ViewModels
         }
 
         private int _departmentId;
-        public int DepartmentId 
-        { 
-            get { return _departmentId; } 
+        public int DepartmentId
+        {
+            get { return _departmentId; }
             set
             {
                 _departmentId = value;
@@ -46,18 +48,18 @@ namespace Infrastructure.ViewModels
         }
 
         private string _username;
-        public string Username 
+        public string Username
         {
             get { return _username; }
             set
             {
                 _username = value;
-                SetProperty<string>(ref _username, value); 
+                SetProperty<string>(ref _username, value);
             }
         }
 
         private string _password;
-        public string Password 
+        public string Password
         {
             get { return string.Empty; }
             set
@@ -68,7 +70,7 @@ namespace Infrastructure.ViewModels
         }
 
         private bool _rememberUser;
-        public bool RememberUser 
+        public bool RememberUser
         {
             get { return _rememberUser; }
             set
@@ -79,6 +81,9 @@ namespace Infrastructure.ViewModels
         }
 
         private DateTime _currentDate;
+        private readonly IDepartmentRepository _departmentRepository;
+        private readonly IWaiterRepository _waiterRepository;
+
         public DateTime CurrentDate
         {
             get { return _currentDate; }
@@ -100,14 +105,13 @@ namespace Infrastructure.ViewModels
 
             if (DepartmentId != 0)
             {
-                Department = new DepartmentRepository().SelectById(DepartmentId);
+                Department = _departmentRepository.SelectById(DepartmentId);
             }
         }
 
         public Waiter Login(string password)
         {
-            var waiterRepository = new WaiterRepository();
-            var user = waiterRepository.SelectWaiterWithCredentials(Username, password);
+            var user = _waiterRepository.SelectWaiterWithCredentials(Username, password);
 
             return user;
         }

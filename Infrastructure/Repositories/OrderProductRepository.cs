@@ -1,12 +1,20 @@
 ﻿using Core.Models;
+using Infrastructure.Business.Wifi;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Infrastructure.Repositories
 {
-    public class OrderProductRepository: GenericRepository<OrderProduct>
+    public class OrderProductRepository : GenericRepository<OrderProduct>, IOrderProductRepository
     {
+        public OrderProductRepository(
+            IWifiConnectionChecker wifiConnectionChecker, 
+            IWifiConnectionResponseParser wifiConnectionResponseParser) 
+            : base(wifiConnectionChecker, wifiConnectionResponseParser)
+        {
+        }
+
         public IEnumerable<OrderProduct> LoadOrdersForWaiter(int waiterId)
         {
             return CreateContext()

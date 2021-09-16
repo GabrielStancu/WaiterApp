@@ -3,9 +3,9 @@ using Xamarin.Essentials;
 
 namespace Infrastructure.Business.Wifi
 {
-    public class WifiConnectionChecker
+    public class WifiConnectionChecker : IWifiConnectionChecker
     {
-        public static WifiConnectionResponse CheckConnection()
+        public WifiConnectionResponse CheckConnection()
         {
             var networkAccess = Connectivity.NetworkAccess;
 

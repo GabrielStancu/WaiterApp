@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Infrastructure.ViewModels
 {
-    public class BaseViewModel: INotifyPropertyChanged
+    public class BaseViewModel : INotifyPropertyChanged, IBaseViewModel
     {
         protected bool SetProperty<T>(ref T backingStore, T value,
             [CallerMemberName] string propertyName = "", Action onChanged = null)

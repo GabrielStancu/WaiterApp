@@ -3,8 +3,14 @@ using Infrastructure.Business.Parameters;
 
 namespace Infrastructure.Business.Database
 {
-    public class ContextConnectionStringSetter
+    public class ContextConnectionStringSetter : IContextConnectionStringSetter
     {
+        private readonly IConnectionStringBuilder _connectionStringBuilder;
+
+        public ContextConnectionStringSetter(IConnectionStringBuilder connectionStringBuilder)
+        {
+            _connectionStringBuilder = connectionStringBuilder;
+        }
         public void SetConnectionString()
         {
             var server = ParametersLoader.Parameters[AppParameters.Server];
@@ -12,8 +18,7 @@ namespace Infrastructure.Business.Database
             var user = ParametersLoader.Parameters[AppParameters.DbUser];
             var password = ParametersLoader.Parameters[AppParameters.DbPassword];
 
-            var connStrBuilder = new ConnectionStringBuilder(server, database, user, password);
-            RestaurantContext.ConnectionString = connStrBuilder.Build();
+            RestaurantContext.ConnectionString = _connectionStringBuilder.Build(server, database, user, password);
         }
     }
 }

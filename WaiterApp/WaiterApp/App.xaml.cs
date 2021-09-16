@@ -1,22 +1,26 @@
 ﻿using Infrastructure.Business.Database;
 using Infrastructure.Business.Parameters;
+using Nancy.TinyIoc;
+using WaiterApp.Pages;
+using WaiterApp.Utils;
 using Xamarin.Forms;
 
 namespace WaiterApp
 {
     public partial class App : Application
     {
+        public static TinyIoCContainer Container;
         public App()
         {
             InitializeComponent();
 
             ParametersLoader.InitParameters();
             ParametersLoader.LoadParameters();
-            var connectionChecker = new DatabaseConnectionChecker();
-            new ContextConnectionStringSetter().SetConnectionString();
 
-            var loginPage = new LoginPage(connectionChecker);
-            MainPage = new NavigationPage(loginPage);
+            Container = new TinyIoCContainer();
+            Container.RegisterApp();
+            Container.Resolve<IContextConnectionStringSetter>().SetConnectionString();
+            MainPage = new NavigationPage(Container.Resolve<LoginPage>());
         }
 
         protected override void OnStart()

@@ -1,17 +1,16 @@
 ﻿using Infrastructure.Exceptions;
-using Infrastructure.Business;
 using Infrastructure.ViewModels;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace WaiterApp
+namespace WaiterApp.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsPage : ContentPage
     {
-        private readonly SettingsViewModel _model;
-        public SettingsPage(SettingsViewModel model)
+        private readonly ISettingsViewModel _model;
+        public SettingsPage(ISettingsViewModel model)
         {
             InitializeComponent();
             _model = model;
@@ -25,7 +24,7 @@ namespace WaiterApp
             try
             {
                 _model.TestConnection();
-                await Navigation.PushAsync(new ParametersPage(new ParametersViewModel()));
+                await Navigation.PushAsync(App.Container.Resolve<ParametersPage>());
             }
             catch(ConnectionStringException ex)
             {

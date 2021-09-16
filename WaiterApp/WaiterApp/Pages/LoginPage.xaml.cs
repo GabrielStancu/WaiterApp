@@ -1,23 +1,22 @@
 ﻿using Infrastructure.Exceptions;
 using Infrastructure.Business.Database;
 using Infrastructure.Business.Parameters;
-using Infrastructure.Repositories;
 using Infrastructure.ViewModels;
 using System;
 using Xamarin.Forms;
 
-namespace WaiterApp
+namespace WaiterApp.Pages
 {
     public partial class LoginPage : ContentPage
     {
-        private readonly DatabaseConnectionChecker _databaseConnectionChecker;
-        private readonly LoginViewModel _model;
+        private readonly ILoginViewModel _model;
+        private readonly IDatabaseConnectionChecker _databaseConnectionChecker;
         private bool _connectedToDb = false;
-        public LoginPage(DatabaseConnectionChecker databaseConnectionChecker)
+        public LoginPage(ILoginViewModel model, IDatabaseConnectionChecker databaseConnectionChecker)
         {
             InitializeComponent();
+            _model = model;
             _databaseConnectionChecker = databaseConnectionChecker;
-            _model = new LoginViewModel();
             BindingContext = _model;
 
             TestConnection();
@@ -37,39 +36,35 @@ namespace WaiterApp
 
         private async void TestConnection()
         {
-            var dbConnectionChecker = new DatabaseConnectionChecker();
             try
             {
-                dbConnectionChecker.TestConnection();
+                _databaseConnectionChecker.TestConnection();
                 _connectedToDb = true;
             }
-            catch (ConnectionStringException)
+            catch (ConnectionStringException ex)
             {
-                await DisplayAlert("Db error", "Bad connection string. Configure before proceeding", "OK");
-
-                var settingsViewModel = new SettingsViewModel(_databaseConnectionChecker);
-                await Navigation.PushAsync(new SettingsPage(settingsViewModel));
+                await DisplayAlert("Database error", ex.Message, "OK");
+                await Navigation.PushAsync(App.Container.Resolve<SettingsPage>());
                 _connectedToDb = false;
             }
         }
 
         private void OnSettingsButtonClick(object sender, EventArgs e)
         {
-            var settingsViewModel = new SettingsViewModel(_databaseConnectionChecker);
-            Navigation.PushAsync(new SettingsPage(settingsViewModel));
+            Navigation.PushAsync(App.Container.Resolve<SettingsPage>());
         }
 
         private void OnLoginButtonClick(object sender, EventArgs e)
         {
             if (_model.RememberUser)
             {
-                ParametersLoader.SetParameter(AppParameters.Remember, "true");
+                ParametersLoader.SetParameter(AppParameters.Remember, true.ToString());
                 ParametersLoader.SetParameter(AppParameters.Username, _model.Username);
                 ParametersLoader.SetParameter(AppParameters.Password, PasswordEntry.Text);
             }
             else
             {
-                ParametersLoader.SetParameter(AppParameters.Remember, "false");
+                ParametersLoader.SetParameter(AppParameters.Remember, false.ToString());
                 ParametersLoader.SetParameter(AppParameters.Username, string.Empty);
                 ParametersLoader.SetParameter(AppParameters.Password, string.Empty);
             }
@@ -88,10 +83,7 @@ namespace WaiterApp
             {
                 ParametersLoader.SetParameter(AppParameters.WaiterId, waiter.Id.ToString());
                 ParametersLoader.SaveParameters();
-                var page = new MainPage(new MainPageViewModel(
-                    new OrderProductRepository(), new GroupRepository(), new SubgroupRepository(), new ProductRepository(),
-                    new TableRepository(), new OrderRepository()));
-                await Navigation.PushAsync(page);
+                await Navigation.PushAsync(App.Container.Resolve<MainPage>());
 
                 if (!_model.RememberUser)
                 {

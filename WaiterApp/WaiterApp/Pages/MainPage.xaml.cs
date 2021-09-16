@@ -8,16 +8,16 @@ using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace WaiterApp
+namespace WaiterApp.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : TabbedPage
     {
-        private readonly MainPageViewModel _mainPageViewModel;
+        private readonly IMainPageViewModel _mainPageViewModel;
         private readonly int _departmentId;
         private Page _lastPage;
 
-        public MainPage(MainPageViewModel mainPageViewModel)
+        public MainPage(IMainPageViewModel mainPageViewModel)
         {
             InitializeComponent();
             _lastPage = OrdersPage;
@@ -71,6 +71,7 @@ namespace WaiterApp
             Device.StartTimer(TimeSpan.FromSeconds(10), () =>
             {
                 // Do something
+                // TODO: replace 10 with parameter
                 
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -239,7 +240,7 @@ namespace WaiterApp
 
                 if (!parsed && !(((Entry)sender).Text == string.Empty))
                 {
-                    await DisplayAlert("Error", "Not a valid quantity!", "OK");
+                    await DisplayAlert("Error", "Not a valid quantity.", "OK");
                 }
                 else if (!(((Entry)sender).Text == string.Empty))
                 {

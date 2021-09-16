@@ -25,9 +25,9 @@ namespace Infrastructure.Business.Filter
             }
 
             var andSpecification = new AndSpecification<Product>(specsList);
-            var productsInnerFilter = new SpecificationChecker<Product>();
+            var specificationChecker = new SpecificationChecker<Product>();
 
-            return productsInnerFilter.Filter(unfilteredProducts, andSpecification);
+            return specificationChecker.Filter(unfilteredProducts, andSpecification);
         }
     }
 }

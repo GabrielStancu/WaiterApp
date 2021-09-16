@@ -5,8 +5,14 @@ using System.Collections.ObjectModel;
 
 namespace Infrastructure.ViewModels
 {
-    public class ParametersViewModel: BaseViewModel
+    public class ParametersViewModel : BaseViewModel, IParametersViewModel
     {
+        public ParametersViewModel(IDepartmentLoader departmentLoader)
+        {
+            _departmentLoader = departmentLoader;
+            LoadDepartments();
+            LoadParameters();
+        }
         private string _nickname;
         public string Nickname
         {
@@ -42,6 +48,8 @@ namespace Infrastructure.ViewModels
         }
 
         private bool _loadAtStartup;
+        private readonly IDepartmentLoader _departmentLoader;
+
         public bool LoadAtStartup
         {
             get => _loadAtStartup;
@@ -52,21 +60,14 @@ namespace Infrastructure.ViewModels
             }
         }
 
-        public ParametersViewModel()
-        {  
-            LoadDepartments();
-            LoadParameters();
-        }
-
         private void LoadDepartments()
         {
-            var departmentLoader = new DepartmentLoader();
-            var departments = departmentLoader.LoadAllDepartments();
+            var departments = _departmentLoader.LoadAllDepartments();
             departments.ForEach(dep => Departments.Add(dep));
 
-            if(Int32.TryParse(ParametersLoader.Parameters[AppParameters.DepartmentId], out int departmentId))
+            if (Int32.TryParse(ParametersLoader.Parameters[AppParameters.DepartmentId], out int departmentId))
             {
-                CrtDepartment = departmentLoader.LoadCurrentDepartment(departments, departmentId);
+                CrtDepartment = _departmentLoader.LoadCurrentDepartment(departments, departmentId);
             }
         }
 

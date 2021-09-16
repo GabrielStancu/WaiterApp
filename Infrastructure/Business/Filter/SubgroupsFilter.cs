@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Infrastructure.Business.Filter
 {
-    public class SubgroupFilter : ISubgroupFilter
+    public class SubgroupsFilter : ISubgroupsFilter
     {
         public IEnumerable<Subgroup> Filter(IEnumerable<Subgroup> unfilteredSubgroups, Group group)
         {

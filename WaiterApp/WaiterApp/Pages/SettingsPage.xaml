@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="WaiterApp.ParametersPage"
+             x:Class="WaiterApp.Pages.SettingsPage"
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Resources>
         <Style TargetType="Label" x:Key="LabelStyle">
@@ -38,25 +38,25 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="User:"/>
+                    <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Server name:"/>
                     <Frame Grid.Row="0" Grid.Column="1" Style="{StaticResource FrameStyle}">
-                        <Entry Text="{Binding Nickname}" Style="{StaticResource EntryStyle}"/>
+                        <Entry Text="{Binding ServerName}" Style="{StaticResource EntryStyle}"/>
                     </Frame>
-                    <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Department:"/>
+                    <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Database name:"/>
                     <Frame Grid.Row="1" Grid.Column="1" Style="{StaticResource FrameStyle}">
-                        <Picker Title="Pick department" ItemsSource="{Binding Departments}" ItemDisplayBinding="{Binding Name}"
-                        SelectedItem="{Binding CrtDepartment}" TextColor="Black" TitleColor="Black"/>
+                        <Entry Text="{Binding DatabaseName}" Style="{StaticResource EntryStyle}"/>
                     </Frame>
-                    <Label Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Buttons per line:"/>
+                    <Label Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Database user:"/>
                     <Frame Grid.Row="2" Grid.Column="1" Style="{StaticResource FrameStyle}">
-                        <Entry Text="{Binding ButtonsPerLine}" Style="{StaticResource EntryStyle}"
-                               Unfocused="OnEntryUnfocused"/>
+                        <Entry Text="{Binding DbUser}" Style="{StaticResource EntryStyle}"/>
                     </Frame>
-                    <!--<Label Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Load db at startup:"/>
-                    <CheckBox Grid.Row="2" Grid.Column="1" VerticalOptions="Center" IsChecked="{Binding LoadAtStartup}" Color="#EF233C"/>-->
+                    <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Database password:"/>
+                    <Frame Grid.Row="3" Grid.Column="1" Style="{StaticResource FrameStyle}">
+                        <Entry Text="{Binding DbPassword}" IsPassword="True" Style="{StaticResource EntryStyle}"/>
+                    </Frame>
                 </Grid>
             </Frame>
-            <Button Margin="40, 20" Text="Save" Clicked="OnSaveParameters"
+            <Button Margin="40, 20" Text="Save" Command="{Binding OnSaveParameters}" Clicked="OnSaveParameters"
                     BackgroundColor="#ef233c" TextColor="White"/>
         </StackLayout>
     </ContentPage.Content>

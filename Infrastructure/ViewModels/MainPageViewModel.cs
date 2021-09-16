@@ -12,7 +12,7 @@ using Xamarin.Forms;
 
 namespace Infrastructure.ViewModels
 {
-    public class MainPageViewModel: BaseViewModel
+    public class MainPageViewModel : BaseViewModel, IMainPageViewModel
     {
         public ObservableCollection<Group> Groups { get; set; }
             = new ObservableCollection<Group>();
@@ -33,24 +33,29 @@ namespace Infrastructure.ViewModels
         public List<Table> Tables { get; set; } = new List<Table>();
         public List<Order> Orders { get; set; } = new List<Order>();
 
-        private readonly OrderProductRepository _orderProductRepository;
-        private readonly GroupRepository _groupRepository;
-        private readonly SubgroupRepository _subgroupRepository;
-        private readonly ProductRepository _productRepository;
-        private readonly TableRepository _tableRepository;
-        private readonly OrderRepository _orderRepository;
-
+        private readonly IOrderProductRepository _orderProductRepository;
+        private readonly IGroupRepository _groupRepository;
+        private readonly ISubgroupRepository _subgroupRepository;
+        private readonly IProductRepository _productRepository;
+        private readonly ITableRepository _tableRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly ITableDrawer _tableDrawer;
+        private readonly IProductsFilter _productsFilter;
+        private readonly ISubgroupsFilter _subgroupsFilter;
         private List<Product> _unfilteredProducts = new List<Product>();
         private List<Group> _unfilteredGroups = new List<Group>();
         private List<Subgroup> _unfilteredSubgroups = new List<Subgroup>();
 
         public MainPageViewModel(
-            OrderProductRepository orderProductRepository,
-            GroupRepository groupRepository,
-            SubgroupRepository subgroupRepository,
-            ProductRepository productRepository,
-            TableRepository tableRepository,
-            OrderRepository orderRepository)
+            IOrderProductRepository orderProductRepository,
+            IGroupRepository groupRepository,
+            ISubgroupRepository subgroupRepository,
+            IProductRepository productRepository,
+            ITableRepository tableRepository,
+            IOrderRepository orderRepository,
+            ITableDrawer tableDrawer,
+            IProductsFilter productsFilter,
+            ISubgroupsFilter subgroupsFilter)
         {
             _orderProductRepository = orderProductRepository;
             _groupRepository = groupRepository;
@@ -58,6 +63,9 @@ namespace Infrastructure.ViewModels
             _productRepository = productRepository;
             _tableRepository = tableRepository;
             _orderRepository = orderRepository;
+            _tableDrawer = tableDrawer;
+            _productsFilter = productsFilter;
+            _subgroupsFilter = subgroupsFilter;
         }
 
         public void LoadOrdersForWaiter(int waiterId)
@@ -67,29 +75,28 @@ namespace Infrastructure.ViewModels
             WaiterOrderedProducts.Clear();
             foreach (var orderProduct in orderProducts)
             {
-                if(orderProduct.ServingTime.HasValue)
+                if (orderProduct.ServingTime.HasValue)
                 {
                     orderProduct.Color = Color.Green;
                 }
                 WaiterOrderedProducts.Add(orderProduct);
             }
-        } 
+        }
 
         public IEnumerable<DrawnTable> LoadTables(int departmentId)
         {
             Tables = _tableRepository.GetTablesForDepartment(departmentId) as List<Table>;
             Orders = _orderRepository.LoadOrdersForDepartment(departmentId) as List<Order>;
             int waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
-            var tableDrawer = new TableDrawer();
 
-            return tableDrawer.DrawTables(Tables, Orders, waiterId, 461, 744);
+            return _tableDrawer.DrawTables(Tables, Orders, waiterId, 461, 744);
         }
 
         public void LoadProducts(int departmentId)
         {
-            _unfilteredGroups = (List<Group>) _groupRepository.GetGroupsByDepartment(departmentId);
-            _unfilteredSubgroups = (List<Subgroup>) _subgroupRepository.GetSubgroupsByDepartment(departmentId);
-            _unfilteredProducts = (List<Product>) _productRepository.GetProductsByDepartment(departmentId);
+            _unfilteredGroups = (List<Group>)_groupRepository.GetGroupsByDepartment(departmentId);
+            _unfilteredSubgroups = (List<Subgroup>)_subgroupRepository.GetSubgroupsByDepartment(departmentId);
+            _unfilteredProducts = (List<Product>)_productRepository.GetProductsByDepartment(departmentId);
 
             Groups.Clear();
             Groups.Add(new Group()
@@ -148,17 +155,14 @@ namespace Infrastructure.ViewModels
                 Name = "-"
             });
 
-            var sf = new SubgroupFilter();
-            sf.Filter(_unfilteredSubgroups, SelectedGroup).ToList()
+            _subgroupsFilter.Filter(_unfilteredSubgroups, SelectedGroup).ToList()
                 .ForEach(s => Subgroups.Add(s));
         }
 
         public void FilterProducts()
         {
             Products.Clear();
-
-            var pf = new ProductsFilter();
-            pf.Filter(_unfilteredProducts, SelectedGroup, SelectedSubgroup, ProductName, ProductSequence).ToList()
+            _productsFilter.Filter(_unfilteredProducts, SelectedGroup, SelectedSubgroup, ProductName, ProductSequence).ToList()
                         .ForEach(p => Products.Add(p));
         }
 
@@ -174,13 +178,13 @@ namespace Infrastructure.ViewModels
 
             AddOrderProduct(p);
         }
-        
+
         public void UpdateProductQuantity(OrderProduct orderProduct)
         {
             ComputeOrderTotal();
             //update db
             _productRepository.Update(orderProduct.Product); //update the stock
-            if(orderProduct.Id != 0)
+            if (orderProduct.Id != 0)
             {
                 _orderProductRepository.Update(orderProduct); //update the order quantity
             }

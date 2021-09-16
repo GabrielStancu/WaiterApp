@@ -3,14 +3,14 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace WaiterApp
+namespace WaiterApp.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ParametersPage : ContentPage
     {
-        private readonly ParametersViewModel _model;
+        private readonly IParametersViewModel _model;
 
-        public ParametersPage(ParametersViewModel model)
+        public ParametersPage(IParametersViewModel model)
         {
             InitializeComponent();
             _model = model;

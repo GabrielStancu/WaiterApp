@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Business.Wifi
 {
-    public class WifiConnectionResponseParser
+    public class WifiConnectionResponseParser : IWifiConnectionResponseParser
     {
         public string GenerateResponse(WifiConnectionResponse response)
         {

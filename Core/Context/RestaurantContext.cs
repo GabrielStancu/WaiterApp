@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Context
 {
-    public class RestaurantContext: DbContext
+    public class RestaurantContext : DbContext
     {
         public DbSet<Product> Product { get; private set; }
         public DbSet<Group> Group { get; private set; }

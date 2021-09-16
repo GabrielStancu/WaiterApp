@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Business.DeviceInfo
 {
-    public class DeviceInfoCollector
+    public class DeviceInfoCollector : IDeviceInfoCollector
     {
         public (double Width, double Height) GetScreenDimensions()
         {

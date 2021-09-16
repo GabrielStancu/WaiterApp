@@ -3,9 +3,9 @@ using Infrastructure.Business.Parameters;
 
 namespace Infrastructure.ViewModels
 {
-    public class SettingsViewModel: BaseViewModel
+    public class SettingsViewModel : BaseViewModel, ISettingsViewModel
     {
-        public SettingsViewModel(DatabaseConnectionChecker checker)
+        public SettingsViewModel(IDatabaseConnectionChecker checker)
         {
             _checker = checker;
             ServerName = ParametersLoader.Parameters[AppParameters.Server];
@@ -14,7 +14,7 @@ namespace Infrastructure.ViewModels
             DbPassword = ParametersLoader.Parameters[AppParameters.DbPassword];
         }
 
-        
+
         private string _serverName;
         public string ServerName
         {
@@ -55,8 +55,8 @@ namespace Infrastructure.ViewModels
                 SetProperty<string>(ref _dbPassword, value);
             }
         }
-        
-        private readonly DatabaseConnectionChecker _checker;
+
+        private readonly IDatabaseConnectionChecker _checker;
 
         public void SaveParameters()
         {

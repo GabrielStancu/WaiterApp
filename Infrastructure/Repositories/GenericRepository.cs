@@ -10,13 +10,23 @@ using System.Linq;
 
 namespace Infrastructure.Repositories
 {
-    public class GenericRepository<T> where T: BaseModel
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseModel
     {
+        private readonly IWifiConnectionChecker _wifiConnectionChecker;
+        private readonly IWifiConnectionResponseParser _wifiConnectionResponseParser;
+
+        public GenericRepository(
+            IWifiConnectionChecker wifiConnectionChecker,
+            IWifiConnectionResponseParser wifiConnectionResponseParser)
+        {
+            _wifiConnectionChecker = wifiConnectionChecker;
+            _wifiConnectionResponseParser = wifiConnectionResponseParser;
+        }
         protected RestaurantContext CreateContext()
         {
             try
             {
-                var response = WifiConnectionChecker.CheckConnection();
+                var response = _wifiConnectionChecker.CheckConnection();
                 if (response == WifiConnectionResponse.WIFI_DATA_INTERNET)
                 {
                     var restaurantDatabaseContext = (RestaurantContext)Activator.CreateInstance(typeof(RestaurantContext));
@@ -27,8 +37,7 @@ namespace Infrastructure.Repositories
                 }
                 else
                 {
-                    var parser = new WifiConnectionResponseParser();
-                    string msg = parser.GenerateResponse(response);
+                    string msg = _wifiConnectionResponseParser.GenerateResponse(response);
                     throw new WifiConnectionException(msg);
                 }
             }
@@ -43,7 +52,7 @@ namespace Infrastructure.Repositories
             using (var context = CreateContext())
             {
                 return context.Set<T>().Find(id);
-            }  
+            }
         }
 
         public List<T> SelectAll()
@@ -51,7 +60,7 @@ namespace Infrastructure.Repositories
             using (var context = CreateContext())
             {
                 return context.Set<T>().ToList();
-            }   
+            }
         }
 
         public void Insert(T entity)
@@ -74,7 +83,7 @@ namespace Infrastructure.Repositories
             {
                 context.Set<T>().Update(entity);
                 context.SaveChanges();
-            }  
+            }
         }
 
         public void Delete(T entity)
@@ -83,7 +92,7 @@ namespace Infrastructure.Repositories
             {
                 context.Set<T>().Remove(entity);
                 context.SaveChanges();
-            } 
+            }
         }
     }
 }

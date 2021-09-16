@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Infrastructure.Business.Filter
 {
-    public interface ISubgroupFilter
+    public interface ISubgroupsFilter
     {
         IEnumerable<Subgroup> Filter(IEnumerable<Subgroup> unfilteredSubgroups, Group group);
     }
