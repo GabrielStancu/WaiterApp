@@ -1,10 +1,11 @@
 ﻿using Core.Context;
+using Infrastructure.Business.ControlsDrawing;
 using Infrastructure.Business.Database;
 using Infrastructure.Business.DeviceInfo;
+using Infrastructure.Business.Factories;
 using Infrastructure.Business.Filter;
 using Infrastructure.Business.Parameters;
 using Infrastructure.Business.Specification;
-using Infrastructure.Business.TablesDrawing;
 using Infrastructure.Business.Wifi;
 using Infrastructure.Repositories;
 using Infrastructure.ViewModels;
@@ -24,6 +25,7 @@ namespace WaiterApp.Utils
             RegisterInterfaceClassPairs(container, typeof(IGenericRepository<>).Assembly.FullName);
             RegisterInterfaceClassPairs(container, typeof(IConnectionStringBuilder).Assembly.FullName);
             RegisterInterfaceClassPairs(container, typeof(IDeviceInfoCollector).Assembly.FullName);
+            RegisterInterfaceClassPairs(container, typeof(ITableButtonFactory).Assembly.FullName);
             RegisterInterfaceClassPairs(container, typeof(IProductsFilter).Assembly.FullName);
             RegisterInterfaceClassPairs(container, typeof(IDepartmentLoader).Assembly.FullName);
             RegisterInterfaceClassPairs(container, typeof(ISpecification<>).Assembly.FullName);

@@ -1,7 +1,7 @@
 ﻿using Core.Models;
 using System.Collections.Generic;
 
-namespace Infrastructure.Business.TablesDrawing
+namespace Infrastructure.Business.ControlsDrawing
 {
     public interface ITableDrawer
     {

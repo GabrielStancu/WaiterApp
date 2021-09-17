@@ -1,6 +1,7 @@
 ﻿using Core.Business;
 using Core.Models;
 using Infrastructure.Business;
+using Infrastructure.Business.Factories;
 using Infrastructure.Business.Parameters;
 using Infrastructure.ViewModels;
 using System;
@@ -14,14 +15,21 @@ namespace WaiterApp.Pages
     public partial class MainPage : TabbedPage
     {
         private readonly IMainPageViewModel _mainPageViewModel;
+        private readonly ITableButtonFactory _tableButtonFactory;
+        private readonly IProductsDrawer _productsDrawer;
         private readonly int _departmentId;
         private Page _lastPage;
 
-        public MainPage(IMainPageViewModel mainPageViewModel)
+        public MainPage(
+            IMainPageViewModel mainPageViewModel,
+            ITableButtonFactory tableButtonFactory,
+            IProductsDrawer productsDrawer)
         {
             InitializeComponent();
             _lastPage = OrdersPage;
             _mainPageViewModel = mainPageViewModel;
+            _tableButtonFactory = tableButtonFactory;
+            _productsDrawer = productsDrawer;
             BindingContext = _mainPageViewModel;
 
             CurrentPageChanged += OnMainPageCurrentPageChanged;
@@ -29,6 +37,22 @@ namespace WaiterApp.Pages
             LoadOrdersOnTimer();
             LoadTables();
             LoadProducts();
+        }
+
+        private void LoadProducts()
+        {
+            _mainPageViewModel.LoadProducts(_departmentId);
+            DrawProducts();
+        }
+
+        private void DrawProducts()
+        {
+            _productsDrawer.Draw(ProductsGrid, _mainPageViewModel.Products);
+
+            foreach (var child in ProductsGrid.Children)
+            {
+                (child as Button).Clicked += OnProductButtonClicked;
+            }
         }
 
         private void OnMainPageCurrentPageChanged(object sender, EventArgs e)
@@ -92,27 +116,15 @@ namespace WaiterApp.Pages
             _mainPageViewModel.LoadOrdersForWaiter(waiterId);
         }
 
-        public void LoadTables()
+        private void LoadTables()
         {
             var tables = _mainPageViewModel.LoadTables(_departmentId);
             TablesLayout.Children.Clear();
 
             foreach (var table in tables)
             {
-                var tableMessage = (table.Total == 0) ? string.Empty : table.Total.ToString();
-                var tableButton = new Button()
-                {
-                    BackgroundColor = table.Color,
-                    Text = $"{table.WaiterName ?? string.Empty}\n[{table.TableNumber}]{tableMessage}",
-                    CornerRadius = 6,
-                    HeightRequest = table.LengthY,
-                    WidthRequest = table.LengthX,
-                    BorderWidth = 2,
-                    BorderColor = Color.Black,
-                    ClassId = table.TableNumber.ToString()
-                };
+                var tableButton = _tableButtonFactory.Build(table);
                 tableButton.Clicked += OnTableButtonClicked;
-
                 TablesLayout.Children.Add(tableButton, new Point(table.StartX, table.StartY));
             }
         }
@@ -137,65 +149,7 @@ namespace WaiterApp.Pages
                 {
                     CurrentPage = OrderedProductsPage;
                     _mainPageViewModel.LoadTableOrderedProducts();
-                }
-                
-            }
-        }
-
-        public void LoadProducts()
-        {
-            _mainPageViewModel.LoadProducts(_departmentId);
-            DrawProducts();
-        }
-
-        private void DrawProducts()
-        {
-            ProductsGrid.Children?.Clear();
-
-            int productsCount = _mainPageViewModel.Products.Count;
-            int productsPerRow = Int32.Parse(ParametersLoader.Parameters[AppParameters.ButtonsPerLine]);
-            int rows = productsCount / productsPerRow;
-            int crtRow = 0, crtCol = 0;
-            if(productsCount % productsPerRow != 0)
-            {
-                rows++;
-            }
-
-
-            ProductsGrid.RowDefinitions = new RowDefinitionCollection();
-            ProductsGrid.ColumnDefinitions = new ColumnDefinitionCollection();
-
-            for(int i = 0; i<productsPerRow; i++)
-            {
-                ProductsGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            }
-
-            for(int i = 0; i<rows; i++)
-            {
-                ProductsGrid.RowDefinitions.Add(new RowDefinition());
-            }
-
-            for(int i = 0; i< productsCount; i++)
-            {
-                var productBtn = new Button
-                {
-                    Text = _mainPageViewModel.Products[i].Name,
-                    BackgroundColor = Color.DarkGray,
-                    TextColor = Color.White,
-                    CornerRadius = 20,
-                    BindingContext = _mainPageViewModel.Products[i],
-                    HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.CenterAndExpand,
-                    HeightRequest = 100
-                };
-
-                productBtn.Clicked += OnProductButtonClicked;
-                ProductsGrid.Children.Add(productBtn, crtCol++, crtRow);
-                if(crtCol == productsPerRow)
-                {
-                    crtCol = 0;
-                    crtRow++;
-                }
+                }   
             }
         }
 

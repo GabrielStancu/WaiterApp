@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Infrastructure.Business.TablesDrawing
+namespace Infrastructure.Business.ControlsDrawing
 {
     public class TableDrawer : ITableDrawer
     {
