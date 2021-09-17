@@ -34,6 +34,16 @@ namespace Infrastructure.ViewModels
         public string ProductSequence { get; set; } = string.Empty;
         public List<Table> Tables { get; set; } = new List<Table>();
         public List<Order> Orders { get; set; } = new List<Order>();
+        private double _currentTableTotal;
+        public double CurrentTableTotal
+        {
+            get => _currentTableTotal;
+            set
+            {
+                _currentTableTotal = value;
+                SetProperty<double>(ref _currentTableTotal, value);
+            }
+        }
 
         private readonly IOrderProductRepository _orderProductRepository;
         private readonly IGroupRepository _groupRepository;
@@ -244,7 +254,7 @@ namespace Infrastructure.ViewModels
             _orderProductRepository.Delete(orderProduct);
             _orderRepository.Update(CurrentOrder);
 
-            if (TableOrderedProducts.Count == 0) //this checks only the current table, should do for all tables?
+            if (TableOrderedProducts.Count == 0) 
             {
                 SetTableStatusOnEmpty();
                 _tableRepository.Update(SelectedTable);
@@ -263,6 +273,7 @@ namespace Infrastructure.ViewModels
             {
                 CurrentOrder.Total += orderProduct.Quantity * double.Parse(orderProduct.Product.Price.ToString());
             }
+            CurrentTableTotal = CurrentOrder.Total;
         }
         private void SetTableStatusOnEmpty()
         {

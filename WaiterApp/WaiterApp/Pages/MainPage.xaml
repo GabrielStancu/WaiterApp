@@ -110,6 +110,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="2.5*"/>
                 <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
 
             <StackLayout Grid.Row="0">
@@ -236,6 +237,24 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </StackLayout>
+            <Grid Grid.Row="2"
+                  BackgroundColor="DarkGray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Label Text="Total:"
+                       Grid.Column="0"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       TextColor="Black"/>
+                <Label Text="{Binding CurrentTableTotal}"
+                       Grid.Column="1"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"
+                       TextColor="Black"/>
+            </Grid>
         </Grid>
     </ContentPage>
 
@@ -246,22 +265,20 @@
             <Frame VerticalOptions="Fill"
                    BackgroundColor="White">
                 <Frame BackgroundColor="Transparent"
-                       Margin="-20, -20, -20, -20">
+                       Margin="-40">
                     <Grid HeightRequest="100">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <Label Grid.Column="0"
                                Text="Product name"
                                TextColor="Black"
                                HorizontalOptions="Center"
-                               VerticalOptions="Center"
-                                   />
+                               VerticalOptions="Center"/>
                         <Label Grid.Column="1"
                                Text="Price"
                                TextColor="Black"
@@ -274,11 +291,6 @@
                                VerticalOptions="Center"/>
                         <Label Grid.Column="3"
                                Text="Table #"
-                               TextColor="Black"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"/>
-                        <Label Grid.Column="4"
-                               Text="Delete"
                                TextColor="Black"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"/>
@@ -299,7 +311,6 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="2*"/>
                                     </Grid.ColumnDefinitions>
 
                                     <Label Grid.Column="0"
@@ -310,18 +321,13 @@
                                            Text="{Binding Product.Price}"
                                            TextColor="Black"
                                            VerticalOptions="Center"/>
-                                    <Entry Grid.Column="2"
+                                    <Label Grid.Column="2"
                                            Text="{Binding Quantity}"
-                                           TextColor="Black"
-                                           TextChanged="OnOrderProductQuantityTextChanged"/>
+                                           TextColor="Black"/>
                                     <Label Grid.Column="3"
                                            Text="{Binding Order.Table.TableNumber}"
                                            TextColor="Black"
                                            VerticalOptions="Center"/>
-                                    <Button Grid.Column="4"
-                                            Text="Delete Product"
-                                            Clicked="OnDeleteOrderProductClicked"
-                                            HeightRequest="70"/>
                                 </Grid>
                             </ViewCell.View>
                         </ViewCell>
