@@ -14,6 +14,7 @@
         public static string DepartmentId { get => "departmentId"; }
         public static string LoadDb { get => "loadDb"; }
         public static string ButtonsPerLine { get => "buttonsPerLine"; }
+        public static string ReadOrdersTimer { get => "readOrdersTimer"; }
 
     }
 }

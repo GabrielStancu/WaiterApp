@@ -52,6 +52,11 @@
                         <Entry Text="{Binding ButtonsPerLine}" Style="{StaticResource EntryStyle}"
                                Unfocused="OnEntryUnfocused"/>
                     </Frame>
+                    <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Refresh orders (s):"/>
+                    <Frame Grid.Row="3" Grid.Column="1" Style="{StaticResource FrameStyle}">
+                        <Entry Text="{Binding RefreshOrdersTime}" Style="{StaticResource EntryStyle}"
+                               Unfocused="OnEntryUnfocused"/>
+                    </Frame>
                     <!--<Label Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Load db at startup:"/>
                     <CheckBox Grid.Row="2" Grid.Column="1" VerticalOptions="Center" IsChecked="{Binding LoadAtStartup}" Color="#EF233C"/>-->
                 </Grid>

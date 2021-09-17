@@ -20,9 +20,11 @@ namespace Infrastructure.ViewModels
             = new ObservableCollection<Subgroup>();
         public ObservableCollection<Product> Products { get; set; }
             = new ObservableCollection<Product>();
-        public ObservableCollection<OrderProduct> WaiterOrderedProducts { get; set; }
+        public ObservableCollection<OrderProduct> WaiterOrderedProductsRecipes { get; set; }
             = new ObservableCollection<OrderProduct>();
         public ObservableCollection<OrderProduct> TableOrderedProducts { get; set; }
+            = new ObservableCollection<OrderProduct>();
+        public ObservableCollection<OrderProduct> WaiterOrderedProducts { get; set; }
             = new ObservableCollection<OrderProduct>();
         public Group SelectedGroup { get; set; }
         public Subgroup SelectedSubgroup { get; set; }
@@ -72,15 +74,23 @@ namespace Infrastructure.ViewModels
         {
             var orderProducts = _orderProductRepository.LoadOrdersForWaiter(waiterId);
 
-            WaiterOrderedProducts.Clear();
+            WaiterOrderedProductsRecipes.Clear();
             foreach (var orderProduct in orderProducts)
             {
                 if (orderProduct.ServingTime.HasValue)
                 {
                     orderProduct.Color = Color.Green;
                 }
-                WaiterOrderedProducts.Add(orderProduct);
+                WaiterOrderedProductsRecipes.Add(orderProduct);
             }
+        }
+
+        public void LoadAllOrdersForWaiter(int waiterId)
+        {
+            var orderProducts = _orderProductRepository.LoadAllOrdersForWaiter(waiterId).ToList();
+
+            WaiterOrderedProducts.Clear();
+            orderProducts.ForEach(op => WaiterOrderedProducts.Add(op));
         }
 
         public IEnumerable<DrawnTable> LoadTables(int departmentId)
@@ -140,6 +150,18 @@ namespace Infrastructure.ViewModels
             }
         }
 
+        private void LoadWaiterOrderedProducts()
+        {
+            var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
+            var orderedProducts = _orderProductRepository.LoadAllOrdersForWaiter(waiterId);
+
+            WaiterOrderedProducts.Clear();
+            foreach (var orderedProduct in orderedProducts)
+            {
+                WaiterOrderedProducts.Add(orderedProduct);
+            }
+        }
+
         public void ClearTable()
         {
             TableOrderedProducts.Clear();
@@ -182,24 +204,47 @@ namespace Infrastructure.ViewModels
         public void UpdateProductQuantity(OrderProduct orderProduct)
         {
             ComputeOrderTotal();
+            
             //update db
             _productRepository.Update(orderProduct.Product); //update the stock
             if (orderProduct.Id != 0)
             {
                 _orderProductRepository.Update(orderProduct); //update the order quantity
+
+                var tableOp = TableOrderedProducts.FirstOrDefault(op => op.Id == orderProduct.Id);
+                var waiterOp = WaiterOrderedProducts.FirstOrDefault(op => op.Id == orderProduct.Id);
+
+                if (tableOp != null)
+                {
+                    tableOp.Quantity = orderProduct.Quantity;
+                }
+                if (waiterOp != null)
+                {
+                    waiterOp.Quantity = orderProduct.Quantity;
+                } 
             }
             _orderRepository.Update(CurrentOrder); //update the order total
         }
         public void DeleteProduct(OrderProduct orderProduct)
         {
-            TableOrderedProducts.Remove(orderProduct);
+            var tableOp = TableOrderedProducts.FirstOrDefault(op => op.Id == orderProduct.Id);
+            var waiterOp = WaiterOrderedProducts.FirstOrDefault(op => op.Id == orderProduct.Id);
+
+            if(tableOp != null)
+            {
+                TableOrderedProducts.Remove(tableOp);
+            }
+            if(waiterOp != null)
+            {
+                WaiterOrderedProducts.Remove(waiterOp);
+            }
             ComputeOrderTotal();
 
             //update db
             _orderProductRepository.Delete(orderProduct);
             _orderRepository.Update(CurrentOrder);
 
-            if (TableOrderedProducts.Count == 0)
+            if (TableOrderedProducts.Count == 0) //this checks only the current table, should do for all tables?
             {
                 SetTableStatusOnEmpty();
                 _tableRepository.Update(SelectedTable);
@@ -251,6 +296,7 @@ namespace Infrastructure.ViewModels
             {
                 CreateNewOrderProduct(p);
                 LoadTableOrderedProducts();
+                LoadWaiterOrderedProducts();
             }
             else
             {

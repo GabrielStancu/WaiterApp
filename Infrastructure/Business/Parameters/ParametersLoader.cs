@@ -23,7 +23,8 @@ namespace Infrastructure.Business.Parameters
                 { AppParameters.Nickname, string.Empty },
                 { AppParameters.DepartmentId, "0" },
                 { AppParameters.LoadDb, "false" },
-                { AppParameters.ButtonsPerLine, "3" }
+                { AppParameters.ButtonsPerLine, "3" },
+                { AppParameters.ReadOrdersTimer, "10" }
             };
 
             StoreParameters();

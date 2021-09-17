@@ -25,6 +25,17 @@ namespace Infrastructure.Repositories
                 .ToList();
         }
 
+        public IEnumerable<OrderProduct> LoadAllOrdersForWaiter(int waiterId)
+        {
+            return CreateContext()
+                .OrderProduct
+                .Where(op => op.Order.WaiterId == waiterId)
+                .Include(op => op.Product)
+                .Include(op => op.Order)
+                .Include(op => op.Order.Table)
+                .ToList();
+        }
+
         public IEnumerable<OrderProduct> LoadOrdersForTable(int tableId)
         {
             return CreateContext()

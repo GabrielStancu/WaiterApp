@@ -22,8 +22,6 @@ namespace Core.Models
                 SetProperty<double>(ref _quantity, value);
             }
         }
-        //public bool Served { get; set; }
-        //public bool Prepared { get; set; }
         public DateTime PlacementTime { get; set; }
         public DateTime? ServingTime { get; set; }
         private Color _color;

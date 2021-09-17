@@ -7,6 +7,7 @@ namespace Infrastructure.Repositories
     {
         IEnumerable<OrderProduct> LoadOrdersForTable(int tableId);
         IEnumerable<OrderProduct> LoadOrdersForWaiter(int waiterId);
+        IEnumerable<OrderProduct> LoadAllOrdersForWaiter(int waiterId);
         void RegisterNewOrderProduct(OrderProduct orderProduct);
     }
 }

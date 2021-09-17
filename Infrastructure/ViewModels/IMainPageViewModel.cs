@@ -19,6 +19,7 @@ namespace Infrastructure.ViewModels
         ObservableCollection<Subgroup> Subgroups { get; set; }
         ObservableCollection<OrderProduct> TableOrderedProducts { get; set; }
         List<Table> Tables { get; set; }
+        ObservableCollection<OrderProduct> WaiterOrderedProductsRecipes { get; set; }
         ObservableCollection<OrderProduct> WaiterOrderedProducts { get; set; }
 
         void AddProduct(Product p);
@@ -27,6 +28,7 @@ namespace Infrastructure.ViewModels
         void FilterProducts();
         void FilterSubgroups();
         void LoadOrdersForWaiter(int waiterId);
+        void LoadAllOrdersForWaiter(int waiterId);
         void LoadProducts(int departmentId);
         void LoadTableOrderedProducts();
         IEnumerable<DrawnTable> LoadTables(int departmentId);

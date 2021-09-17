@@ -13,6 +13,11 @@ namespace Infrastructure.ViewModels
             LoadDepartments();
             LoadParameters();
         }
+
+        public ObservableCollection<Department> Departments { get; set; } 
+            = new ObservableCollection<Department>();
+        private readonly IDepartmentLoader _departmentLoader;
+
         private string _nickname;
         public string Nickname
         {
@@ -34,8 +39,7 @@ namespace Infrastructure.ViewModels
                 SetProperty<string>(ref _buttonsPerLine, value);
             }
         }
-
-        public ObservableCollection<Department> Departments { get; set; } = new ObservableCollection<Department>();
+        
         private Department _crtDepartment;
         public Department CrtDepartment
         {
@@ -48,8 +52,6 @@ namespace Infrastructure.ViewModels
         }
 
         private bool _loadAtStartup;
-        private readonly IDepartmentLoader _departmentLoader;
-
         public bool LoadAtStartup
         {
             get => _loadAtStartup;
@@ -57,6 +59,17 @@ namespace Infrastructure.ViewModels
             {
                 _loadAtStartup = value;
                 SetProperty<bool>(ref _loadAtStartup, value);
+            }
+        }
+
+        private string _refreshOrdersTime;
+        public string RefreshOrdersTime
+        {
+            get => _refreshOrdersTime;
+            set
+            {
+                _refreshOrdersTime = value;
+                SetProperty<string>(ref _refreshOrdersTime, value);
             }
         }
 
@@ -75,6 +88,7 @@ namespace Infrastructure.ViewModels
         {
             Nickname = ParametersLoader.Parameters[AppParameters.Nickname];
             ButtonsPerLine = ParametersLoader.Parameters[AppParameters.ButtonsPerLine];
+            RefreshOrdersTime = ParametersLoader.Parameters[AppParameters.ReadOrdersTimer];
         }
 
         public bool SaveParameters()

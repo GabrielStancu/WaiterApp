@@ -19,6 +19,7 @@ namespace WaiterApp.Pages
         private readonly IProductsDrawer _productsDrawer;
         private readonly int _departmentId;
         private Page _lastPage;
+        private bool _loadedPage = false;
 
         public MainPage(
             IMainPageViewModel mainPageViewModel,
@@ -37,6 +38,8 @@ namespace WaiterApp.Pages
             LoadOrdersOnTimer();
             LoadTables();
             LoadProducts();
+            LoadAllOrders();
+            _loadedPage = true;
         }
 
         private void LoadProducts()
@@ -73,7 +76,7 @@ namespace WaiterApp.Pages
             {
                 _lastPage = ProductsPage;
             }
-            else if (CurrentPage == OrderedProductsPage && _lastPage == ProductsPage)
+            else if (CurrentPage == OrderedProductsPage)
             {
                 _lastPage = OrderedProductsPage;
             }
@@ -91,12 +94,12 @@ namespace WaiterApp.Pages
 
         private void LoadOrdersOnTimer()
         {
+            string timerRefreshParam = ParametersLoader.Parameters[AppParameters.ReadOrdersTimer];
+            int timerRefresh = int.Parse(timerRefreshParam);
             LoadOrders();
-            Device.StartTimer(TimeSpan.FromSeconds(10), () =>
-            {
-                // Do something
-                // TODO: replace 10 with parameter
-                
+
+            Device.StartTimer(TimeSpan.FromSeconds(timerRefresh), () =>
+            {                
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     var page = (TabbedPage)this;
@@ -114,6 +117,12 @@ namespace WaiterApp.Pages
         {
             var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
             _mainPageViewModel.LoadOrdersForWaiter(waiterId);
+        }
+
+        private void LoadAllOrders()
+        {
+            var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
+            _mainPageViewModel.LoadAllOrdersForWaiter(waiterId);
         }
 
         private void LoadTables()
@@ -139,15 +148,14 @@ namespace WaiterApp.Pages
             {
                 _mainPageViewModel.SelectedTable =
                     _mainPageViewModel.Tables.FirstOrDefault(t => t.TableNumber == tableNumber);
+                CurrentPage = ProductsPage;
 
                 if(_mainPageViewModel.SelectedTable.Status == TableStatus.Free)
                 {
-                    CurrentPage = ProductsPage;
                     _mainPageViewModel.ClearTable();
                 }
                 else if (_mainPageViewModel.SelectedTable.Status == TableStatus.TakenByCurrentWaiter)
                 {
-                    CurrentPage = OrderedProductsPage;
                     _mainPageViewModel.LoadTableOrderedProducts();
                 }   
             }
@@ -188,7 +196,7 @@ namespace WaiterApp.Pages
         {
             var orderProduct = (OrderProduct)((Entry)sender).BindingContext;
 
-            if (orderProduct != null)
+            if (orderProduct != null && _loadedPage)
             {
                 bool parsed = double.TryParse(((Entry)sender).Text, out double _);
 
