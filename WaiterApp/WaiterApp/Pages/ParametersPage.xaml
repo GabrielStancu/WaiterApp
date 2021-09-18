@@ -39,8 +39,7 @@
                             SelectedItem="{Binding CrtDepartment}" 
                             Grid.Row="1" 
                             Grid.Column="1" 
-                            TextColor="#4F000B" 
-                            TitleColor="#4F000B"/>
+                            Style="{StaticResource PickerStyle}"/>
                     <Label Grid.Row="2" 
                            Grid.Column="0" 
                            Style="{StaticResource LabelStyle}" 

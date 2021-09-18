@@ -31,7 +31,7 @@ namespace Infrastructure.Business.ControlsDrawing
                     TableNumber = table.TableNumber,
                     Color = GetTableColor(table, orders, waiterId),
                     Total = GetOrderTotal(table, orders),
-                    WaiterName = table.Waiter?.FirstName,
+                    WaiterName = table.Waiter?.Nickname,
                     StartX = (int)(table.StartX * widthRatio) - xOffset,
                     StartY = (int)(table.StartY * heightRatio) - yOffset,
                     LengthX = table.LengthX,
@@ -57,7 +57,7 @@ namespace Infrastructure.Business.ControlsDrawing
 
             if (crtTableOrder is null)
             {
-                return Color.Green;
+                return Color.FromHex("#40916c");
             }
 
             if (waiterId == crtTableOrder.WaiterId)
@@ -65,7 +65,7 @@ namespace Infrastructure.Business.ControlsDrawing
                 return Color.FromHex("#922636");
             }
 
-            return Color.Red;
+            return Color.FromHex("#434343");
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Infrastructure.Business.Factories
             return new Button
             {
                 Text = product.Name,
-                BackgroundColor = Color.DarkGray,
+                BackgroundColor = Color.FromHex("#922636"),
                 TextColor = Color.White,
                 CornerRadius = 20,
                 BindingContext = product,

@@ -40,5 +40,9 @@
             <Setter Property="FontSize" Value="24"/>
             <Setter Property="PlaceholderColor" Value="#7A0010"/>
         </Style>
+        <Style x:Key="PickerStyle" TargetType="Picker">
+            <Setter Property="TextColor" Value="#4F000B"/>
+            <Setter Property="TitleColor" Value="#4F000B"/>
+        </Style>
     </Application.Resources>
 </Application>

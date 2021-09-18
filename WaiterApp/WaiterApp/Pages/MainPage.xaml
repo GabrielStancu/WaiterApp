@@ -5,12 +5,13 @@
             NavigationPage.HasNavigationBar="False"
             x:Name="WaiterMainPage"
             BackgroundColor="White"
-            BarBackgroundColor="#4F000B">
+            BarBackgroundColor="#4F000B"
+            xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView">
   <!--Pages can be added as references or inline-->
     <ContentPage x:Name="OrdersPage"
                  Title="Orders">
         <StackLayout Margin="10">
-            <Frame BackgroundColor="#4F000B" CornerRadius="20">
+            <Frame BackgroundColor="#4F000B" CornerRadius="10">
                 <Grid HeightRequest="50">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1.75*"/>
@@ -40,7 +41,7 @@
                     <DataTemplate>
                         <ViewCell>
                             <ViewCell.View>
-                                <Frame CornerRadius="30" 
+                                <Frame CornerRadius="40" 
                                        Margin="10, 3"
                                        BackgroundColor="{Binding Color}">
                                     <Grid>
@@ -85,8 +86,8 @@
     </ContentPage>
     <ContentPage x:Name="ProductsPage"
                  Title="Products"
-                 BackgroundColor="LightGray">
-        <Grid>
+                 BackgroundColor="White">
+        <Grid Margin="5, 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2.5*"/>
                 <RowDefinition Height="1.5*"/>
@@ -105,210 +106,201 @@
                     </Grid.ColumnDefinitions>
 
                     <Picker Grid.Row="0"
-                        Grid.Column="0"
-                        Title="Group"
-                        TitleColor="Black"
-                        TextColor="Black"
-                        ItemsSource="{Binding Groups}"
-                        ItemDisplayBinding="{Binding Name}"
-                        SelectedItem="{Binding SelectedGroup}"
-                        SelectedIndexChanged="OnGroupSelectedItemChanged"/>
+                            Grid.Column="0"
+                            Title="Group"
+                            ItemsSource="{Binding Groups}"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedItem="{Binding SelectedGroup}"
+                            SelectedIndexChanged="OnGroupSelectedItemChanged"
+                            Style="{StaticResource PickerStyle}"/>
                     <Picker Grid.Row="0"
-                        Grid.Column="1"
-                        Title="Subgroup"
-                        TitleColor="Black"
-                        TextColor="Black"
-                        ItemsSource="{Binding Subgroups}"
-                        ItemDisplayBinding="{Binding Name}"
-                        SelectedItem="{Binding SelectedSubgroup}"
-                        SelectedIndexChanged="OnSubgroupSelectedIndexChanged"
-                        HeightRequest="140"/>
+                            Grid.Column="1"
+                            Title="Subgroup"
+                            ItemsSource="{Binding Subgroups}"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedItem="{Binding SelectedSubgroup}"
+                            SelectedIndexChanged="OnSubgroupSelectedIndexChanged"
+                            Style="{StaticResource PickerStyle}"/>
                     <Entry Grid.Row="1"
-                       Grid.Column="0"
-                       Text="{Binding ProductName}"
-                       TextChanged="OnProductNameTextChanged"
-                       TextColor="Black"
-                       Placeholder="Product Name"
-                       PlaceholderColor="DarkGray"/>
+                           Grid.Column="0"
+                           Text="{Binding ProductName}"
+                           TextChanged="OnProductNameTextChanged"
+                           Placeholder="Product Name"
+                           Style="{StaticResource EntryStyle}"
+                           FontSize="20"/>
                     <Entry Grid.Row="1"
-                       Grid.Column="1"
-                       Text="{Binding ProductSequence}"
-                       TextChanged="OnProductSequenceTextChanged"
-                       TextColor="Black"
-                       Placeholder="Product Sequence"
-                       PlaceholderColor="DarkGray"/>
+                           Grid.Column="1"
+                           Text="{Binding ProductSequence}"
+                           TextChanged="OnProductSequenceTextChanged"
+                           Placeholder="Product Sequence"
+                           Style="{StaticResource EntryStyle}"
+                           FontSize="20"/>
                 </Grid>
 
                 <Grid x:Name="ProductsGrid"/>
             </StackLayout>
-            
-            <StackLayout Grid.Row="1">
-                <Frame VerticalOptions="Fill"
-                   BackgroundColor="White">
-                    <Frame BackgroundColor="Transparent"
-                       Margin="-20, -20, -20, -20">
-                        <Grid HeightRequest="100">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="0"
-                                   Text="Product name"
-                                   TextColor="Black"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                            <Label Grid.Column="1"
-                                   Text="Price"
-                                   TextColor="Black"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                            <Label Grid.Column="2"
-                                   Text="Qty"
-                                   TextColor="Black"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                            <Label Grid.Column="3"
-                                   Text="Delete"
-                                   TextColor="Black"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </Grid>
+            <yummy:PancakeView Grid.Row="1"
+                   BackgroundColor="#922636"
+                   CornerRadius="15, 15, 0, 0">
+                <StackLayout>
+                    <Frame VerticalOptions="Fill"
+                       BackgroundColor="Transparent">
+                        <Frame BackgroundColor="#4F000B"
+                           Margin="-40, -20, -40, -20">
+                            <Grid HeightRequest="120">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0"
+                                       Text="Product name"
+                                       Style="{StaticResource HeaderLabelStyle}"/>
+                                <Label Grid.Column="1"
+                                       Text="Price"
+                                       Style="{StaticResource HeaderLabelStyle}"/>
+                                <Label Grid.Column="2"
+                                       Text="Qty"
+                                       Style="{StaticResource HeaderLabelStyle}"/>
+                                <Label Grid.Column="3"
+                                       Text="Delete"
+                                       Style="{StaticResource HeaderLabelStyle}"/>
+                            </Grid>
+                        </Frame>
                     </Frame>
-                </Frame>
 
-                <ListView ItemsSource="{Binding TableOrderedProducts}"
-                          HasUnevenRows="True"
-                          VerticalOptions="Fill">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <ViewCell.View>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="3*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="2*"/>
-                                        </Grid.ColumnDefinitions>
+                    <ListView ItemsSource="{Binding TableOrderedProducts}"
+                              HasUnevenRows="True"
+                              VerticalOptions="Fill"
+                              Margin="1, 0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <ViewCell.View>
+                                        <Frame CornerRadius="40" 
+                                               Margin="10, 3"
+                                               BackgroundColor="White"
+                                               Padding="4">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                </Grid.ColumnDefinitions>
 
-                                        <Label Grid.Column="0"
-                                               Text="{Binding Product.Name}"
-                                               TextColor="Black"
-                                               VerticalOptions="Center"/>
-                                        <Label Grid.Column="1"
-                                               Text="{Binding Product.Price}"
-                                               TextColor="Black"
-                                               VerticalOptions="Center"/>
-                                        <Entry Grid.Column="2"
-                                               Text="{Binding Quantity}"
-                                               TextColor="Black"
-                                               TextChanged="OnOrderProductQuantityTextChanged"/>
-                                        <Button Grid.Column="3"
-                                                Text="Delete Product"
-                                                Clicked="OnDeleteOrderProductClicked"
-                                                HeightRequest="70"/>
-                                    </Grid>
-                                </ViewCell.View>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackLayout>
-            <Grid Grid.Row="2"
-                  BackgroundColor="DarkGray">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+                                                <Label Grid.Column="0"
+                                                       Text="{Binding Product.Name}"
+                                                       Style="{StaticResource RowLabelStyle}"/>
+                                                <Label Grid.Column="1"
+                                                       Text="{Binding Product.Price}"
+                                                       Style="{StaticResource RowLabelStyle}"/>
+                                                <Entry Grid.Column="2"
+                                                       Text="{Binding Quantity}"
+                                                       TextChanged="OnOrderProductQuantityTextChanged"
+                                                       Style="{StaticResource EntryStyle}"
+                                                       HorizontalTextAlignment="End"
+                                                       VerticalOptions="End"/>
+                                                <Button Grid.Column="3"
+                                                        Text="X"
+                                                        Clicked="OnDeleteOrderProductClicked"
+                                                        Style="{StaticResource ButtonStyle}"
+                                                        FontSize="15"
+                                                        FontAttributes="Bold"
+                                                        Margin="0, 0, 3, 0"
+                                                        CornerRadius="40"/>
+                                            </Grid>
+                                        </Frame>
+                                    </ViewCell.View>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+            </yummy:PancakeView>
 
-                <Label Text="Total:"
-                       Grid.Column="0"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       TextColor="Black"/>
-                <Label Text="{Binding CurrentTableTotal}"
-                       Grid.Column="1"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center"
-                       TextColor="Black"/>
-            </Grid>
+            <yummy:PancakeView Grid.Row="2"
+                               CornerRadius="0, 0, 15, 15"
+                               Margin="0, -6, 0, 5">
+                <Grid BackgroundColor="#434343">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="Total:"
+                           Grid.Column="0"
+                           Style="{StaticResource HeaderLabelStyle}"/>
+                    <Label Text="{Binding CurrentTableTotal}"
+                           Grid.Column="1"
+                           Style="{StaticResource HeaderLabelStyle}"/>
+                </Grid>
+            </yummy:PancakeView>
         </Grid>
     </ContentPage>
 
     <ContentPage x:Name="OrderedProductsPage"
                  Title="Ordered Products"
                  BackgroundColor="LightGray">
-        <StackLayout>
-            <Frame VerticalOptions="Fill"
-                   BackgroundColor="White">
-                <Frame BackgroundColor="Transparent"
-                       Margin="-40">
-                    <Grid HeightRequest="100">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+        <StackLayout Margin="10">
+            <Frame BackgroundColor="#4F000B" CornerRadius="10">
+                <Grid HeightRequest="50">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                        <Label Grid.Column="0"
-                               Text="Product name"
-                               TextColor="Black"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"/>
-                        <Label Grid.Column="1"
-                               Text="Price"
-                               TextColor="Black"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"/>
-                        <Label Grid.Column="2"
-                               Text="Qty"
-                               TextColor="Black"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"/>
-                        <Label Grid.Column="3"
-                               Text="Table #"
-                               TextColor="Black"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"/>
-                    </Grid>
-                </Frame>
+                    <Label Grid.Column="0"
+                           Text="Product name"
+                           Style="{StaticResource HeaderLabelStyle}"/>
+                    <Label Grid.Column="1"
+                           Text="Qty"
+                           Style="{StaticResource HeaderLabelStyle}"/>
+                    <Label Grid.Column="2"
+                           Text="Price"
+                           Style="{StaticResource HeaderLabelStyle}"/>
+                    <Label Grid.Column="3"
+                           Text="Table"
+                           Style="{StaticResource HeaderLabelStyle}"/>
+                </Grid>
             </Frame>
 
             <ListView ItemsSource="{Binding WaiterOrderedProducts}"
-                      HasUnevenRows="True"
-                      VerticalOptions="Fill">
+                      HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <ViewCell.View>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="3*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                                <Frame CornerRadius="40" 
+                                       Margin="10, 3"
+                                       BackgroundColor="{Binding Color}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <Label Grid.Column="0"
-                                           Text="{Binding Product.Name}"
-                                           TextColor="Black"
-                                           VerticalOptions="Center"/>
-                                    <Label Grid.Column="1"
-                                           Text="{Binding Product.Price}"
-                                           TextColor="Black"
-                                           VerticalOptions="Center"/>
-                                    <Label Grid.Column="2"
-                                           Text="{Binding Quantity}"
-                                           TextColor="Black"/>
-                                    <Label Grid.Column="3"
-                                           Text="{Binding Order.Table.TableNumber}"
-                                           TextColor="Black"
-                                           VerticalOptions="Center"/>
-                                </Grid>
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Product.Name}"
+                                               Style="{StaticResource RowLabelStyle}"/>
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Quantity}" 
+                                               Style="{StaticResource RowLabelStyle}"/>
+                                        <Label Grid.Column="2"
+                                               Text="{Binding Product.Price}" 
+                                               Style="{StaticResource RowLabelStyle}"/>
+                                        <Label Grid.Column="3"
+                                               Text="{Binding Order.Table.TableNumber}" 
+                                               Style="{StaticResource RowLabelStyle}"/>
+                                    </Grid>
+                                </Frame>
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>
