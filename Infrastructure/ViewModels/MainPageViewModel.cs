@@ -89,7 +89,13 @@ namespace Infrastructure.ViewModels
             {
                 if (orderProduct.ServingTime.HasValue)
                 {
-                    orderProduct.Color = Color.Green;
+                    orderProduct.Color = Color.FromHex("#922636"); //brown
+                    orderProduct.TextColor = Color.FromHex("#ffffff"); //white
+                }
+                else
+                {
+                    orderProduct.Color = Color.FromHex("#e0e0e0"); //gray
+                    orderProduct.TextColor = Color.FromHex("#52000B"); // dark brown
                 }
                 WaiterOrderedProductsRecipes.Add(orderProduct);
             }

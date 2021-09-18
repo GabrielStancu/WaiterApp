@@ -35,6 +35,17 @@ namespace Core.Models
                 SetProperty<Color>(ref _color, value);
             }
         }
+        private Color _textColor;
+        [NotMapped]
+        public Color TextColor
+        {
+            get => _textColor;
+            set
+            {
+                _textColor = value;
+                SetProperty<Color>(ref _textColor, value);
+            }
+        }
 
         public override bool Equals(BaseModel other)
         {

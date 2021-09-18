@@ -3,49 +3,34 @@
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             x:Class="WaiterApp.Pages.MainPage"
             NavigationPage.HasNavigationBar="False"
-            x:Name="WaiterMainPage">
+            x:Name="WaiterMainPage"
+            BackgroundColor="White"
+            BarBackgroundColor="#4F000B">
   <!--Pages can be added as references or inline-->
     <ContentPage x:Name="OrdersPage"
-                 Title="Orders"
-                 BackgroundColor="LightGray">
+                 Title="Orders">
         <StackLayout Margin="10">
-            <Frame BackgroundColor="CadetBlue" CornerRadius="20">
+            <Frame BackgroundColor="#4F000B" CornerRadius="20">
                 <Grid HeightRequest="50">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="1.75*"/>
                         <ColumnDefinition Width="5*"/>
                         <ColumnDefinition Width="3*"/>
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
 
                     <Label Grid.Column="0"
-                       Text="Table No."
-                       TextColor="Black"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center"/>
+                           Text="Table"
+                           Style="{StaticResource HeaderLabelStyle}"/>
                     <Label Grid.Column="1"
-                       Text="Order Name"
-                       TextColor="Black"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center"/>
+                           Text="Order Name"
+                           Style="{StaticResource HeaderLabelStyle}"/>
                     <Label Grid.Column="2"
-                       Text="Placement Time"
-                       TextColor="Black"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center"/>
+                           Text="Place Time"
+                           Style="{StaticResource HeaderLabelStyle}"/>
                     <Label Grid.Column="3"
-                       Text="Finish Time"
-                       TextColor="Black"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center"/>
+                           Text="Finish Time"
+                           Style="{StaticResource HeaderLabelStyle}"/>
                 </Grid>
             </Frame>
 
@@ -68,27 +53,22 @@
 
                                         <Label Grid.Column="0"
                                                Text="{Binding Order.TableId}"
-                                               TextColor="Black"
-                                               VerticalTextAlignment="Center"
-                                               HorizontalTextAlignment="Center"/>
+                                               Style="{StaticResource RowLabelStyle}"
+                                               TextColor="{Binding TextColor}"/>
                                         <Label Grid.Column="1"
                                                Text="{Binding Product.Name}" 
-                                               VerticalTextAlignment="Center"
-                                               HorizontalTextAlignment="Center"
-                                               TextColor="Black"/>
+                                               Style="{StaticResource RowLabelStyle}"
+                                               TextColor="{Binding TextColor}"/>
                                         <Label Grid.Column="2"
                                                Text="{Binding PlacementTime, StringFormat='{0:HH:mm}'}" 
-                                               VerticalTextAlignment="Center"
-                                               HorizontalTextAlignment="Center"
-                                               TextColor="Black"/>
+                                               Style="{StaticResource RowLabelStyle}"
+                                               TextColor="{Binding TextColor}"/>
                                         <Label Grid.Column="3"
-                                               Text="{Binding ServingTime, TargetNullValue='NotReady', StringFormat='{0:HH:mm}'}" 
-                                               VerticalTextAlignment="Center"
-                                               HorizontalTextAlignment="Center"
-                                               TextColor="Black"/>
+                                               Text="{Binding ServingTime, TargetNullValue='TBD', StringFormat='{0:HH:mm}'}" 
+                                               Style="{StaticResource RowLabelStyle}"
+                                               TextColor="{Binding TextColor}"/>
                                     </Grid>
                                 </Frame>
-
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>

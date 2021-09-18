@@ -1,8 +1,8 @@
 ﻿using Core.Models;
 using Infrastructure.Business.DeviceInfo;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
+using Xamarin.Forms;
 
 namespace Infrastructure.Business.ControlsDrawing
 {
@@ -62,7 +62,7 @@ namespace Infrastructure.Business.ControlsDrawing
 
             if (waiterId == crtTableOrder.WaiterId)
             {
-                return Color.Blue;
+                return Color.FromHex("#922636");
             }
 
             return Color.Red;

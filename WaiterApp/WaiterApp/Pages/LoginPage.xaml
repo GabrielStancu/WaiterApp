@@ -2,39 +2,13 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WaiterApp.Pages.LoginPage"
-             NavigationPage.HasNavigationBar="False">
-
-    <ContentPage.Resources>
-        <Style x:Key="UpperLabelStyle" TargetType="Label">
-            <Setter Property="VerticalTextAlignment" Value="Center"/>
-            <Setter Property="HorizontalTextAlignment" Value="Left"/>
-            <Setter Property="TextColor" Value="White"/>
-            <Setter Property="FontSize" Value="15"/>
-            <Setter Property="HorizontalOptions" Value="StartAndExpand"/>
-        </Style>
-        <Style x:Key="MiddleLabelStyle" TargetType="Label">
-            <Setter Property="VerticalTextAlignment" Value="Center"/>
-            <Setter Property="HorizontalTextAlignment" Value="Start"/>
-            <Setter Property="TextColor" Value="White"/>
-            <Setter Property="FontSize" Value="20"/>
-        </Style>
-        <Style x:Key="EntryFrameStyle" TargetType="Frame">
-            <Setter Property="BackgroundColor" Value="WhiteSmoke"/>
-            <Setter Property="CornerRadius" Value="2"/>
-            <Setter Property="Padding" Value="2"/>
-            <Setter Property="VerticalOptions" Value="FillAndExpand"/>
-        </Style>
-        <Style x:Key="ButtonStyle" TargetType="Button">
-            <Setter Property="BackgroundColor" Value="#EF233C"/>
-            <Setter Property="TextColor" Value="White"/>
-            <Setter Property="CornerRadius" Value="3"/>
-        </Style>
-    </ContentPage.Resources>
+             NavigationPage.HasNavigationBar="False"
+             BackgroundImageSource="BackgroundPhoneNewResolution.png">
     <ContentPage.Content>
-        <StackLayout BackgroundColor="#778da9">
+        <StackLayout>
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2.5*"/>
+                    <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
@@ -49,14 +23,26 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label x:Name="UserLabel" Text="User: " Grid.Row="0" Grid.Column="0" 
-                           Style="{StaticResource UpperLabelStyle}"/>
-                    <Label x:Name="UserValueLabel" Text="{Binding Nickname}" 
-                           Grid.Row="0" Grid.Column="1" Style="{StaticResource UpperLabelStyle}"/>
-                    <Label x:Name="DepartmentLabel" Text="Department: " Grid.Row="1" Grid.Column="0" 
-                           Style="{StaticResource UpperLabelStyle}"/>
-                    <Label x:Name="DepartmentValueLabel" Text="{Binding Department.Name}" 
-                           Grid.Row="1" Grid.Column="1" Style="{StaticResource UpperLabelStyle}"/>
+                    <Label x:Name="UserLabel" 
+                           Text="User: " 
+                           Grid.Row="0" 
+                           Grid.Column="0" 
+                           Style="{StaticResource LabelStyle}"/>
+                    <Label x:Name="UserValueLabel" 
+                           Text="{Binding Nickname}" 
+                           Grid.Row="0" 
+                           Grid.Column="1" 
+                           Style="{StaticResource LabelStyle}"/>
+                    <Label x:Name="DepartmentLabel" 
+                           Text="Department: " 
+                           Grid.Row="1" 
+                           Grid.Column="0" 
+                           Style="{StaticResource LabelStyle}"/>
+                    <Label x:Name="DepartmentValueLabel" 
+                           Text="{Binding Department.Name}" 
+                           Grid.Row="1" 
+                           Grid.Column="1" 
+                           Style="{StaticResource LabelStyle}"/>
                 </Grid>
 
                 <Grid Grid.Column="1">
@@ -65,17 +51,32 @@
                         <RowDefinition Height="3*"/>
                     </Grid.RowDefinitions>
 
-                    <Label x:Name="DateLabel" Grid.Row="0" Text="{Binding CurrentDate, StringFormat=\{0:dd.MM.yyyy\}}" HorizontalTextAlignment="End" 
-                           Style="{StaticResource UpperLabelStyle}" HorizontalOptions="End" VerticalOptions="Start"/>
-                    <ImageButton x:Name="SettingsButton" Grid.Row="1" HorizontalOptions="End" BackgroundColor="#2B2D42" Margin="5,0" 
-                                 Clicked="OnSettingsButtonClick" CornerRadius="30" Source="settings_icon.png"/>
+                    <Label x:Name="DateLabel" 
+                           Grid.Row="0" 
+                           Text="{Binding CurrentDate, StringFormat=\{0:dd.MM.yyyy\}}" 
+                           HorizontalTextAlignment="End" 
+                           Style="{StaticResource LabelStyle}"
+                           HorizontalOptions="End" 
+                           VerticalOptions="Start"/>
+                    <ImageButton x:Name="SettingsButton" 
+                                 Grid.Row="1" 
+                                 HorizontalOptions="End" 
+                                 BackgroundColor="Transparent"
+                                 Margin="5,0" 
+                                 Clicked="OnSettingsButtonClick" 
+                                 CornerRadius="30" 
+                                 Source="settings_icon.png"/>
                 </Grid>
-
             </Grid>
 
-            <Image Source="icon.png" HorizontalOptions="Center" HeightRequest="140" WidthRequest="140" Margin="15, 5, 15, 0"/>
+            <Image Source="logo.png" 
+                   HorizontalOptions="Center" 
+                   HeightRequest="230"
+                   WidthRequest="500"
+                   Margin="15, 5, 15, 0"/>
 
-            <Frame VerticalOptions="Fill" Margin="25,5" CornerRadius="5" BackgroundColor="#2B2D42">
+            <Frame VerticalOptions="Fill" Margin="25,5"
+                   BorderColor="Transparent">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -87,16 +88,26 @@
                         <ColumnDefinition Width="1.25*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Text="Username: " Grid.Row="0" Grid.Column="0" Style="{StaticResource MiddleLabelStyle}"/>
-                    <Frame Style="{StaticResource EntryFrameStyle}"  Grid.Row="0" Grid.Column="1">
-                        <Entry x:Name="UsernameEntry" Placeholder="username" FontSize="24" Text="{Binding Username}"
-                               TextColor="Black" PlaceholderColor="DarkGray"/>
-                    </Frame>
-                    <Label Text="Password: " Grid.Row="1" Grid.Column="0" Style="{StaticResource MiddleLabelStyle}"/>
-                    <Frame Style="{StaticResource EntryFrameStyle}"  Grid.Row="1" Grid.Column="1">
-                        <Entry x:Name="PasswordEntry" IsPassword="True" Placeholder="password" FontSize="24"
-                               TextColor="Black" PlaceholderColor="DarkGray"/>
-                    </Frame>
+                    <Label Text="Username: " 
+                           Grid.Row="0"
+                           Grid.Column="0" 
+                           Style="{StaticResource BigLabelStyle}"/>
+                    <Entry x:Name="UsernameEntry" 
+                           Placeholder="username" 
+                           Grid.Row="0" 
+                           Grid.Column="1"
+                           Text="{Binding Username}"
+                           Style="{StaticResource EntryStyle}"/>
+                    <Label Text="Password: " 
+                           Grid.Row="1" 
+                           Grid.Column="0" 
+                           Style="{StaticResource BigLabelStyle}"/>
+                    <Entry x:Name="PasswordEntry" 
+                           IsPassword="True" 
+                           Placeholder="password" 
+                           Grid.Row="1" 
+                           Grid.Column="1"
+                           Style="{StaticResource EntryStyle}"/>
                 </Grid>
             </Frame>
             <Grid Margin="25,0">
@@ -106,26 +117,30 @@
                     <RowDefinition Height="0.75*"/>
                 </Grid.RowDefinitions>
 
-                <Button Text="Login" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="10, 15" Style="{StaticResource ButtonStyle}" 
+                <Button Text="Login" 
+                        Grid.Row="0" 
+                        Grid.Column="0" 
+                        Grid.ColumnSpan="2" 
+                        Margin="10, 15" 
+                        Style="{StaticResource ButtonStyle}" 
                         Clicked="OnLoginButtonClick"/>
 
                 <Label Text="Remember user?" 
                        Grid.Row="1" 
-                       TextColor="White" 
+                       Style="{StaticResource BigLabelStyle}"
                        HorizontalOptions="Center" 
                        VerticalOptions="Center" 
                        VerticalTextAlignment="Center"
                        Grid.ColumnSpan="2"
                        Margin="0, -5"/>
                 <CheckBox Grid.Row="2" 
+                          Grid.ColumnSpan="2"
                           HorizontalOptions="Center" 
                           VerticalOptions="Center"
-                          Color="#EF233C" 
-                          IsChecked="{Binding RememberUser}"
-                          Grid.ColumnSpan="2"
+                          Color="#4F000B" 
+                          IsChecked="{Binding RememberUser}"        
                           Margin="0, -5"/>
             </Grid>
         </StackLayout>
     </ContentPage.Content>
-
 </ContentPage>

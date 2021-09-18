@@ -2,30 +2,12 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WaiterApp.Pages.SettingsPage"
-             NavigationPage.HasNavigationBar="False">
-    <ContentPage.Resources>
-        <Style TargetType="Label" x:Key="LabelStyle">
-            <Setter Property="VerticalTextAlignment" Value="Center"/>
-            <Setter Property="HorizontalTextAlignment" Value="Start"/>
-            <Setter Property="FontSize" Value="Medium"/>
-            <Setter Property="TextColor" Value="Black"/>
-        </Style>
-        <Style TargetType="Frame" x:Key="FrameStyle">
-            <Setter Property="BackgroundColor" Value="WhiteSmoke"/>
-            <Setter Property="CornerRadius" Value="2"/>
-            <Setter Property="Padding" Value="2"/>
-            <Setter Property="HasShadow" Value="True"/>
-            <Setter Property="Margin" Value="0, 5"/>
-        </Style>
-        <Style TargetType="Entry" x:Key="EntryStyle">
-            <Setter Property="TextColor" Value="Black"/>
-            <Setter Property="PlaceholderColor" Value="Black" />
-        </Style>
-
-    </ContentPage.Resources>
+             NavigationPage.HasNavigationBar="False"
+             BackgroundImageSource="BackgroundPhoneNewResolution.png">
     <ContentPage.Content>
-        <StackLayout BackgroundColor="#8D99AE">
-            <Frame BackgroundColor="#2B2D42" CornerRadius="5" Margin="10">
+        <StackLayout>
+            <Frame BackgroundColor="Transparent"
+                   Margin="10">
                 <Grid  Padding="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -38,26 +20,45 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Server name:"/>
-                    <Frame Grid.Row="0" Grid.Column="1" Style="{StaticResource FrameStyle}">
-                        <Entry Text="{Binding ServerName}" Style="{StaticResource EntryStyle}"/>
-                    </Frame>
-                    <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Database name:"/>
-                    <Frame Grid.Row="1" Grid.Column="1" Style="{StaticResource FrameStyle}">
-                        <Entry Text="{Binding DatabaseName}" Style="{StaticResource EntryStyle}"/>
-                    </Frame>
-                    <Label Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Database user:"/>
-                    <Frame Grid.Row="2" Grid.Column="1" Style="{StaticResource FrameStyle}">
-                        <Entry Text="{Binding DbUser}" Style="{StaticResource EntryStyle}"/>
-                    </Frame>
-                    <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Database password:"/>
-                    <Frame Grid.Row="3" Grid.Column="1" Style="{StaticResource FrameStyle}">
-                        <Entry Text="{Binding DbPassword}" IsPassword="True" Style="{StaticResource EntryStyle}"/>
-                    </Frame>
+                    <Label Grid.Row="0" 
+                           Grid.Column="0" 
+                           Style="{StaticResource LabelStyle}" 
+                           Text="Server name:"/>
+                    <Entry Text="{Binding ServerName}" 
+                           Style="{StaticResource EntryStyle}"
+                           Grid.Row="0" 
+                           Grid.Column="1"/>
+                    <Label Grid.Row="1" 
+                           Grid.Column="0" 
+                           Style="{StaticResource LabelStyle}" 
+                           Text="Database name:"/>
+                    <Entry Text="{Binding DatabaseName}" 
+                           Style="{StaticResource EntryStyle}"
+                           Grid.Row="1"
+                           Grid.Column="1"/>
+                    <Label Grid.Row="2" 
+                           Grid.Column="0" 
+                           Style="{StaticResource LabelStyle}" 
+                           Text="Database user:"/>
+                    <Entry Text="{Binding DbUser}" 
+                           Style="{StaticResource EntryStyle}"
+                           Grid.Row="2" 
+                           Grid.Column="1"/>
+                    <Label Grid.Row="3" 
+                           Grid.Column="0" 
+                           Style="{StaticResource LabelStyle}" 
+                           Text="Database password:"/>
+                    <Entry Text="{Binding DbPassword}" 
+                           IsPassword="True" 
+                           Style="{StaticResource EntryStyle}"
+                           Grid.Row="3" Grid.Column="1"/>
                 </Grid>
             </Frame>
-            <Button Margin="40, 20" Text="Save" Command="{Binding OnSaveParameters}" Clicked="OnSaveParameters"
-                    BackgroundColor="#ef233c" TextColor="White"/>
+            <Button Margin="40, 20" 
+                    Text="Save" 
+                    Command="{Binding OnSaveParameters}" 
+                    Clicked="OnSaveParameters"
+                    Style="{StaticResource ButtonStyle}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
