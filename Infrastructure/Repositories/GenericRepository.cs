@@ -29,7 +29,7 @@ namespace Infrastructure.Repositories
                 var response = _wifiConnectionChecker.CheckConnection();
                 if (response == WifiConnectionResponse.WIFI_DATA_INTERNET)
                 {
-                    var restaurantDatabaseContext = (RestaurantContext)Activator.CreateInstance(typeof(RestaurantContext));
+                    var restaurantDatabaseContext = new RestaurantContext();
                     restaurantDatabaseContext.Database.EnsureCreated();
                     restaurantDatabaseContext.Database.Migrate();
 

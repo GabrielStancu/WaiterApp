@@ -11,7 +11,6 @@ namespace Infrastructure.ViewModels
         {
             _departmentRepository = departmentRepository;
             _waiterRepository = waiterRepository;
-            LoadParameters();
         }
 
         private string _nickname;

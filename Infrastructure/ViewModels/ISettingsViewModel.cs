@@ -8,6 +8,6 @@
         string ServerName { get; set; }
 
         void SaveParameters();
-        void TestConnection();
+        bool TestConnection();
     }
 }

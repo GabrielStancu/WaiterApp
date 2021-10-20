@@ -15,7 +15,7 @@ namespace Core.Models
         public Subgroup Subgroup { get; set; }
         [ForeignKey("Subgroup")]
         public int SubgroupId { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public Department Department { get; set; }
         [ForeignKey("Department")]
         public int DepartmentId { get; set; }

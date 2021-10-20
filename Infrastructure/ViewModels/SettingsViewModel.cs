@@ -67,9 +67,9 @@ namespace Infrastructure.ViewModels
             ParametersLoader.SaveParameters();
         }
 
-        public void TestConnection()
+        public bool TestConnection()
         {
-            _checker.TestConnection();
+            return _checker.TestConnection();
         }
     }
 }

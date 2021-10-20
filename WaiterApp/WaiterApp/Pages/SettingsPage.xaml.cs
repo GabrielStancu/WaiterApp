@@ -21,14 +21,15 @@ namespace WaiterApp.Pages
         {
             _model.SaveParameters();
 
-            try
+            bool connected = _model.TestConnection();
+
+            if (connected)
             {
-                _model.TestConnection();
                 await Navigation.PushAsync(App.Container.Resolve<ParametersPage>());
             }
-            catch(ConnectionStringException ex)
+            else
             {
-                await DisplayAlert("Error", ex.Message, "OK");
+                await DisplayAlert("Error", "Bad connection string.", "OK");
             }
         }
     }

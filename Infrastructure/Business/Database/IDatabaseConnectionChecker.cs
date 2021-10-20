@@ -2,6 +2,6 @@
 {
     public interface IDatabaseConnectionChecker
     {
-        void TestConnection();
+        bool TestConnection();
     }
 }

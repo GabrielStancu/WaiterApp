@@ -1,5 +1,6 @@
 ﻿using Core.Context;
 using Infrastructure.Business.Parameters;
+using System;
 
 namespace Infrastructure.Business.Database
 {

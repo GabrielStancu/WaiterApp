@@ -14,14 +14,10 @@ namespace Core.Context
         public DbSet<Order> Order { get; private set; }
         public DbSet<Table> Table { get; private set; }
 
-        public static string ConnectionString = string.Empty;
+        public static string ConnectionString =
+            $"Server=localhost;Database=RestaurantDb;Trusted_Connection=True;";//string.Empty;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSqlServer(ConnectionString);
-        public RestaurantContext() 
-        {
-            var builder = new DbContextOptionsBuilder();
-            builder.UseSqlServer(ConnectionString);
-        }
     }
 }

@@ -20,32 +20,42 @@ namespace WaiterApp.Pages
             BindingContext = _model;
 
             TestConnection();
-            _model.LoadParameters();
-            if (bool.Parse(ParametersLoader.Parameters[AppParameters.Remember]))
-            {
-                _model.Username = ParametersLoader.Parameters[AppParameters.Username];
-                PasswordEntry.Text = ParametersLoader.Parameters[AppParameters.Password];
-                Login(ParametersLoader.Parameters[AppParameters.Password]);
-            }
         }
 
-        protected override void OnAppearing()
+        protected async override void OnAppearing()
         {
+            if (!_connectedToDb)
+            {
+                await DisplayAlert("Database error", "Bad connection string. Please configure it before proceeding.", "OK");
+                await Navigation.PushAsync(App.Container.Resolve<SettingsPage>());
+                _connectedToDb = true;
+
+                return;
+            }
+
             _model.LoadParameters();
         }
 
-        private async void TestConnection()
+        private void TestConnection()
         {
             try
             {
-                _databaseConnectionChecker.TestConnection();
-                _connectedToDb = true;
+                _connectedToDb = _databaseConnectionChecker.TestConnection();
+               
+                if (_connectedToDb)
+                {
+                    _model.LoadParameters();
+                    if (bool.Parse(ParametersLoader.Parameters[AppParameters.Remember]))
+                    {
+                        _model.Username = ParametersLoader.Parameters[AppParameters.Username];
+                        PasswordEntry.Text = ParametersLoader.Parameters[AppParameters.Password];
+                        Login(ParametersLoader.Parameters[AppParameters.Password]);
+                    }
+                }  
             }
-            catch (ConnectionStringException ex)
+            catch (ConnectionStringException)
             {
-                await DisplayAlert("Database error", ex.Message, "OK");
-                await Navigation.PushAsync(App.Container.Resolve<SettingsPage>());
-                _connectedToDb = false;
+                _connectedToDb = false;   
             }
         }
 
