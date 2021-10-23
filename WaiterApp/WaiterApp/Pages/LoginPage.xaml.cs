@@ -4,6 +4,8 @@ using Infrastructure.Business.Parameters;
 using Infrastructure.ViewModels;
 using System;
 using Xamarin.Forms;
+using Acr.UserDialogs;
+using System.Threading.Tasks;
 
 namespace WaiterApp.Pages
 {
@@ -12,46 +14,48 @@ namespace WaiterApp.Pages
         private readonly ILoginViewModel _model;
         private readonly IDatabaseConnectionChecker _databaseConnectionChecker;
         private bool _connectedToDb = false;
+        private bool _appStart = true;
         public LoginPage(ILoginViewModel model, IDatabaseConnectionChecker databaseConnectionChecker)
         {
             InitializeComponent();
             _model = model;
             _databaseConnectionChecker = databaseConnectionChecker;
             BindingContext = _model;
-
-            TestConnection();
         }
 
         protected async override void OnAppearing()
         {
+            await TestConnection();
             if (!_connectedToDb)
             {
-                await DisplayAlert("Database error", "Bad connection string. Please configure it before proceeding.", "OK");
+                await DisplayAlert("Database error", "No wifi or bad connection string. Check your wifi connection before setting the connection string.", "OK");
                 await Navigation.PushAsync(App.Container.Resolve<SettingsPage>());
                 _connectedToDb = true;
 
                 return;
             }
-
             _model.LoadParameters();
         }
 
-        private void TestConnection()
+        private async Task TestConnection()
         {
             try
             {
-                _connectedToDb = _databaseConnectionChecker.TestConnection();
-               
-                if (_connectedToDb)
+                using (UserDialogs.Instance.Loading("Testing database connection..."))
                 {
-                    _model.LoadParameters();
-                    if (bool.Parse(ParametersLoader.Parameters[AppParameters.Remember]))
+                    _connectedToDb = await Task.Run(() => _databaseConnectionChecker.TestConnection());
+                    if (_connectedToDb)
                     {
-                        _model.Username = ParametersLoader.Parameters[AppParameters.Username];
-                        PasswordEntry.Text = ParametersLoader.Parameters[AppParameters.Password];
-                        Login(ParametersLoader.Parameters[AppParameters.Password]);
+                        _model.LoadParameters();
+                        if (bool.Parse(ParametersLoader.Parameters[AppParameters.Remember]) && _appStart)
+                        {
+                            _appStart = false;
+                            _model.Username = ParametersLoader.Parameters[AppParameters.Username];
+                            PasswordEntry.Text = ParametersLoader.Parameters[AppParameters.Password];
+                            Login(ParametersLoader.Parameters[AppParameters.Password]);
+                        }
                     }
-                }  
+                }
             }
             catch (ConnectionStringException)
             {
@@ -88,21 +92,28 @@ namespace WaiterApp.Pages
                 return;
             }
 
-            var waiter = _model.Login(password);
-            if (waiter != null)
+            try
             {
-                ParametersLoader.SetParameter(AppParameters.WaiterId, waiter.Id.ToString());
-                ParametersLoader.SaveParameters();
-                await Navigation.PushAsync(App.Container.Resolve<MainPage>());
-
-                if (!_model.RememberUser)
+                var waiter = _model.Login(password);
+                if (waiter != null)
                 {
-                    PasswordEntry.Text = string.Empty;
+                    ParametersLoader.SetParameter(AppParameters.WaiterId, waiter.Id.ToString());
+                    ParametersLoader.SaveParameters();
+                    await Navigation.PushAsync(App.Container.Resolve<MainPage>());
+
+                    if (!_model.RememberUser)
+                    {
+                        PasswordEntry.Text = string.Empty;
+                    }
+                }
+                else
+                {
+                    await DisplayAlert("Login error", "Wrong credentials, please retry", "OK");
                 }
             }
-            else
+            catch(WifiConnectionException ex)
             {
-                await DisplayAlert("Login error", "Wrong credentials, please retry", "OK");
+                await DisplayAlert("Error", ex.Message, "OK");
             }
         }
 

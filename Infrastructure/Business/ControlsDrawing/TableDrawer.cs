@@ -1,5 +1,6 @@
 ﻿using Core.Models;
 using Infrastructure.Business.DeviceInfo;
+using Infrastructure.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 using Xamarin.Forms;
@@ -9,10 +10,14 @@ namespace Infrastructure.Business.ControlsDrawing
     public class TableDrawer : ITableDrawer
     {
         private readonly IDeviceInfoCollector _deviceInfoCollector;
+        private readonly IOrderProductRepository _orderProductRepository;
 
-        public TableDrawer(IDeviceInfoCollector deviceInfoCollector)
+        public TableDrawer(
+            IDeviceInfoCollector deviceInfoCollector,
+            IOrderProductRepository orderProductRepository)
         {
             _deviceInfoCollector = deviceInfoCollector;
+            _orderProductRepository = orderProductRepository;
         }
         public IEnumerable<DrawnTable> DrawTables(IEnumerable<Table> tables, IEnumerable<Order> orders,
             int waiterId, int initialImageHeight, int initialImageWidth)

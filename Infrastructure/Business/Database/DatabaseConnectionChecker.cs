@@ -1,7 +1,6 @@
 ﻿using Core.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Data.SqlClient;
-using System;
 
 namespace Infrastructure.Business.Database
 {
@@ -10,10 +9,11 @@ namespace Infrastructure.Business.Database
         private readonly IContextConnectionStringSetter _contextConnectionStringSetter;
         private RestaurantContext _restaurantContext;
 
-        public DatabaseConnectionChecker(IContextConnectionStringSetter contextConnectionStringSetter)
+        public DatabaseConnectionChecker(
+            IContextConnectionStringSetter contextConnectionStringSetter)
         {
             _contextConnectionStringSetter = contextConnectionStringSetter;
-            _restaurantContext = (RestaurantContext)Activator.CreateInstance(typeof(RestaurantContext)); 
+            _restaurantContext = new RestaurantContext(); 
         }
 
         public bool TestConnection()

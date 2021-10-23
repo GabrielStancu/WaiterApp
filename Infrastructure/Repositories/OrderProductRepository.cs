@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
                 .OrderProduct
                 .Where(op => op.Order.WaiterId == waiterId && op.Product.IsRecipe)
                 .Include(op => op.Product)
-                .Include(op => op.Order)
+                .Include(op => op.Order).ThenInclude(o => o.Table)
                 .ToList();
         }
 

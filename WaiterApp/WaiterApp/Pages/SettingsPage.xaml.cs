@@ -1,6 +1,7 @@
-﻿using Infrastructure.Exceptions;
+﻿using Acr.UserDialogs;
+using Infrastructure.Business.Wifi;
 using Infrastructure.ViewModels;
-
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -10,10 +11,15 @@ namespace WaiterApp.Pages
     public partial class SettingsPage : ContentPage
     {
         private readonly ISettingsViewModel _model;
-        public SettingsPage(ISettingsViewModel model)
+        private readonly IWifiConnectionChecker _wifiConnectionChecker;
+
+        public SettingsPage(
+            ISettingsViewModel model,
+            IWifiConnectionChecker wifiConnectionChecker)
         {
             InitializeComponent();
             _model = model;
+            _wifiConnectionChecker = wifiConnectionChecker;
             BindingContext = _model;
         }
 
@@ -21,15 +27,23 @@ namespace WaiterApp.Pages
         {
             _model.SaveParameters();
 
-            bool connected = _model.TestConnection();
+            using (UserDialogs.Instance.Loading("Testing database connection..."))
+            {
+                if(_wifiConnectionChecker.CheckConnection() != WifiConnectionResponse.WIFI_DATA_INTERNET)
+                {
+                    await DisplayAlert("Error", "Not connected to wifi network. Connect before retrying.", "OK");
+                    return;
+                }
 
-            if (connected)
-            {
-                await Navigation.PushAsync(App.Container.Resolve<ParametersPage>());
-            }
-            else
-            {
-                await DisplayAlert("Error", "Bad connection string.", "OK");
+                bool connected = await Task.Run(() => _model.TestConnection());
+                if (connected)
+                {
+                    await Navigation.PushAsync(App.Container.Resolve<ParametersPage>());
+                }
+                else
+                {
+                    await DisplayAlert("Error", "Bad connection string.", "OK");
+                }
             }
         }
     }

@@ -3,9 +3,12 @@ using Core.Models;
 using Infrastructure.Business;
 using Infrastructure.Business.Factories;
 using Infrastructure.Business.Parameters;
+using Infrastructure.Business.Wifi;
+using Infrastructure.Exceptions;
 using Infrastructure.ViewModels;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,35 +20,52 @@ namespace WaiterApp.Pages
         private readonly IMainPageViewModel _mainPageViewModel;
         private readonly ITableButtonFactory _tableButtonFactory;
         private readonly IProductsDrawer _productsDrawer;
+        private readonly IWifiConnectionChecker _wifiConnectionChecker;
+        private readonly IWifiConnectionResponseParser _wifiConnectionResponseParser;
         private readonly int _departmentId;
         private Page _lastPage;
         private bool _loadedPage = false;
+        private bool _refreshedPage = false;
 
         public MainPage(
             IMainPageViewModel mainPageViewModel,
             ITableButtonFactory tableButtonFactory,
-            IProductsDrawer productsDrawer)
+            IProductsDrawer productsDrawer,
+            IWifiConnectionChecker wifiConnectionChecker,
+            IWifiConnectionResponseParser wifiConnectionResponseParser)
         {
             InitializeComponent();
             _lastPage = OrdersPage;
             _mainPageViewModel = mainPageViewModel;
             _tableButtonFactory = tableButtonFactory;
             _productsDrawer = productsDrawer;
+            _wifiConnectionChecker = wifiConnectionChecker;
+            _wifiConnectionResponseParser = wifiConnectionResponseParser;
             BindingContext = _mainPageViewModel;
 
             CurrentPageChanged += OnMainPageCurrentPageChanged;
             _departmentId = int.Parse(ParametersLoader.Parameters[AppParameters.DepartmentId]);
-            LoadOrdersOnTimer();
-            LoadTables();
-            LoadProducts();
-            LoadAllOrders();
+
+            var loadOrdersOnTimer = LoadOrdersOnTimer();
+            var loadTables = LoadTables();
+            var loadProducts =  LoadProducts();
+            var loadAllOrders =  LoadAllOrders();
+
+            Task.WaitAll(loadOrdersOnTimer, loadTables, loadProducts, loadAllOrders);          
             _loadedPage = true;
         }
 
-        private void LoadProducts()
+        private async Task LoadProducts()
         {
-            _mainPageViewModel.LoadProducts(_departmentId);
-            DrawProducts();
+            try
+            {
+                _mainPageViewModel.LoadProducts(_departmentId);
+                DrawProducts();
+            }
+            catch(WifiConnectionException ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            }
         }
 
         private void DrawProducts()
@@ -58,27 +78,57 @@ namespace WaiterApp.Pages
             }
         }
 
-        private void OnMainPageCurrentPageChanged(object sender, EventArgs e)
+        private async void OnMainPageCurrentPageChanged(object sender, EventArgs e)
         {
-            if (CurrentPage == OrdersPage)
+            if (_refreshedPage)
+            {
+                _refreshedPage = false;
+            }
+            else if (CurrentPage == OrdersPage)
             {
                 _lastPage = OrdersPage;
                 _mainPageViewModel.SelectedTable = null;
-                LoadOrdersOnTimer();
+                try
+                {
+                    await LoadOrdersOnTimer();
+                }
+                catch (WifiConnectionException ex)
+                {
+                    await DisplayAlert("Error", ex.Message, "OK");
+                }
             }
             else if (CurrentPage == TablesPage)
             {
                 _lastPage = TablesPage;
                 _mainPageViewModel.SelectedTable = null;
-                LoadTables();
-            }
-            else if (CurrentPage == ProductsPage && _lastPage == OrderedProductsPage)
-            {
-                _lastPage = ProductsPage;
+                try
+                {
+                    await LoadTables();
+                }
+                catch (WifiConnectionException ex)
+                {
+                    await DisplayAlert("Error", ex.Message, "OK");
+                } 
             }
             else if (CurrentPage == OrderedProductsPage)
             {
                 _lastPage = OrderedProductsPage;
+                _mainPageViewModel.SelectedTable = null;
+                try
+                {
+                    await LoadAllOrders();
+                }
+                catch (WifiConnectionException ex)
+                {
+                    await DisplayAlert("Error", ex.Message, "OK");
+                }
+                
+                //var connection = _wifiConnectionChecker.CheckConnection();
+                //string message = _wifiConnectionResponseParser.GenerateResponse(connection);
+                //if (connection != WifiConnectionResponse.WIFI_DATA_INTERNET)
+                //{
+                //    await DisplayAlert("Error", message, "OK");
+                //}
             }
             else
             {
@@ -86,63 +136,96 @@ namespace WaiterApp.Pages
                 {
                     Device.BeginInvokeOnMainThread(() =>
                     {
+                        _refreshedPage = true;
                         CurrentPage = _lastPage;
                     });
                 }
             }
         }
 
-        private void LoadOrdersOnTimer()
+        private async Task LoadOrdersOnTimer()
         {
             string timerRefreshParam = ParametersLoader.Parameters[AppParameters.ReadOrdersTimer];
             int timerRefresh = int.Parse(timerRefreshParam);
-            LoadOrders();
+            try
+            {
+                LoadOrders();
+            }
+            catch (WifiConnectionException ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            }
+            
 
             Device.StartTimer(TimeSpan.FromSeconds(timerRefresh), () =>
-            {                
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    var page = (TabbedPage)this;
+            {                     
+                var page = (TabbedPage)this;
 
-                    if(page.CurrentPage.Title == "Orders")
-                    {
-                        LoadOrders();
-                    }
-                });
+                if(page.CurrentPage.Title == "Orders")
+                {
+                    LoadOrders();
+                }
+
                 return true; // True = Repeat again, False = Stop the timer
             });
         }
 
         private void LoadOrders()
         {
-            var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
-            _mainPageViewModel.LoadOrdersForWaiter(waiterId);
-        }
-
-        private void LoadAllOrders()
-        {
-            var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
-            _mainPageViewModel.LoadAllOrdersForWaiter(waiterId);
-        }
-
-        private void LoadTables()
-        {
-            var tables = _mainPageViewModel.LoadTables(_departmentId);
-            TablesLayout.Children.Clear();
-
-            foreach (var table in tables)
+            Device.BeginInvokeOnMainThread(async () =>
             {
-                var tableButton = _tableButtonFactory.Build(table);
-                tableButton.Clicked += OnTableButtonClicked;
-                TablesLayout.Children.Add(tableButton, new Point(table.StartX, table.StartY));
+                try
+                {
+                    var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
+                    _mainPageViewModel.LoadOrdersForWaiter(waiterId);
+                }
+                catch (WifiConnectionException ex)
+                {
+                    await DisplayAlert("Error", ex.Message, "OK");
+                }
+            });
+        }
+
+        private async Task LoadAllOrders()
+        {
+            try
+            {
+                var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
+                _mainPageViewModel.LoadAllOrdersForWaiter(waiterId);
+            }
+            catch (WifiConnectionException ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
             }
         }
 
-        private void OnTableButtonClicked(object sender, EventArgs e)
+        private async Task LoadTables()
+        {
+            try
+            {
+                var tables = _mainPageViewModel.LoadTables(_departmentId);
+                TablesLayout.Children.Clear();
+
+                foreach (var table in tables)
+                {
+                    var tableButton = _tableButtonFactory.Build(table);
+                    tableButton.Clicked += OnTableButtonClicked;
+                    TablesLayout.Children.Add(tableButton, new Point(table.StartX, table.StartY));
+                }
+            }
+            catch (WifiConnectionException ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            }
+        }
+
+        private async void OnTableButtonClicked(object sender, EventArgs e)
         {
             var button = sender as Button;
             int tableNumber = int.Parse(button.ClassId);
-            bool enabledTable = button.BackgroundColor != Color.Red;
+            var currentTable = _mainPageViewModel.Tables.FirstOrDefault(t => t.TableNumber == tableNumber);
+            var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
+            bool enabledTable = currentTable.GetStatus(waiterId) != TableStatus.TakenByOtherWaiter;
 
             if(enabledTable)
             {
@@ -150,46 +233,88 @@ namespace WaiterApp.Pages
                     _mainPageViewModel.Tables.FirstOrDefault(t => t.TableNumber == tableNumber);
                 CurrentPage = ProductsPage;
 
-                if(_mainPageViewModel.SelectedTable.Status == TableStatus.Free)
+                if(_mainPageViewModel.SelectedTable.GetStatus(waiterId) == TableStatus.Free)
                 {
                     _mainPageViewModel.ClearTable();
                 }
-                else if (_mainPageViewModel.SelectedTable.Status == TableStatus.TakenByCurrentWaiter)
+                else if (_mainPageViewModel.SelectedTable.GetStatus(waiterId) == TableStatus.TakenByCurrentWaiter)
                 {
-                    _mainPageViewModel.LoadTableOrderedProducts();
+                    try
+                    {
+                        _mainPageViewModel.LoadTableOrderedProducts();
+                    }
+                    catch (WifiConnectionException ex)
+                    {
+                        await DisplayAlert("Error", ex.Message, "OK");
+                    }
                 }   
             }
         }
 
-        private void OnProductButtonClicked(object sender, EventArgs e)
+        private async void OnProductButtonClicked(object sender, EventArgs e)
         {
-            var product = (sender as Button).BindingContext as Product;
-            _mainPageViewModel.AddProduct(product);
+            try
+            {
+                var product = (sender as Button).BindingContext as Product;
+                _mainPageViewModel.AddProduct(product);
+            }
+            catch (WifiConnectionException ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            }
         }
 
-        private void OnGroupSelectedItemChanged(object sender, EventArgs e)
+        private async void OnGroupSelectedItemChanged(object sender, EventArgs e)
         {
-            _mainPageViewModel.FilterSubgroups();
-            _mainPageViewModel.FilterProducts();
-            DrawProducts();
+            try
+            {
+                _mainPageViewModel.FilterSubgroups();
+                _mainPageViewModel.FilterProducts();
+                DrawProducts();
+            }
+            catch (WifiConnectionException ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            } 
         }
 
-        private void OnSubgroupSelectedIndexChanged(object sender, EventArgs e)
+        private async void OnSubgroupSelectedIndexChanged(object sender, EventArgs e)
         {
-            _mainPageViewModel.FilterProducts();
-            DrawProducts();
+            try
+            {
+                _mainPageViewModel.FilterProducts();
+                DrawProducts();
+            }
+            catch (WifiConnectionException ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            }
         }
 
-        private void OnProductNameTextChanged(object sender, TextChangedEventArgs e)
+        private async void OnProductNameTextChanged(object sender, TextChangedEventArgs e)
         {
-            _mainPageViewModel.FilterProducts();
-            DrawProducts();
+            try
+            {
+                _mainPageViewModel.FilterProducts();
+                DrawProducts();
+            }
+            catch (WifiConnectionException ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            }
         }
 
-        private void OnProductSequenceTextChanged(object sender, TextChangedEventArgs e)
+        private async void OnProductSequenceTextChanged(object sender, TextChangedEventArgs e)
         {
-            _mainPageViewModel.FilterProducts();
-            DrawProducts();
+            try
+            {
+                _mainPageViewModel.FilterProducts();
+                DrawProducts();
+            }
+            catch (WifiConnectionException ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            }
         }
 
         private async void OnOrderProductQuantityTextChanged(object sender, TextChangedEventArgs e)
@@ -206,19 +331,33 @@ namespace WaiterApp.Pages
                 }
                 else if (!(((Entry)sender).Text == string.Empty))
                 {
-                    _mainPageViewModel.UpdateProductQuantity(orderProduct);
+                    try
+                    {
+                        _mainPageViewModel.UpdateProductQuantity(orderProduct);
+                    }
+                    catch (WifiConnectionException ex)
+                    {
+                        await DisplayAlert("Error", ex.Message, "OK");
+                    }
                 }
                 
             }
         }
 
-        private void OnDeleteOrderProductClicked(object sender, EventArgs e)
+        private async void OnDeleteOrderProductClicked(object sender, EventArgs e)
         {
             var orderProduct = (OrderProduct)((Button)sender).BindingContext;
 
             if (orderProduct != null)
             {
-                _mainPageViewModel.DeleteProduct(orderProduct);
+                try
+                {
+                    _mainPageViewModel.DeleteProduct(orderProduct);
+                }
+                catch (WifiConnectionException ex)
+                {
+                    await DisplayAlert("Error", ex.Message, "OK");
+                }
             }
         }
     }

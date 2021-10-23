@@ -6,9 +6,8 @@ namespace Core.Models
     public class Table : BaseModel
     {
         public int TableNumber { get; set; }
-        public TableStatus Status { get; set; }
         [ForeignKey("Waiter")]
-        public int WaiterId { get; set; }
+        public int? WaiterId { get; set; }
         public Waiter Waiter { get; set; }
         public int StartX { get; set; }
         public int StartY { get; set; }
@@ -25,6 +24,14 @@ namespace Core.Models
             }
 
             return other.Id == Id;
+        }
+        public TableStatus GetStatus(int waiterId)
+        {
+            if (WaiterId is null)
+                return TableStatus.Free;
+            if (WaiterId == waiterId)
+                return TableStatus.TakenByCurrentWaiter;
+            return TableStatus.TakenByOtherWaiter;
         }
     }
 }

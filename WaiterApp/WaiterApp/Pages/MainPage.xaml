@@ -53,7 +53,7 @@
                                         </Grid.ColumnDefinitions>
 
                                         <Label Grid.Column="0"
-                                               Text="{Binding Order.TableId}"
+                                               Text="{Binding Order.Table.TableNumber}"
                                                Style="{StaticResource RowLabelStyle}"
                                                TextColor="{Binding TextColor}"/>
                                         <Label Grid.Column="1"
@@ -78,6 +78,74 @@
         </StackLayout>
         
     </ContentPage>
+
+    <ContentPage x:Name="OrderedProductsPage"
+                 Title="Ordered Products"
+                 BackgroundColor="LightGray">
+        <StackLayout Margin="10">
+            <Frame BackgroundColor="#4F000B" CornerRadius="10">
+                <Grid HeightRequest="50">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0"
+                           Text="Product name"
+                           Style="{StaticResource HeaderLabelStyle}"/>
+                    <Label Grid.Column="1"
+                           Text="Qty"
+                           Style="{StaticResource HeaderLabelStyle}"/>
+                    <Label Grid.Column="2"
+                           Text="Price"
+                           Style="{StaticResource HeaderLabelStyle}"/>
+                    <Label Grid.Column="3"
+                           Text="Table"
+                           Style="{StaticResource HeaderLabelStyle}"/>
+                </Grid>
+            </Frame>
+
+            <ListView ItemsSource="{Binding WaiterOrderedProducts}"
+                      HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Frame CornerRadius="40" 
+                                       Margin="10, 3"
+                                       BackgroundColor="{Binding Color}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Product.Name}"
+                                               Style="{StaticResource RowLabelStyle}"/>
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Quantity}" 
+                                               Style="{StaticResource RowLabelStyle}"/>
+                                        <Label Grid.Column="2"
+                                               Text="{Binding Product.Price}" 
+                                               Style="{StaticResource RowLabelStyle}"/>
+                                        <Label Grid.Column="3"
+                                               Text="{Binding Order.Table.TableNumber}" 
+                                               Style="{StaticResource RowLabelStyle}"/>
+                                    </Grid>
+                                </Frame>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage>
+
     <ContentPage x:Name="TablesPage"
                  Title="Tables" 
                  BackgroundColor="White">
@@ -95,7 +163,7 @@
             </Grid.RowDefinitions>
 
             <StackLayout Grid.Row="0">
-                <Grid HeightRequest="100">
+                <Grid HeightRequest="110">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
@@ -240,72 +308,5 @@
                 </Grid>
             </yummy:PancakeView>
         </Grid>
-    </ContentPage>
-
-    <ContentPage x:Name="OrderedProductsPage"
-                 Title="Ordered Products"
-                 BackgroundColor="LightGray">
-        <StackLayout Margin="10">
-            <Frame BackgroundColor="#4F000B" CornerRadius="10">
-                <Grid HeightRequest="50">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Label Grid.Column="0"
-                           Text="Product name"
-                           Style="{StaticResource HeaderLabelStyle}"/>
-                    <Label Grid.Column="1"
-                           Text="Qty"
-                           Style="{StaticResource HeaderLabelStyle}"/>
-                    <Label Grid.Column="2"
-                           Text="Price"
-                           Style="{StaticResource HeaderLabelStyle}"/>
-                    <Label Grid.Column="3"
-                           Text="Table"
-                           Style="{StaticResource HeaderLabelStyle}"/>
-                </Grid>
-            </Frame>
-
-            <ListView ItemsSource="{Binding WaiterOrderedProducts}"
-                      HasUnevenRows="True">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <ViewCell.View>
-                                <Frame CornerRadius="40" 
-                                       Margin="10, 3"
-                                       BackgroundColor="{Binding Color}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="3*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Label Grid.Column="0"
-                                               Text="{Binding Product.Name}"
-                                               Style="{StaticResource RowLabelStyle}"/>
-                                        <Label Grid.Column="1"
-                                               Text="{Binding Quantity}" 
-                                               Style="{StaticResource RowLabelStyle}"/>
-                                        <Label Grid.Column="2"
-                                               Text="{Binding Product.Price}" 
-                                               Style="{StaticResource RowLabelStyle}"/>
-                                        <Label Grid.Column="3"
-                                               Text="{Binding Order.Table.TableNumber}" 
-                                               Style="{StaticResource RowLabelStyle}"/>
-                                    </Grid>
-                                </Frame>
-                            </ViewCell.View>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </StackLayout>
     </ContentPage>
 </TabbedPage>

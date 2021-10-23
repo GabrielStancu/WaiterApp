@@ -1,5 +1,4 @@
-﻿using Core.Business;
-using Core.Models;
+﻿using Core.Models;
 using Infrastructure.Business.ControlsDrawing;
 using Infrastructure.Business.Filter;
 using Infrastructure.Business.Parameters;
@@ -283,9 +282,8 @@ namespace Infrastructure.ViewModels
         }
         private void SetTableStatusOnEmpty()
         {
-            SelectedTable.WaiterId = 0;
+            SelectedTable.WaiterId = null;
             SelectedTable.Waiter = null;
-            SelectedTable.Status = TableStatus.Free;
         }
 
         private void CreateNewOrder()
@@ -302,7 +300,6 @@ namespace Infrastructure.ViewModels
         private void SetTableStatusTaken()
         {
             SelectedTable.WaiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
-            SelectedTable.Status = TableStatus.TakenByCurrentWaiter;
             _tableRepository.Update(SelectedTable);
         }
 

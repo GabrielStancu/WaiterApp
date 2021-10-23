@@ -3,7 +3,6 @@ using Core.Models;
 using Infrastructure.Exceptions;
 using Infrastructure.Business.Wifi;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
