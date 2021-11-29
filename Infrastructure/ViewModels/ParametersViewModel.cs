@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace Infrastructure.ViewModels
 {
-    public class ParametersViewModel : BaseViewModel, IParametersViewModel
+    public class ParametersViewModel : BaseViewModel
     {
         public ParametersViewModel(IDepartmentLoader departmentLoader)
         {

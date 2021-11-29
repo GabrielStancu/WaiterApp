@@ -11,11 +11,11 @@ namespace WaiterApp.Pages
 {
     public partial class LoginPage : ContentPage
     {
-        private readonly ILoginViewModel _model;
+        private readonly LoginViewModel _model;
         private readonly IDatabaseConnectionChecker _databaseConnectionChecker;
         private bool _connectedToDb = false;
         private bool _appStart = true;
-        public LoginPage(ILoginViewModel model, IDatabaseConnectionChecker databaseConnectionChecker)
+        public LoginPage(LoginViewModel model, IDatabaseConnectionChecker databaseConnectionChecker)
         {
             InitializeComponent();
             _model = model;

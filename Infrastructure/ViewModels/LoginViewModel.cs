@@ -5,7 +5,7 @@ using System;
 
 namespace Infrastructure.ViewModels
 {
-    public class LoginViewModel : BaseViewModel, ILoginViewModel
+    public class LoginViewModel : BaseViewModel
     {
         public LoginViewModel(IDepartmentRepository departmentRepository, IWaiterRepository waiterRepository)
         {

@@ -8,9 +8,9 @@ namespace WaiterApp.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ParametersPage : ContentPage
     {
-        private readonly IParametersViewModel _model;
+        private readonly ParametersViewModel _model;
 
-        public ParametersPage(IParametersViewModel model)
+        public ParametersPage(ParametersViewModel model)
         {
             InitializeComponent();
             _model = model;

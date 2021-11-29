@@ -17,18 +17,17 @@ namespace WaiterApp.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : TabbedPage
     {
-        private readonly IMainPageViewModel _mainPageViewModel;
+        private readonly MainPageViewModel _mainPageViewModel;
         private readonly ITableButtonFactory _tableButtonFactory;
         private readonly IProductsDrawer _productsDrawer;
         private readonly IWifiConnectionChecker _wifiConnectionChecker;
         private readonly IWifiConnectionResponseParser _wifiConnectionResponseParser;
-        private readonly int _departmentId;
         private Page _lastPage;
         private bool _loadedPage = false;
         private bool _refreshedPage = false;
 
         public MainPage(
-            IMainPageViewModel mainPageViewModel,
+            MainPageViewModel mainPageViewModel,
             ITableButtonFactory tableButtonFactory,
             IProductsDrawer productsDrawer,
             IWifiConnectionChecker wifiConnectionChecker,
@@ -44,7 +43,6 @@ namespace WaiterApp.Pages
             BindingContext = _mainPageViewModel;
 
             CurrentPageChanged += OnMainPageCurrentPageChanged;
-            _departmentId = int.Parse(ParametersLoader.Parameters[AppParameters.DepartmentId]);
 
             var loadOrdersOnTimer = LoadOrdersOnTimer();
             var loadTables = LoadTables();
@@ -59,7 +57,7 @@ namespace WaiterApp.Pages
         {
             try
             {
-                _mainPageViewModel.LoadProducts(_departmentId);
+                _mainPageViewModel.LoadProducts();
                 DrawProducts();
             }
             catch(WifiConnectionException ex)
@@ -176,8 +174,7 @@ namespace WaiterApp.Pages
             {
                 try
                 {
-                    var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
-                    _mainPageViewModel.LoadOrdersForWaiter(waiterId);
+                    _mainPageViewModel.LoadOrdersForWaiter();
                 }
                 catch (WifiConnectionException ex)
                 {
@@ -190,8 +187,7 @@ namespace WaiterApp.Pages
         {
             try
             {
-                var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
-                _mainPageViewModel.LoadAllOrdersForWaiter(waiterId);
+                _mainPageViewModel.LoadAllOrdersForWaiter();
             }
             catch (WifiConnectionException ex)
             {
@@ -203,7 +199,7 @@ namespace WaiterApp.Pages
         {
             try
             {
-                var tables = _mainPageViewModel.LoadTables(_departmentId);
+                var tables = _mainPageViewModel.LoadTables();
                 TablesLayout.Children.Clear();
 
                 foreach (var table in tables)

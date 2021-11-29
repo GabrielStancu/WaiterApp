@@ -3,7 +3,7 @@ using Infrastructure.Business.Parameters;
 
 namespace Infrastructure.ViewModels
 {
-    public class SettingsViewModel : BaseViewModel, ISettingsViewModel
+    public class SettingsViewModel : BaseViewModel
     {
         public SettingsViewModel(IDatabaseConnectionChecker checker)
         {

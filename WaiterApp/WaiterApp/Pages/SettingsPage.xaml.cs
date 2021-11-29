@@ -10,11 +10,11 @@ namespace WaiterApp.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsPage : ContentPage
     {
-        private readonly ISettingsViewModel _model;
+        private readonly SettingsViewModel _model;
         private readonly IWifiConnectionChecker _wifiConnectionChecker;
 
         public SettingsPage(
-            ISettingsViewModel model,
+            SettingsViewModel model,
             IWifiConnectionChecker wifiConnectionChecker)
         {
             InitializeComponent();

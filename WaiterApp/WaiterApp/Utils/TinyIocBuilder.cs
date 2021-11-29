@@ -21,7 +21,7 @@ namespace WaiterApp.Utils
         public static void RegisterApp(this TinyIoCContainer container)
         {
             RegisterSelfClasses(container, typeof(MainPage).Assembly.FullName);
-            RegisterInterfaceClassPairs(container, typeof(IBaseViewModel).Assembly.FullName);
+            RegisterSelfClasses(container, typeof(BaseViewModel).Assembly.FullName);
             RegisterInterfaceClassPairs(container, typeof(IGenericRepository<>).Assembly.FullName);
             RegisterInterfaceClassPairs(container, typeof(IConnectionStringBuilder).Assembly.FullName);
             RegisterInterfaceClassPairs(container, typeof(IDeviceInfoCollector).Assembly.FullName);

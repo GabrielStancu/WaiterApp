@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace Infrastructure.ViewModels
 {
-    public class MainPageViewModel : BaseViewModel, IMainPageViewModel
+    public class MainPageViewModel : BaseViewModel
     {
         public ObservableCollection<Group> Groups { get; set; }
             = new ObservableCollection<Group>();
@@ -41,6 +41,28 @@ namespace Infrastructure.ViewModels
             {
                 _currentTableTotal = value;
                 SetProperty<double>(ref _currentTableTotal, value);
+            }
+        }
+
+        private int _waiterId;
+        public int WaiterId
+        {
+            get => _waiterId;
+            set
+            {
+                _waiterId = value;
+                SetProperty<int>(ref _waiterId, value);
+            }
+        }
+
+        private int _departmentId;
+        public int DepartmentId
+        {
+            get => _departmentId;
+            set
+            {
+                _departmentId = value;
+                SetProperty<int>(ref _departmentId, value);
             }
         }
 
@@ -77,11 +99,14 @@ namespace Infrastructure.ViewModels
             _tableDrawer = tableDrawer;
             _productsFilter = productsFilter;
             _subgroupsFilter = subgroupsFilter;
+
+            WaiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
+            DepartmentId = int.Parse(ParametersLoader.Parameters[AppParameters.DepartmentId]);
         }
 
-        public void LoadOrdersForWaiter(int waiterId)
+        public void LoadOrdersForWaiter()
         {
-            var orderProducts = _orderProductRepository.LoadOrdersForWaiter(waiterId);
+            var orderProducts = _orderProductRepository.LoadOrdersForWaiter(WaiterId);
 
             WaiterOrderedProductsRecipes.Clear();
             foreach (var orderProduct in orderProducts)
@@ -100,28 +125,27 @@ namespace Infrastructure.ViewModels
             }
         }
 
-        public void LoadAllOrdersForWaiter(int waiterId)
+        public void LoadAllOrdersForWaiter()
         {
-            var orderProducts = _orderProductRepository.LoadAllOrdersForWaiter(waiterId).ToList();
+            var orderProducts = _orderProductRepository.LoadAllOrdersForWaiter(WaiterId).ToList();
 
             WaiterOrderedProducts.Clear();
             orderProducts.ForEach(op => WaiterOrderedProducts.Add(op));
         }
 
-        public IEnumerable<DrawnTable> LoadTables(int departmentId)
+        public IEnumerable<DrawnTable> LoadTables()
         {
-            Tables = _tableRepository.GetTablesForDepartment(departmentId) as List<Table>;
-            Orders = _orderRepository.LoadOrdersForDepartment(departmentId) as List<Order>;
-            int waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
+            Tables = _tableRepository.GetTablesForDepartment(DepartmentId) as List<Table>;
+            Orders = _orderRepository.LoadOrdersForDepartment(DepartmentId) as List<Order>;
 
-            return _tableDrawer.DrawTables(Tables, Orders, waiterId, 461, 744);
+            return _tableDrawer.DrawTables(Tables, Orders, WaiterId, 461, 744);
         }
 
-        public void LoadProducts(int departmentId)
+        public void LoadProducts()
         {
-            _unfilteredGroups = (List<Group>)_groupRepository.GetGroupsByDepartment(departmentId);
-            _unfilteredSubgroups = (List<Subgroup>)_subgroupRepository.GetSubgroupsByDepartment(departmentId);
-            _unfilteredProducts = (List<Product>)_productRepository.GetProductsByDepartment(departmentId);
+            _unfilteredGroups = (List<Group>)_groupRepository.GetGroupsByDepartment(DepartmentId);
+            _unfilteredSubgroups = (List<Subgroup>)_subgroupRepository.GetSubgroupsByDepartment(DepartmentId);
+            _unfilteredProducts = (List<Product>)_productRepository.GetProductsByDepartment(DepartmentId);
 
             Groups.Clear();
             Groups.Add(new Group()
@@ -167,8 +191,7 @@ namespace Infrastructure.ViewModels
 
         private void LoadWaiterOrderedProducts()
         {
-            var waiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
-            var orderedProducts = _orderProductRepository.LoadAllOrdersForWaiter(waiterId);
+            var orderedProducts = _orderProductRepository.LoadAllOrdersForWaiter(WaiterId);
 
             WaiterOrderedProducts.Clear();
             foreach (var orderedProduct in orderedProducts)
@@ -290,7 +313,7 @@ namespace Infrastructure.ViewModels
         {
             CurrentOrder = new Order()
             {
-                WaiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]),
+                WaiterId = WaiterId,
                 TableId = SelectedTable.Id
             };
             Orders.Add(CurrentOrder);
@@ -299,7 +322,7 @@ namespace Infrastructure.ViewModels
 
         private void SetTableStatusTaken()
         {
-            SelectedTable.WaiterId = int.Parse(ParametersLoader.Parameters[AppParameters.WaiterId]);
+            SelectedTable.WaiterId = WaiterId;
             _tableRepository.Update(SelectedTable);
         }
 
