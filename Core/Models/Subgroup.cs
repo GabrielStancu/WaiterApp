@@ -2,16 +2,17 @@
 
 namespace Core.Models
 {
+    [Table("Subgrupa")]
     public class Subgroup : BaseModel
     {
+        [Column("cods")]
+        public new int Id { get; set; }
+        [Column("denumire")]
         public string Name { get; set; }
         public Group Group { get; set; }
         [ForeignKey("Group")]
+        [Column("codg")]
         public int GroupId { get; set; }
-        public Department Department { get; set; }
-        [ForeignKey("Department")]
-        public int DepartmentId { get; set; }
-
         public override bool Equals(BaseModel other)
         {
             if (other.GetType() != typeof(Subgroup))
@@ -27,8 +28,7 @@ namespace Core.Models
             Subgroup otherSubgroup = (Subgroup)other;
 
             return Name.ToUpper().Equals(otherSubgroup.Name.ToUpper())
-                && Group == otherSubgroup.Group
-                && Department == otherSubgroup.Department;
+                && Group == otherSubgroup.Group;
         }
     }
 }

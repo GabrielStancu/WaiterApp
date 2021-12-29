@@ -7,7 +7,6 @@ namespace Core.Models
 {
     public abstract class BaseModel: IEquatable<BaseModel>, INotifyPropertyChanged
     {
-        [Key]
         public int Id { get; set; }
         public abstract bool Equals(BaseModel other);
         protected bool SetProperty<T>(ref T backingStore, T value,

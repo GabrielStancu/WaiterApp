@@ -147,24 +147,20 @@ namespace Infrastructure.ViewModels
             _unfilteredSubgroups = (List<Subgroup>)_subgroupRepository.GetSubgroupsByDepartment(DepartmentId);
             _unfilteredProducts = (List<Product>)_productRepository.GetProductsByDepartment(DepartmentId);
 
+            _unfilteredGroups.Sort((x, y) =>
+                x.Id.CompareTo(y.Id));
+            _unfilteredSubgroups.Sort((x, y) =>
+                x.Id.CompareTo(y.Id));
+            _unfilteredProducts.Sort((x, y) =>
+                x.Id.CompareTo(y.Id));
+
             Groups.Clear();
-            Groups.Add(new Group()
-            {
-                DepartmentId = 0,
-                Name = "-"
-            });
             foreach (var group in _unfilteredGroups)
             {
                 Groups.Add(group);
             }
 
             Subgroups.Clear();
-            Subgroups.Add(new Subgroup()
-            {
-                DepartmentId = 0,
-                GroupId = 0,
-                Name = "-"
-            });
             foreach (var subgroup in _unfilteredSubgroups)
             {
                 Subgroups.Add(subgroup);
@@ -208,10 +204,9 @@ namespace Infrastructure.ViewModels
         public void FilterSubgroups()
         {
             Subgroups.Clear();
-            Subgroups.Add(new Subgroup()
+            Subgroups.Add(new Subgroup
             {
-                DepartmentId = 0,
-                GroupId = 0,
+                Id = 0,
                 Name = "-"
             });
 

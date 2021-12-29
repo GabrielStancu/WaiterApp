@@ -2,11 +2,16 @@
 
 namespace Core.Models
 {
+    [Table("Grupa")]
     public class Group : BaseModel
     {
+        [Column("codg")]
+        public new int Id { get; set; }
+        [Column("denumire")]
         public string Name { get; set; }
         public Department Department { get; set; }
         [ForeignKey("Department")]
+        [Column("NO-NAME")]
         public int DepartmentId { get; set; }
 
         public override bool Equals(BaseModel other)

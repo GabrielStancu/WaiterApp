@@ -45,28 +45,14 @@
                            Style="{StaticResource LabelStyle}"/>
                 </Grid>
 
-                <Grid Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="3*"/>
-                    </Grid.RowDefinitions>
-
-                    <Label x:Name="DateLabel" 
-                           Grid.Row="0" 
-                           Text="{Binding CurrentDate, StringFormat=\{0:dd.MM.yyyy\}}" 
-                           HorizontalTextAlignment="End" 
-                           Style="{StaticResource LabelStyle}"
-                           HorizontalOptions="End" 
-                           VerticalOptions="Start"/>
-                    <ImageButton x:Name="SettingsButton" 
-                                 Grid.Row="1" 
-                                 HorizontalOptions="End" 
-                                 BackgroundColor="Transparent"
-                                 Margin="5,0" 
-                                 Clicked="OnSettingsButtonClick" 
-                                 CornerRadius="30" 
-                                 Source="settings_icon.png"/>
-                </Grid>
+                <Label x:Name="DateLabel" 
+                       Grid.Column="1"
+                       Grid.Row="0" 
+                       Text="{Binding CurrentDate, StringFormat=\{0:dd.MM.yyyy\}}" 
+                       HorizontalTextAlignment="End" 
+                       Style="{StaticResource LabelStyle}"
+                       HorizontalOptions="End" 
+                       VerticalOptions="Start"/>
             </Grid>
 
             <Image Source="logo.png" 

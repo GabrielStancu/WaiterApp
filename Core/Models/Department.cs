@@ -1,7 +1,13 @@
-﻿namespace Core.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Core.Models
 {
+    [Table("Gestiune")]
     public class Department : BaseModel
     {
+        [Column("codgestiune")]
+        public new int Id { get; set; }
+        [Column("denumire")]
         public string Name { get; set; }
 
         public override bool Equals(BaseModel other)

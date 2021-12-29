@@ -2,15 +2,20 @@
 
 namespace Core.Models
 {
+    [Table("Ospatari")]
     public class Waiter: BaseModel
     {
+        [Column("ID_ospatar")]
+        public new int Id { get; set; }
+        [Column("Nick")]
         public string Nickname { get; set; }
+        [Column("Nume")]
         public string Username { get; set; }
+        [Column("Password")]
         public string Password { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
         public Department Department { get; set; }
         [ForeignKey("Department")]
+        [Column("divizie_id")]
         public int DepartmentId { get; set; }
 
         public override bool Equals(BaseModel other)
@@ -28,8 +33,6 @@ namespace Core.Models
             Waiter otherUser = (Waiter)other;
 
             return Username.ToUpper().Equals(otherUser.Username.ToUpper())
-                && FirstName.ToUpper().Equals(otherUser.FirstName.ToUpper())
-                && LastName.ToUpper().Equals(otherUser.LastName.ToUpper())
                 && Department == otherUser.Department;
         }
     }

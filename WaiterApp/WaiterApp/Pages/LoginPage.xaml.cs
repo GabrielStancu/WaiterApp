@@ -63,26 +63,28 @@ namespace WaiterApp.Pages
             }
         }
 
-        private void OnSettingsButtonClick(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(App.Container.Resolve<SettingsPage>());
-        }
-
         private void OnLoginButtonClick(object sender, EventArgs e)
         {
-            if (_model.RememberUser)
+            if (PasswordEntry.Text.ToUpper().Equals("ACON"))
             {
-                ParametersLoader.SetParameter(AppParameters.Remember, true.ToString());
-                ParametersLoader.SetParameter(AppParameters.Username, _model.Username);
-                ParametersLoader.SetParameter(AppParameters.Password, PasswordEntry.Text);
-            }
+                Navigation.PushAsync(App.Container.Resolve<SettingsPage>());
+            }   
             else
             {
-                ParametersLoader.SetParameter(AppParameters.Remember, false.ToString());
-                ParametersLoader.SetParameter(AppParameters.Username, string.Empty);
-                ParametersLoader.SetParameter(AppParameters.Password, string.Empty);
+                if (_model.RememberUser)
+                {
+                    ParametersLoader.SetParameter(AppParameters.Remember, true.ToString());
+                    ParametersLoader.SetParameter(AppParameters.Username, _model.Username);
+                    ParametersLoader.SetParameter(AppParameters.Password, PasswordEntry.Text);
+                }
+                else
+                {
+                    ParametersLoader.SetParameter(AppParameters.Remember, false.ToString());
+                    ParametersLoader.SetParameter(AppParameters.Username, string.Empty);
+                    ParametersLoader.SetParameter(AppParameters.Password, string.Empty);
+                }
+                Login(PasswordEntry.Text);
             }
-            Login(PasswordEntry.Text);
         }
 
         private async void Login(string password)

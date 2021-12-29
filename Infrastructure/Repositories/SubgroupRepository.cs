@@ -1,5 +1,6 @@
 ﻿using Core.Models;
 using Infrastructure.Business.Wifi;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,7 +19,8 @@ namespace Infrastructure.Repositories
         {
             var subgroups = CreateContext()
                 .Subgroup
-                .Where(s => s.DepartmentId == departmentId)
+                .Include(s => s.Group)
+                .Where(s => s.Group.DepartmentId == departmentId)
                 .ToList();
 
             return subgroups;

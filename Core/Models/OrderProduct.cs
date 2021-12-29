@@ -4,8 +4,10 @@ using System.Drawing;
 
 namespace Core.Models
 {
+    [Table("MARFA_t")]
     public class OrderProduct: BaseModel
     {
+        public new int Id { get; set; }
         [ForeignKey("Order")]
         public int OrderId { get; set; }
         public Order Order { get; set; }
